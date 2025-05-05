@@ -1,0 +1,84 @@
+import 'package:brandify/models/size.dart';
+
+class Product{
+  int? id;
+  String? backendId;
+  int? shopifyId;
+  String? code;
+  String? sku;
+  String? name;
+  String? category;
+  String? description;
+  String? image;
+  int? price;
+  int? shopifyPrice;
+  List<ProductSize> sizes = [];
+  int noOfSells = 0;
+
+  Product({this.id, this.shopifyId, this.name, this.description, this.image, this.price, this.noOfSells = 0, this.code});
+  Product.fromJson(Map<dynamic, dynamic> json){
+    id = json["id"];
+    backendId = json["backendId"];
+    shopifyId = json["shopifyId"];
+    code = json["code"];
+    sku = json["sku"];
+    name = json["name"];
+    category = json["category"];
+    description = json["description"];
+    image = json["image"];
+    price = json["price"];
+    shopifyPrice = json["shopifyPrice"];
+    noOfSells = json["noOfSells"] ?? 0;
+    sizes = json["sizes"] != null ? [for(var x in json["sizes"]) ProductSize.fromJson(x)] : []; 
+  }
+
+  Product.fromShopify(Map<String, dynamic> shopifyProduct) {
+    shopifyId = shopifyProduct['id'];
+    name = shopifyProduct['title'];
+    description = shopifyProduct['body_html'];
+    image = shopifyProduct['images']?.isNotEmpty == true 
+        ? shopifyProduct['images'][0]['src'] 
+        : null;
+    shopifyPrice = (double.tryParse(shopifyProduct['variants']?[0]?['price'] ?? '0') ?? 0).round();
+    price = shopifyPrice;
+    print("$price & $shopifyPrice");
+    sku = shopifyProduct['variants']?[0]?['sku'];
+    code = shopifyProduct['variants']?[0]?['barcode'];
+    sizes = [];
+    if (shopifyProduct['variants'] != null) {
+      for (var variant in shopifyProduct['variants']) {
+        sizes.add(ProductSize(
+          id: variant['id'],
+          name: variant['title'],
+          quantity: int.tryParse(variant['inventory_quantity']?.toString() ?? '0') ?? 0,
+        ));
+      }
+    }
+  }
+
+  Map<String, dynamic> toJson(){
+    return {
+      "id": id,
+      "backendId": backendId,
+      "shopifyId": shopifyId,
+      "code": code,
+      "sku": sku,
+      "name": name,
+      "category": category,
+      "description": description,
+      "image": image,
+      "price": price,
+      "shopifyPrice": shopifyPrice,
+      "noOfSells": noOfSells,
+      "sizes": [for(var size in sizes) size.toJson()],
+    };
+  }
+
+  int getNumberOfAllItems(){
+    int total = 0;
+    for(var item in sizes){
+      total += item.quantity ?? 0;
+    }
+    return total;
+  }
+}

@@ -1,0 +1,286 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
+import 'package:brandify/constants.dart';
+import 'package:brandify/cubits/ads/ads_cubit.dart';
+import 'package:brandify/models/ad.dart';
+import 'package:brandify/view/screens/ads/ads_screen.dart';
+import 'package:brandify/view/widgets/ad_item.dart';
+import 'package:brandify/view/widgets/platform_totals_card.dart';
+
+class AllAdsScreen extends StatefulWidget {
+  const AllAdsScreen({super.key});
+
+  @override
+  State<AllAdsScreen> createState() => _AllAdsScreenState();
+}
+
+class _AllAdsScreenState extends State<AllAdsScreen> {
+  DateTimeRange? selectedDateRange;
+
+  @override
+  void initState() {
+    super.initState();
+    AdsCubit.get(context).getAllAds().then((_) {
+      AdsCubit.get(context).sortAdsByDate(descending: true);
+    });
+  }
+
+  Future<void> _selectDateRange() async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+      initialDateRange: selectedDateRange ?? DateTimeRange(
+        start: DateTime.now().subtract(Duration(days: 7)),
+        end: DateTime.now(),
+      ),
+    );
+    if (picked != null) {
+      setState(() {
+        selectedDateRange = picked;
+      });
+      AdsCubit.get(context).filterAdsByDate(picked.start, picked.end);
+    }
+  }
+
+  Widget _buildPlatformTotals() {
+    final ads = AdsCubit.get(context).filteredAds;
+    final platformTotals = <String, double>{};
+    
+    for (var ad in ads) {
+      if (ad.platform?.name != null) {
+        platformTotals[ad.platform!.name] = (platformTotals[ad.platform!.name] ?? 0) + (ad.cost ?? 0);
+      }
+    }
+
+    return PlatformTotalsCard(platformTotals: platformTotals);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Advertising", 
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+        ),
+        backgroundColor: mainColor,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: _selectDateRange,
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          // gradient: LinearGradient(
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.bottomCenter,
+          //   colors: [mainColor, Color(0xFFF5F5F5)],
+          //   stops: [0.0, 0.3],
+          // ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: BlocBuilder<AdsCubit, AdsState>(
+            builder: (context, state) {
+              return Visibility(
+                visible: AdsCubit.get(context).ads.isNotEmpty,
+                replacement: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        "assets/images/empty.png",
+                        height: 200, 
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "No Ads Yet. Add the ads you created in social media platforms.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          //fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      // Text(
+                      //   "No Ads Yet",
+                      //   style: TextStyle(
+                      //     fontSize: 18,
+                      //     fontWeight: FontWeight.w500,
+                      //     color: Colors.grey[600],
+                      //   ),
+                      // )
+                    ],
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if (selectedDateRange != null)
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.date_range, color: mainColor, size: 20),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'From ${DateFormat('MMM d, y').format(selectedDateRange!.start)} to ${DateFormat('MMM d, y').format(selectedDateRange!.end)}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      SizedBox(height: 20),
+                      _buildPlatformTotals(),
+                      SizedBox(height: 20),
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, i) {
+                          if(i < AdsCubit.get(context).filteredAds.length){
+                            return AdItem(
+                              ad: AdsCubit.get(context).filteredAds[i],
+                              color: AdsCubit.get(context).getAdColor(AdsCubit.get(context).filteredAds[i]),
+                              icon: AdsCubit.get(context).getAdIcon(AdsCubit.get(context).filteredAds[i]),
+                              onTap: _showEnhancedAdDetails,
+                            );
+                          }
+                          else{
+                            return SizedBox(height: 50);
+                          }
+                        },
+                        separatorBuilder: (context, i) => SizedBox(height: 12),
+                        itemCount: AdsCubit.get(context).filteredAds.length + 1,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AdsScreen())
+          );
+        },
+        label: Text("New Ad", style: TextStyle(fontWeight: FontWeight.w600)),
+        icon: Icon(Icons.add),
+        backgroundColor: mainColor,
+        elevation: 4,
+      ),
+    );
+  }
+
+  void _showEnhancedAdDetails(BuildContext context, Ad ad) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              margin: EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Text(
+              "Advertisement Details",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: mainColor,
+              ),
+            ),
+            SizedBox(height: 20),
+            _buildDetailRow(Icons.campaign, "Platform", ad.platform?.name ?? "N/A"),
+            _buildDetailRow(Icons.attach_money, "Cost", "${ad.cost} LE"),
+            _buildDetailRow(Icons.calendar_today, "Date", ad.date.toString().split(" ").first),
+            SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: mainColor,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text("Close", style: TextStyle(fontSize: 16)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: mainColor),
+          SizedBox(width: 12),
+          Text(
+            "$label: ",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[700],
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
