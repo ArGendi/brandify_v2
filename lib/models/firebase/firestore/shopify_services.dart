@@ -15,19 +15,6 @@ class ShopifyServices {
   // static String? apiKey;
   // static String? apiSecretKey;
   //static late ShopifyStore shopifyStore;
-  
-  // static Future<void> initialize() async {
-  //   ShopifyConfig.setConfig(
-  //     storefrontAccessToken: 'e41290309712add21e5616fe77173731',
-  //     storeUrl: '$storeId.myshopify.com',
-  //     adminAccessToken: "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", 
-  //     storefrontApiVersion: '2024-07',
-  //     cachePolicy: CachePolicy.cacheAndNetwork,
-  //     language: 'en',
-  //   );
-    
-  //   shopifyStore = ShopifyStore.instance;
-  // }
 
   static void setParamters(
     {
