@@ -1,3 +1,4 @@
+import 'package:brandify/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,9 +14,7 @@ class AdsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Ads"),
-      ),
+      appBar: AppBar(title: Text("Ads")),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -36,17 +35,14 @@ class AdsScreen extends StatelessWidget {
                       onValidate: (value) {
                         if (value!.isEmpty) {
                           return "Enter ad cost";
-                        } else return null;
+                        } else
+                          return null;
                       },
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   Text("Your ad platform ?"),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: 10),
                   BlocBuilder<AdsCubit, AdsState>(
                     builder: (context, state) {
                       return Row(
@@ -54,53 +50,67 @@ class AdsScreen extends StatelessWidget {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                AdsCubit.get(context)
-                                    .setPlatform(SocialMediaPlatform.facebook);
+                                AdsCubit.get(
+                                  context,
+                                ).setPlatform(SocialMediaPlatform.facebook);
                               },
                               child: AnimatedContainer(
                                 duration: Duration(milliseconds: 400),
                                 height: 150,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AdsCubit.get(context).selectedPlatform ==
-                                            SocialMediaPlatform.facebook
-                                        ? Colors.blue.shade700
-                                        : Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      AdsCubit.get(context).selectedPlatform ==
+                                              SocialMediaPlatform.facebook
+                                          ? Colors.blue.shade700
+                                          : Colors.grey.shade300,
+                                ),
                                 child: Center(
                                   child: FaIcon(
                                     FontAwesomeIcons.facebook,
                                     size: 30,
-                                    color: AdsCubit.get(context).selectedPlatform ==
-                                            SocialMediaPlatform.facebook
-                                        ? Colors.white : Colors.black,
+                                    color:
+                                        AdsCubit.get(
+                                                  context,
+                                                ).selectedPlatform ==
+                                                SocialMediaPlatform.facebook
+                                            ? Colors.white
+                                            : Colors.black,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10,),
+                          SizedBox(width: 10),
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                AdsCubit.get(context)
-                                    .setPlatform(SocialMediaPlatform.instagram);
+                                AdsCubit.get(
+                                  context,
+                                ).setPlatform(SocialMediaPlatform.instagram);
                               },
                               child: AnimatedContainer(
                                 duration: Duration(milliseconds: 400),
                                 height: 150,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AdsCubit.get(context).selectedPlatform ==
-                                            SocialMediaPlatform.instagram
-                                        ? Colors.red.shade700
-                                        : Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      AdsCubit.get(context).selectedPlatform ==
+                                              SocialMediaPlatform.instagram
+                                          ? Colors.red.shade700
+                                          : Colors.grey.shade300,
+                                ),
                                 child: Center(
                                   child: FaIcon(
                                     FontAwesomeIcons.instagram,
                                     size: 30,
-                                    color: AdsCubit.get(context).selectedPlatform ==
-                                            SocialMediaPlatform.instagram
-                                        ? Colors.white : Colors.black,
+                                    color:
+                                        AdsCubit.get(
+                                                  context,
+                                                ).selectedPlatform ==
+                                                SocialMediaPlatform.instagram
+                                            ? Colors.white
+                                            : Colors.black,
                                   ),
                                 ),
                               ),
@@ -110,7 +120,7 @@ class AdsScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   BlocBuilder<AdsCubit, AdsState>(
                     builder: (context, state) {
                       return Row(
@@ -118,54 +128,68 @@ class AdsScreen extends StatelessWidget {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                AdsCubit.get(context)
-                                    .setPlatform(SocialMediaPlatform.tiktok);
+                                AdsCubit.get(
+                                  context,
+                                ).setPlatform(SocialMediaPlatform.tiktok);
                               },
                               child: AnimatedContainer(
                                 duration: Duration(milliseconds: 400),
                                 height: 150,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AdsCubit.get(context).selectedPlatform ==
-                                            SocialMediaPlatform.tiktok
-                                        ? Colors.black
-                                        : Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      AdsCubit.get(context).selectedPlatform ==
+                                              SocialMediaPlatform.tiktok
+                                          ? Colors.black
+                                          : Colors.grey.shade300,
+                                ),
                                 child: Center(
                                   child: FaIcon(
                                     FontAwesomeIcons.tiktok,
                                     size: 30,
-                                    color: AdsCubit.get(context).selectedPlatform ==
-                                            SocialMediaPlatform.tiktok
-                                        ? Colors.white : Colors.black,
+                                    color:
+                                        AdsCubit.get(
+                                                  context,
+                                                ).selectedPlatform ==
+                                                SocialMediaPlatform.tiktok
+                                            ? Colors.white
+                                            : Colors.black,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10,),
+                          SizedBox(width: 10),
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                AdsCubit.get(context)
-                                    .setPlatform(SocialMediaPlatform.other);
+                                AdsCubit.get(
+                                  context,
+                                ).setPlatform(SocialMediaPlatform.other);
                               },
                               child: AnimatedContainer(
                                 duration: Duration(milliseconds: 400),
                                 height: 150,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AdsCubit.get(context).selectedPlatform ==
-                                            SocialMediaPlatform.other
-                                        ? mainColor
-                                        : Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color:
+                                      AdsCubit.get(context).selectedPlatform ==
+                                              SocialMediaPlatform.other
+                                          ? mainColor
+                                          : Colors.grey.shade300,
+                                ),
                                 child: Center(
                                   child: Text(
                                     "Other",
                                     style: TextStyle(
                                       fontSize: 18,
-                                      color: AdsCubit.get(context).selectedPlatform ==
-                                              SocialMediaPlatform.other
-                                          ? Colors.white : Colors.black,
+                                      color:
+                                          AdsCubit.get(
+                                                    context,
+                                                  ).selectedPlatform ==
+                                                  SocialMediaPlatform.other
+                                              ? Colors.white
+                                              : Colors.black,
                                     ),
                                   ),
                                 ),
@@ -186,7 +210,9 @@ class AdsScreen extends StatelessWidget {
                             context: context,
                             initialDate: AdsCubit.get(context).date,
                             firstDate: DateTime(2025),
-                            lastDate: DateTime(AdsCubit.get(context).date.year + 1),
+                            lastDate: DateTime(
+                              AdsCubit.get(context).date.year + 1,
+                            ),
                           );
                           if (date != null) {
                             AdsCubit.get(context).setDate(date);
@@ -199,13 +225,22 @@ class AdsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 10,),
-            CustomButton(
-              text: "Add", 
-              onPressed: (){
-                AdsCubit.get(context).onAdd(context);
+            SizedBox(height: 10),
+            BlocBuilder<AdsCubit, AdsState>(
+              builder: (context, state) {
+                if(state is AdsLoading){
+                  return Loading();
+                }
+                else{
+                  return CustomButton(
+                    text: "Add",
+                    onPressed: () {
+                      AdsCubit.get(context).onAdd(context);
+                    },
+                  );
+                }
               },
-            )
+            ),
           ],
         ),
       ),

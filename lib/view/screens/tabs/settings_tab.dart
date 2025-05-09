@@ -1,3 +1,4 @@
+import 'package:brandify/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:brandify/constants.dart';
@@ -42,8 +43,11 @@ class SettingsTab extends StatelessWidget {
                       CircleAvatar(
                         radius: 25,
                         backgroundColor: mainColor,
-                        child:
-                            Icon(Icons.person, size: 30, color: Colors.white),
+                        child: Icon(
+                          Icons.person,
+                          size: 30,
+                          color: Colors.white,
+                        ),
                       ),
                       SizedBox(width: 15),
                       Expanded(
@@ -63,9 +67,7 @@ class SettingsTab extends StatelessWidget {
                                 Text(
                                   AppUserCubit.get(context).brandPhone ??
                                       "01xxxxxxxxx",
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                  ),
+                                  style: TextStyle(color: Colors.grey[600]),
                                 ),
                               ],
                             );
@@ -96,7 +98,8 @@ class SettingsTab extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => AccountSettingsScreen()),
+                        builder: (_) => AccountSettingsScreen(),
+                      ),
                     );
                   },
                 ),
@@ -108,108 +111,142 @@ class SettingsTab extends StatelessWidget {
                     showModalBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                      ),
-                      builder: (context) => BlocProvider(
-                        create: (context) => PackageCubit(),
-                        child: BlocConsumer<PackageCubit, PackageState>(
-                          listener: (context, state) {
-                            if (state is PackageSuccess) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(state.message)),
-                              );
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (_) => HomeScreen()),
-                                (route) => false,
-                              );
-                            } else if (state is PackageError) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(state.error),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            return Container(
-                              padding: EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 4,
-                                    margin: EdgeInsets.only(bottom: 20),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(2),
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.swap_horiz,
-                                    size: 40,
-                                    color: mainColor,
-                                  ),
-                                  SizedBox(height: 15),
-                                  Text(
-                                    'Change Package',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    'Are you sure you want to switch to ${Package.type == PackageType.offline ? 'online' : 'offline'} package?',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(height: 20),
-                                  if (state is PackageLoading)
-                                    CircularProgressIndicator(color: mainColor)
-                                  else
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextButton(
-                                            onPressed: () => Navigator.pop(context),
-                                            child: Text('Cancel'),
-                                            style: TextButton.styleFrom(
-                                              padding: EdgeInsets.symmetric(vertical: 15),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              PackageCubit.get(context).convertPackage();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: mainColor,
-                                              foregroundColor: Colors.white,
-                                              padding: EdgeInsets.symmetric(vertical: 15),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                            child: Text('Convert'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                ],
-                              ),
-                            );
-                          },
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
                         ),
                       ),
+                      builder:
+                          (context) => BlocProvider(
+                            create: (context) => PackageCubit(),
+                            child: BlocConsumer<PackageCubit, PackageState>(
+                              listener: (context, state) {
+                                if (state is PackageSuccess) {
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(state.message)),
+                                  );
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => HomeScreen(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                } else if (state is PackageError) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.error),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                return Container(
+                                  padding: EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 40,
+                                        height: 4,
+                                        margin: EdgeInsets.only(bottom: 20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius: BorderRadius.circular(
+                                            2,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.swap_horiz,
+                                        size: 40,
+                                        color: mainColor,
+                                      ),
+                                      SizedBox(height: 15),
+                                      Text(
+                                        'Change Package',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'Are you sure you want to switch to ${Package.type == PackageType.offline ? 'online' : 'offline'} package?',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      SizedBox(height: 20),
+                                      if (state is PackageLoading)
+                                        CircularProgressIndicator(
+                                          color: mainColor,
+                                        )
+                                      else
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextButton(
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.pop(context),
+                                                child: Text('Cancel'),
+                                                style: TextButton.styleFrom(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 15,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Expanded(
+                                              child: BlocBuilder<
+                                                PackageCubit,
+                                                PackageState>(
+                                                builder: (context, state) {
+                                                  if(state is PackageLoading){
+                                                    return Loading();
+                                                  }
+                                                  else{
+                                                    return ElevatedButton(
+                                                    onPressed: () {
+                                                      PackageCubit.get(
+                                                        context,
+                                                      ).convertPackage(context);
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor:
+                                                          mainColor,
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            vertical: 15,
+                                                          ),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    child: Text('Convert'),
+                                                  );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                     );
                   },
                 ),
@@ -221,7 +258,10 @@ class SettingsTab extends StatelessWidget {
                     final Uri whatsappUrl = Uri.parse(
                       'https://wa.me/+201227701988?text=Hello, I need help with Brandify app.',
                     );
-                    launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+                    launchUrl(
+                      whatsappUrl,
+                      mode: LaunchMode.externalApplication,
+                    );
                   },
                 ),
                 SizedBox(height: 20),
@@ -235,7 +275,12 @@ class SettingsTab extends StatelessWidget {
   }
 
   Widget _buildSettingItem(
-      String title, IconData icon, String subtitle, VoidCallback onTap, {Color color = mainColor}) {
+    String title,
+    IconData icon,
+    String subtitle,
+    VoidCallback onTap, {
+    Color color = mainColor,
+  }) {
     return Container(
       margin: EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
@@ -261,17 +306,11 @@ class SettingsTab extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
         ),
         subtitle: Text(
           subtitle,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 13,
-          ),
+          style: TextStyle(color: Colors.grey[600], fontSize: 13),
         ),
         trailing: Icon(Icons.chevron_right, color: Colors.grey[400]),
       ),
@@ -288,84 +327,78 @@ class SettingsTab extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            builder: (context) => Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 40,
-                    height: 4,
-                    margin: EdgeInsets.only(bottom: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  Icon(
-                    Icons.logout,
-                    size: 40,
-                    color: Colors.red,
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Logout',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Are you sure you want to logout?',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 16,
-                    ),
-                  ),
-                  if(Package.type == PackageType.offline)
-                  Text(
-                    '!! All your data will be deleted !!',
-                    style: TextStyle(
-                      color: Colors.red[600],
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
+            builder:
+                (context) => Container(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text('Cancel'),
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                          ),
+                      Container(
+                        width: 40,
+                        height: 4,
+                        margin: EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            AppUserCubit.get(context).logout(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                      Icon(Icons.logout, size: 40, color: Colors.red),
+                      SizedBox(height: 15),
+                      Text(
+                        'Logout',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Are you sure you want to logout?',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                      ),
+                      // if(Package.type == PackageType.offline)
+                      // Text(
+                      //   '!! All your data will be deleted !!',
+                      //   style: TextStyle(
+                      //     color: Colors.red[600],
+                      //     fontSize: 16,
+                      //   ),
+                      // ),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Cancel'),
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                              ),
                             ),
                           ),
-                          child: Text('Logout'),
-                        ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                AppUserCubit.get(context).logout(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Text('Logout'),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
+                ),
           );
         },
         style: ElevatedButton.styleFrom(
@@ -384,10 +417,7 @@ class SettingsTab extends StatelessWidget {
             SizedBox(width: 8),
             Text(
               'Logout',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ],
         ),

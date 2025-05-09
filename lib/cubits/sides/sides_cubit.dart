@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -45,9 +46,12 @@ class SidesCubit extends Cubit<SidesState> {
           }
         },
         offline: () async{
-          int id = await Hive.box(sidesTable).add(temp.toJson());
+          print("In offline Sides");
+          int id = await Hive.box(HiveServices.getTableName(sidesTable)).add(temp.toJson());
           temp.id = id;
+          sides.add(temp);
           emit(AddSidesState());
+          print("Sides state updated");
         },
       );    
       return true;
@@ -57,7 +61,7 @@ class SidesCubit extends Cubit<SidesState> {
 
   Future<List<Side>> SidesFromDB() async{
     List<Side> SidesFromDB = [];
-    var sidesBox = Hive.box(sidesTable);
+    var sidesBox = Hive.box(HiveServices.getTableName(sidesTable));
     var keys = sidesBox.keys.toList();
     for(var key in keys){
       Side temp = Side.fromJson(sidesBox.get(key));
@@ -99,7 +103,7 @@ class SidesCubit extends Cubit<SidesState> {
         }
       },
       offline: () async{
-        await Hive.box(sidesTable).delete(sides[i].id);
+        await Hive.box(HiveServices.getTableName(sidesTable)).delete(sides[i].id);
         sides.removeAt(i);
         emit(RemoveSidesState());
       },
@@ -123,7 +127,7 @@ class SidesCubit extends Cubit<SidesState> {
           );
         },
         offline: () async {
-          await Hive.box(sidesTable).put(sides[i].id, sides[i].toJson());
+          await Hive.box(HiveServices.getTableName(sidesTable)).put(sides[i].id, sides[i].toJson());
         },
       );
     }
@@ -159,11 +163,11 @@ class SidesCubit extends Cubit<SidesState> {
         }
       },
       offline: () async {
-        bool exist = Hive.box(sidesTable).containsKey(sides[index].id);
+        bool exist = Hive.box(HiveServices.getTableName(sidesTable)).containsKey(sides[index].id);
         if (exist) {
-          await Hive.box(sidesTable).put(sides[index].id, sides[index].toJson());
+          await Hive.box(HiveServices.getTableName(sidesTable)).put(sides[index].id, sides[index].toJson());
         } else {
-          await Hive.box(sidesTable).add(sides[index].toJson());
+          await Hive.box(HiveServices.getTableName(sidesTable)).add(sides[index].toJson());
         }
       },
     );
@@ -181,7 +185,7 @@ class SidesCubit extends Cubit<SidesState> {
         }
       },
       offline: () async {
-        await Hive.box(sidesTable).add(temp.toJson());
+        await Hive.box(HiveServices.getTableName(sidesTable)).add(temp.toJson());
       },
     );
     sides.add(temp);
@@ -194,5 +198,13 @@ class SidesCubit extends Cubit<SidesState> {
         backgroundColor: Colors.red,
       )
     );
+  }
+
+  void reset(){
+    sides = [];
+    name = null;
+    price = null;
+    quantity = null;
+    emit(SidesInitial());
   }
 }

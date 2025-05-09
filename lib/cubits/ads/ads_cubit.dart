@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:brandify/main.dart';
 import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -167,6 +168,8 @@ class AdsCubit extends Cubit<AdsState> {
 
   Future<int> getAllAds() async {
     try {
+      if (ads.isNotEmpty) return 0;
+
       emit(AdsLoading());
       int totalCost = 0;
       await Package.checkAccessability(
@@ -207,6 +210,7 @@ class AdsCubit extends Cubit<AdsState> {
     if (valid && selectedPlatform != null) {
       formKey.currentState?.save();
       Ad newAd = Ad(cost: cost, platform: selectedPlatform, date: date);
+      emit(AdsLoading());
       await Package.checkAccessability(
         online: () async {
           var res = await FirestoreServices().add(adsTable, newAd.toJson());
@@ -238,4 +242,40 @@ class AdsCubit extends Cubit<AdsState> {
       Navigator.pop(context);
     }
   }
+
+  Future<void> deleteAd(BuildContext context, Ad ad) async {
+      emit(LoadingDeleteAdState());
+      try {
+        await Package.checkAccessability(
+          online: () async {
+            var res = await FirestoreServices().delete(adsTable, ad.backendId!);
+            if (res.status == Status.success) {
+              ads.remove(ad);
+              filteredAds.remove(ad);
+              emit(SuccessDeleteAdState());
+              AppUserCubit.get(context).addToProfit(ad.cost?? 0);
+            } else {
+              emit(ErrorDeleteAdState());
+            }
+          },
+          offline: () async {
+            final box = await Hive.openBox(HiveServices.getTableName(adsTable));
+            await box.delete(ad.id);
+            ads.remove(ad);
+            filteredAds.remove(ad);
+            emit(SuccessDeleteAdState());
+            AppUserCubit.get(context).addToProfit(ad.cost?? 0);
+          }
+        );
+        
+      } catch (e) {
+        emit(ErrorDeleteAdState());
+      }
+    }
+
+    void reset() {
+      ads = [];
+      filteredAds = [];
+      emit(AdsInitial());
+    }
 }

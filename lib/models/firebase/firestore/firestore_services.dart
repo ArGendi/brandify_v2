@@ -92,44 +92,55 @@ class FirestoreServices{
     }
   }
 
+  // var doc = await docRef.collection(productsTable).add(product);
+  
+
   Future<Data<String, Status>> uploadLocalData(Map<String, dynamic> localData) async {
       try {
-        final batch = FirebaseFirestore.instance.batch();
-        final userId = FirebaseAuth.instance.currentUser!.uid;
-  
+        
         // Upload products
-        final productsRef = FirebaseFirestore.instance.collection('users').doc(userId).collection('products');
-        for (var product in localData['products']) {
-          batch.set(productsRef.doc(product['id']), product);
+        if (localData[productsTable] != null) {
+          for (var product in localData[productsTable]) {
+            Map<String, dynamic> p = Map<String, dynamic>.from(product);
+            await docRef.collection(productsTable).add(p);
+          }
         }
   
         // Upload sells
-        final sellsRef = FirebaseFirestore.instance.collection('users').doc(userId).collection('sells');
-        for (var sell in localData['sells']) {
-          batch.set(sellsRef.doc(sell['id']), sell);
+        if (localData[sellsTable] != null) {
+          for (var sell in localData[sellsTable]) {
+            Map<String, dynamic> s = Map<String, dynamic>.from(sell);
+            await docRef.collection(sellsTable).add(s);
+          }
         }
   
         // Upload sides
-        final sidesRef = FirebaseFirestore.instance.collection('users').doc(userId).collection('sides');
-        for (var side in localData['sides']) {
-          batch.set(sidesRef.doc(side['id']), side);
+        if (localData[sidesTable] != null) {
+          for (var side in localData[sidesTable]) {
+            Map<String, dynamic> s = Map<String, dynamic>.from(side);
+            await docRef.collection(sidesTable).add(s);
+          }
         }
   
         // Upload ads
-        final adsRef = FirebaseFirestore.instance.collection('users').doc(userId).collection('ads');
-        for (var ad in localData['ads']) {
-          batch.set(adsRef.doc(ad['id']), ad);
+        if (localData[adsTable] != null) {
+          for (var ad in localData[adsTable]) {
+            Map<String, dynamic> a = Map<String, dynamic>.from(ad);
+            await docRef.collection(adsTable).add(a);
+          }
         }
   
         // Upload extra expenses
-        final expensesRef = FirebaseFirestore.instance.collection('users').doc(userId).collection('extraExpenses');
-        for (var expense in localData['extraExpenses']) {
-          batch.set(expensesRef.doc(expense['id']), expense);
+        if (localData[extraExpensesTable] != null) {
+          for (var expense in localData[extraExpensesTable]) {
+            Map<String, dynamic> e = Map<String, dynamic>.from(expense);
+            await docRef.collection(extraExpensesTable).add(e);
+          }
         }
   
-        await batch.commit();
-        return Data<String, Status>('Data uploaded successfully', Status.success,);
+        return Data<String, Status>('Data uploaded successfully', Status.success);
       } catch (e) {
+        log('Error uploading local data: $e');
         return Data<String, Status>(e.toString(), Status.fail);
       }
     }

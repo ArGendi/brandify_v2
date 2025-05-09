@@ -46,35 +46,10 @@ void main() async {
   );
   await Hive.initFlutter();
   await Cache.init();
+  //Cache.setPackageType("offline");
   
   runApp(
     MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => ProductsCubit()),
-        BlocProvider(create: (context) => SidesCubit()),
-        BlocProvider(create: (context) => AllSellsCubit()),
-        BlocProvider(create: (context) => BestProductsCubit()),
-        BlocProvider(create: (_) => ReportsCubit()),
-        BlocProvider(create: (_) => LowestProductsCubit()),
-        BlocProvider(create: (_) => AdsCubit()),
-        BlocProvider(create: (_) => OneProductSellsCubit()),
-        BlocProvider(create: (_) => PieChartCubit()),
-        BlocProvider(create: (_) => RegisterCubit()),
-      ],
-      child: const MyApp(),
-    ),
-  );
-}
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => LoginCubit()),
         BlocProvider(create: (_) => ProductsCubit()),
@@ -90,27 +65,40 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => AppUserCubit()),
         BlocProvider(create: (_) => ExtraExpensesCubit()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Brandify',
-        navigatorKey: navigatorKey,
-        theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: mainColor),
-            useMaterial3: true,
-            appBarTheme: const AppBarTheme(
-              backgroundColor: mainColor,
-              foregroundColor: Colors.white,
-              elevation: 5,
-              centerTitle: true,
-            ),
-            floatingActionButtonTheme: FloatingActionButtonThemeData(
-              backgroundColor: mainColor,
-              foregroundColor: Colors.white,
-            )
-            //fontFamily: 'times new roman',
-            ),
-        home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : WelcomeScreen(), // internet connection feature
-      ),
+      child: const MyApp(),
+    ),
+  );
+}
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Brandify',
+      navigatorKey: navigatorKey,
+      theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: mainColor),
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: mainColor,
+            foregroundColor: Colors.white,
+            elevation: 5,
+            centerTitle: true,
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: mainColor,
+            foregroundColor: Colors.white,
+          )
+          //fontFamily: 'times new roman',
+          ),
+      home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : WelcomeScreen(),
+      //home: WelcomeScreen(),
     );
   }
 }

@@ -113,7 +113,7 @@ class Sell{
   String getPlace(){
     switch(place){
       case SellPlace.online: return "Online";
-      case SellPlace.store: return "Offline";
+      case SellPlace.store: return "Store";
       case SellPlace.inEvent: return "In event";
       default: return "Other";
     }
@@ -122,7 +122,7 @@ class Sell{
   SellPlace convertPlaceFromString(String value){
     switch(value){
       case "Online": return SellPlace.online;
-      case "Offline": return SellPlace.store;
+      case "Store": return SellPlace.store;
       case "In event": return SellPlace.inEvent;
       default: return SellPlace.other;
     }

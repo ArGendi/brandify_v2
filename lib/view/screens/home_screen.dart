@@ -51,6 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
       allProducts: context.read<ProductsCubit>().products,
     );
     context.read<SidesCubit>().getAllSides();
+    context.read<AppUserCubit>().calculateTotalAndProfit(
+      context.read<AllSellsCubit>().sells,
+      context.read<AdsCubit>().ads,
+      context.read<ExtraExpensesCubit>().expenses,
+    );
     await context.read<ExtraExpensesCubit>().getAllExpenses();
     initializeReports(
       context.read<AllSellsCubit>().sells,
@@ -101,7 +106,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index){
-            if(index == 2){
+            if(index == 1){
+              ProductsCubit.get(context).getProducts();
+            }
+            else if(index == 2){
               initializeReports(
                 context.read<AllSellsCubit>().sells,
                 context.read<AdsCubit>().ads,

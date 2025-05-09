@@ -391,7 +391,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         // Save changes
         var response = await AppUserCubit.get(context).updateUser(
             name: _nameController.text,
-            phone: _phoneController.text,
+            //phone: _phoneController.text,
           );
         
         if (response == true) {

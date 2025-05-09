@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -56,12 +57,13 @@ class AllSellsCubit extends Cubit<AllSellsState> {
 
   Future<List<Sell>> getSellsFromDB() async{
     List<Sell> sellsFromDB = [];
-    var sellsBox = Hive.box(sellsTable);
+    var sellsBox = Hive.box(HiveServices.getTableName(sellsTable));
     var keys = sellsBox.keys.toList();
     for(var key in keys){
       Sell temp = Sell.fromJson(sellsBox.get(key));
       temp.id = key;
       sellsFromDB.add(temp);
+      print("Sellll: ${temp.toJson()}");
     }
     return sellsFromDB;
   }
@@ -100,6 +102,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
   Future<void> refund(BuildContext context, Sell targetSell) async{
     emit(LoadingRefundSellsState());
     try{
+      print("process refund..");
       await _processRefund(context, targetSell);
     }
     catch(e){
@@ -119,7 +122,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
   }
 
   Future<void> _processRefund(BuildContext context, Sell targetSell) async {
-    log("${targetSell.product?.id} : ${targetSell.size?.toJson()}");
+    print("${targetSell.product?.id} : ${targetSell.size?.toJson()}");
     dynamic id;
     await Package.checkAccessability(
       online: () async {
@@ -127,6 +130,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
       },
       offline: () async {
         id = targetSell.product?.id;
+        print("id: $id");
       },
       shopify: () async {
         id = targetSell.product?.shopifyId;
@@ -137,7 +141,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
       targetSell.size!,
       targetSell.quantity ?? 0,
     );
-    log(refundedProduct?.toJson().toString() ?? "No refund");
+    print(refundedProduct?.toJson().toString() ?? "No refund");
     
     if (!_isValidRefund(refundedProduct, targetSell)) {
       _handleInvalidRefund(context);
@@ -153,6 +157,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
   }
 
   Future<void> _executeRefund(BuildContext context, Sell targetSell, Product refundedProduct) async {
+    print("excuting refund..");
     int index = sells.indexOf(targetSell);
     sells[index].isRefunded = true;
     
@@ -170,7 +175,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
         await FirestoreServices().update(productsTable, refundedProduct.backendId.toString(), refundedProduct.toJson());
       },
       offline: () async {
-        await Hive.box(productsTable).put(targetSell.product!.id, refundedProduct.toJson());
+        await Hive.box(HiveServices.getTableName(productsTable)).put(targetSell.product!.id, refundedProduct.toJson());
       },
       shopify: () async{
         await ShopifyServices().updateInventory(refundedProduct);
@@ -181,7 +186,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
         await FirestoreServices().update(sellsTable, sells[index].backendId.toString(), sells[index].toJson());
       },
       offline: () async {
-        await Hive.box(sellsTable).put(sells[index].id, sells[index].toJson());
+        await Hive.box(HiveServices.getTableName(sellsTable)).put(sells[index].id, sells[index].toJson());
       },
       shopify: () async{
         // TODO: Implement refund order functionality in ShopifyServices
@@ -193,6 +198,8 @@ class AllSellsCubit extends Cubit<AllSellsState> {
   void _updateFinancials(BuildContext context, int index, Sell targetSell) {
     total -= sells[index].priceOfSell ?? 0;
     totalProfit -= sells[index].profit;
+    AppUserCubit.get(context).deductFromTotal(sells[index].priceOfSell?? 0);
+    AppUserCubit.get(context).deductFromProfit(sells[index].profit);
 
     ReportsCubit.get(context).deductFromCurrentReport(
       sells[index].quantity ?? 0, 
@@ -226,6 +233,13 @@ class AllSellsCubit extends Cubit<AllSellsState> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("$error"), backgroundColor: Colors.red,)
     );
+  }
+
+  void reset(){
+    sells = [];
+    totalProfit = 0;
+    total = 0;
+    emit(AllSellsInitial());
   }
 }
 

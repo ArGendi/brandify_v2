@@ -19,18 +19,18 @@ class ExpenseItem extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(context, expense),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: isNoraml? BoxDecoration(
           color: Colors.grey[50],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: Colors.grey.shade200,
             width: 1,
           ),
-        ),
+        ) : null,
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: isNoraml? 15 : 10, 
-            horizontal:isNoraml? 20 : 15
+            horizontal:isNoraml? 20 : 0
           ),
           child: Row(
             children: [

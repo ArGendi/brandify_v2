@@ -32,6 +32,7 @@ class _SidesScreenState extends State<SidesScreen> {
         padding: const EdgeInsets.all(20.0),
         child: BlocBuilder<SidesCubit, SidesState>(
           builder: (context, state) {
+            print("Overall Sides state: $state");
             if (state is LoadingSidesState) {
               return Center(
                 child: CircularProgressIndicator(
@@ -158,7 +159,7 @@ class _SidesScreenState extends State<SidesScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _AddBottomSheet(context);
+          _addBottomSheet(context);
         },
         label: const Text("Add Order Expense"),
         icon: const Icon(Icons.add),
@@ -167,7 +168,7 @@ class _SidesScreenState extends State<SidesScreen> {
     );
   }
 
-  Future<void> _AddBottomSheet(BuildContext context) async {
+  Future<void> _addBottomSheet(BuildContext context) async {
     await showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
@@ -210,7 +211,7 @@ class _SidesScreenState extends State<SidesScreen> {
                       Expanded(
                         child: CustomTextFormField(
                           keyboardType: TextInputType.number,
-                          text: "Price",
+                          text: "Price per item",
                           onSaved: (value) {
                             if (value!.isNotEmpty)
                               SidesCubit.get(context).price =
@@ -251,6 +252,7 @@ class _SidesScreenState extends State<SidesScreen> {
                   ),
                   BlocBuilder<SidesCubit, SidesState>(
                     builder: (context, state) {
+                      print("Sides state: $state");
                       if (state is LoadingOneSideState) {
                         return const Center(
                           child: CircularProgressIndicator(),

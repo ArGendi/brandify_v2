@@ -165,11 +165,101 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, i) {
                           if(i < AdsCubit.get(context).filteredAds.length){
-                            return AdItem(
-                              ad: AdsCubit.get(context).filteredAds[i],
-                              color: AdsCubit.get(context).getAdColor(AdsCubit.get(context).filteredAds[i]),
-                              icon: AdsCubit.get(context).getAdIcon(AdsCubit.get(context).filteredAds[i]),
-                              onTap: _showEnhancedAdDetails,
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: AdItem(
+                                    ad: AdsCubit.get(context).filteredAds[i],
+                                    color: AdsCubit.get(context).getAdColor(AdsCubit.get(context).filteredAds[i]),
+                                    icon: AdsCubit.get(context).getAdIcon(AdsCubit.get(context).filteredAds[i]),
+                                    onTap: _showEnhancedAdDetails,
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                IconButton(
+                                  onPressed: () async {
+                                    final confirmed = await showModalBottomSheet<bool>(
+                                      context: context,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) => Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                        ),
+                                        padding: EdgeInsets.all(20),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              width: 40,
+                                              height: 4,
+                                              margin: EdgeInsets.only(bottom: 20),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius: BorderRadius.circular(2),
+                                              ),
+                                            ),
+                                            Text(
+                                              "Delete Advertisement",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                            SizedBox(height: 15),
+                                            Text(
+                                              "Are you sure you want to delete this ad?",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.grey[700],
+                                              ),
+                                            ),
+                                            SizedBox(height: 25),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: OutlinedButton(
+                                                    onPressed: () => Navigator.pop(context, false),
+                                                    style: OutlinedButton.styleFrom(
+                                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                                      side: BorderSide(color: Colors.grey),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                    ),
+                                                    child: Text("Cancel"),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () => Navigator.pop(context, true),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.red,
+                                                      foregroundColor: Colors.white,
+                                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                    ),
+                                                    child: Text("Delete"),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                    
+                                    if (confirmed == true) {
+                                      await AdsCubit.get(context).deleteAd(context, AdsCubit.get(context).filteredAds[i]);
+                                    }
+                                  }, 
+                                  icon: Icon(Icons.delete_outline, color: Colors.red),
+                                )
+                              ],
                             );
                           }
                           else{

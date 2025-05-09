@@ -56,8 +56,8 @@ class Cache{
     return sharedPreferences.getString("phone");
   }
 
-  static void clear(){
-    sharedPreferences.clear();
+  static Future<void> clear() async{
+    await sharedPreferences.clear();
   }
 
   // Total Orders

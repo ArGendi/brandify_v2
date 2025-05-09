@@ -5,7 +5,7 @@ import 'package:brandify/constants.dart';
 import 'package:brandify/enum.dart';
 
 class Package {
-  static PackageType type = PackageType.shopify;
+  static PackageType type = PackageType.online;
 
   static Future<void> checkAccessability({required Future Function() online, required Future Function() offline, Future Function()? shopify}) async{
     if(type == PackageType.offline){

@@ -1,3 +1,8 @@
+import 'package:brandify/main.dart';
+import 'package:brandify/models/ad.dart';
+import 'package:brandify/models/extra_expense.dart';
+import 'package:brandify/models/local/hive_services.dart';
+import 'package:brandify/models/sell.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +33,13 @@ class AppUserCubit extends Cubit<AppUserState> {
   Future<void> getUserData() async {
     try {
       emit(AppUserLoading());
-  
+      var packageType = Cache.getPackageType();
+      if(packageType != null){
+        Package.getTypeFromString(packageType);
+      }
+      else{
+        Package.getTypeFromString(PACKAGE_TYPE_ONLINE);
+      }
       await Package.checkAccessability(
         online: () async{
           var userData = await FirestoreServices().getUserData();
@@ -51,6 +62,14 @@ class AppUserCubit extends Cubit<AppUserState> {
             Package.getTypeFromString(
               userData["package"] ?? PACKAGE_TYPE_ONLINE,
             );
+            if(Package.type == PackageType.offline){
+              brandName = Cache.getName();
+              brandPhone = Cache.getPhone();
+              totalOrders = Cache.getTotalOrders() ?? 0;
+              totalProfit = Cache.getTotalProfit() ?? 0;
+              total = Cache.getTotal() ?? 0;
+              Package.getTypeFromString(PACKAGE_TYPE_OFFLINE);
+            }
           }
           else{
             var packageType = Cache.getPackageType();
@@ -59,6 +78,17 @@ class AppUserCubit extends Cubit<AppUserState> {
             }
             else{
               Package.getTypeFromString(PACKAGE_TYPE_ONLINE);
+              ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+                SnackBar(
+                  content: Text('Could not get user data, please login again'),
+                  backgroundColor: Colors.red,
+                ), 
+              );
+              FirebaseAuth.instance.signOut();
+              navigatorKey.currentState?.pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => LoginScreen()),
+                (route) => false,
+              );
             }
           }
         }, 
@@ -71,12 +101,37 @@ class AppUserCubit extends Cubit<AppUserState> {
           Package.getTypeFromString(PACKAGE_TYPE_OFFLINE);
         }, 
       );
-      
-      
+       
       emit(AppUserLoaded());
     } catch (e) {
       emit(AppUserError(e.toString()));
     }
+  }
+
+  void calculateTotalAndProfit(List<Sell> sells, List<Ad> ads, List<ExtraExpense> extraExpenses){
+    if(Cache.getTotal() != 0) return;
+    
+    int internalTotalIncome = 0;
+    int internalTotalProfit = 0;
+
+    for(var sell in sells){
+      if(!sell.isRefunded){
+        internalTotalIncome += sell.priceOfSell!;
+        internalTotalProfit += sell.profit;
+      }
+    }
+    for(var ad in ads){
+      internalTotalProfit -= ad.cost ?? 0;
+    }
+    for(var extraExpense in extraExpenses){
+      internalTotalProfit -= extraExpense.price ?? 0;
+    }
+
+    total = internalTotalIncome;
+    totalProfit = internalTotalProfit;
+    Cache.setTotal(total);
+    Cache.setProfit(totalProfit);
+    emit(AppUserLoaded());
   }
 
   // Add these methods to manage the values
@@ -113,7 +168,7 @@ class AppUserCubit extends Cubit<AppUserState> {
         await FirestoreServices().updateUserData({'total': total});
       },
       offline: () async {
-        Cache.setTotal(total);
+        await Cache.setTotal(total);
       },
     );
     emit(TotalUpdatedState());
@@ -159,6 +214,7 @@ class AppUserCubit extends Cubit<AppUserState> {
   }
 
   void deductFromProfit(int value) async {
+    print("value : $value");
     totalProfit -= value;
     await Package.checkAccessability(
       online: () async {
@@ -171,19 +227,16 @@ class AppUserCubit extends Cubit<AppUserState> {
     emit(ProfitUpdatedState());
   }
 
-  Future<bool> updateUser({required String name, required String phone}) async{
-    
+  Future<bool> updateUser({required String name}) async{
+    print("name : $name");
     bool isSuccess = false;
     var res = await FirestoreServices().updateUserData({
-      'brandName': brandName,
-      'brandPhone': brandPhone,
+      'brandName': name,
     });
     if(res.status == Status.success){
       brandName = name;
-      brandPhone = phone;
       isSuccess = true;
       await Cache.setName(name);
-      await Cache.setPhone(phone);
     }
     else{
       isSuccess = false;
@@ -204,26 +257,29 @@ class AppUserCubit extends Cubit<AppUserState> {
   }
 
   Future<void> logout(BuildContext context) async {
-      await Package.checkAccessability(
-        online: () async {
-          await FirebaseAuth.instance.signOut();
-          await _clearLocalData();
-          _navigateToLogin(context);
-        },
-        offline: () async {
-          await _clearLocalData();
-          _navigateToLogin(context);
-        },
-      );
+    await FirebaseAuth.instance.signOut();
+    await _clearLocalData();
+    _navigateToLogin(context);
+      // await Package.checkAccessability(
+      //   online: () async {
+      //     await FirebaseAuth.instance.signOut();
+      //     await _clearLocalData();
+      //     _navigateToLogin(context);
+      //   },
+      //   offline: () async {
+      //     await _clearLocalData();
+      //     _navigateToLogin(context);
+      //   },
+      // );
     }
   
     Future<void> _clearLocalData() async {
-      Cache.clear();
-      await Hive.box(productsTable).clear();
-      await Hive.box(sellsTable).clear();
-      await Hive.box(sidesTable).clear();
-      await Hive.box(adsTable).clear();
-      await Hive.box(extraExpensesTable).clear();
+      await Cache.clear();
+      // await Hive.box(HiveServices.getTableName(productsTable)).clear();
+      // await Hive.box(HiveServices.getTableName(sellsTable)).clear();
+      // await Hive.box(HiveServices.getTableName(sidesTable)).clear();
+      // await Hive.box(HiveServices.getTableName(adsTable)).clear();
+      // await Hive.box(HiveServices.getTableName(extraExpensesTable)).clear();
       emit(AppUserInitial());
     }
   

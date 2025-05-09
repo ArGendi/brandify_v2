@@ -65,7 +65,7 @@ class _SellScreenState extends State<SellScreen> {
             children: [
               CustomTextFormField(
                 keyboardType: TextInputType.number,
-                text: "Sell price",
+                text: "Sell price per item",
                 onSaved: (value) {
                   if (value!.isNotEmpty)
                     SellCubit.get(context).price = int.parse(value);
@@ -175,7 +175,7 @@ class _SellScreenState extends State<SellScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             child: Text(
-                              "In Event",
+                              "Event",
                               style: TextStyle(
                                 color: SellCubit.get(context).place ==
                                         SellPlace.inEvent
@@ -313,7 +313,7 @@ class _SellScreenState extends State<SellScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Choose side expenses (if you used it only)"),
+                    Text("Choose order expenses (if you used it only)"),
                     SizedBox(
                       height: 10,
                     ),
@@ -344,18 +344,18 @@ class _SellScreenState extends State<SellScreen> {
                   ],
                 ),
               SizedBox(
-                height: 25,
+                height: 15,
               ),
               CustomTextFormField(
                 keyboardType: TextInputType.number,
-                text: "Any extra expenses (Delivery or anything)",
+                text: "Other expenses (ex: delivery)",
                 onSaved: (value) {
                   if (value!.isNotEmpty)
                     SellCubit.get(context).extra = int.parse(value);
                 },
               ),
               SizedBox(
-                height: 15,
+                height: 20,
               ),
               BlocBuilder<SellCubit, SellState>(
                 builder: (context, state) {

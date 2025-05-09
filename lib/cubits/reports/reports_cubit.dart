@@ -318,4 +318,15 @@ class ReportsCubit extends Cubit<ReportsState> {
     currentReport = customReport;
     emit(SetCustomReportState());
   }
+
+  void reset(){
+    today = null;
+    week = null;
+    month = null;
+    threeMonths = null;
+    customReport = null;
+    fromDate = null;
+    toDate = null;
+    emit(ReportsInitial());
+  }
 }

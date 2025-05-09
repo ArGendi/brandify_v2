@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brandify/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -138,87 +139,91 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
         child: BlocBuilder<OneProductSellsCubit, OneProductSellsState>(
           builder: (context, state) {
             var sells = OneProductSellsCubit.get(context).filteredSells;
-            print(state);
-            print(sells.length);
-            return ListView.separated(
-              itemBuilder: (context, i){
-                return InkWell(
-                  borderRadius: BorderRadius.circular(50),
-                  onTap: () {
-                    showDetailsAlertDialog(context, sells[i]);
-                  },
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 28,
-                        backgroundImage:
-                            sells[i].product!.image != null
-                                ? FileImage(
-                                    File(sells[i].product!.image!),
-                                  )
-                                : AssetImage("assets/images/default.png"),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "(${sells[i].quantity}) ${sells[i].product!.name}",
-                              style: TextStyle(
-                                  decoration: sells[i].isRefunded
-                                      ? TextDecoration.lineThrough
-                                      : null),
-                            ),
-                            Text(
-                              sells[i].priceOfSell.toString(),
-                              style: TextStyle(
-                                  decoration: sells[i].isRefunded
-                                      ? TextDecoration.lineThrough
-                                      : null),
-                            ),
-                          ],
+            return Visibility(
+              visible: sells.isNotEmpty,
+              replacement: Center(
+                child: Text("No sells for this product"),
+              ),
+              child: ListView.separated(
+                itemBuilder: (context, i){
+                  return InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () {
+                      showDetailsAlertDialog(context, sells[i]);
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 28,
+                          backgroundImage:
+                              sells[i].product!.image != null
+                                  ? FileImage(
+                                      File(sells[i].product!.image!),
+                                    )
+                                  : AssetImage("assets/images/default.png"),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Text(
-                          DateFormat('yyyy-MM-dd').format(sells[i].date!),
-                          style: TextStyle(
-                            fontSize: 12,
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "(${sells[i].quantity}) ${sells[i].product!.name}",
+                                style: TextStyle(
+                                    decoration: sells[i].isRefunded
+                                        ? TextDecoration.lineThrough
+                                        : null),
+                              ),
+                              Text(
+                                sells[i].priceOfSell.toString(),
+                                style: TextStyle(
+                                    decoration: sells[i].isRefunded
+                                        ? TextDecoration.lineThrough
+                                        : null),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      !sells[i].isRefunded
-                          ? Text(
-                              sells[i].profit >= 0
-                                  ? "+${sells[i].profit}"
-                                  : "-${sells[i].profit}",
-                              style: TextStyle(
-                                color: sells[i].profit >= 0
-                                    ? Colors.green
-                                    : Colors.red,
-                              ),
-                            )
-                          : Text(
-                              "Refunded",
-                              style: TextStyle(
-                                color: Colors.red,
-                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Text(
+                            DateFormat('yyyy-MM-dd').format(sells[i].date!),
+                            style: TextStyle(
+                              fontSize: 12,
                             ),
-                    ],
-                  ),
-                );
-              }, 
-              separatorBuilder: (context, i) => SizedBox(height: 10,), 
-              itemCount: OneProductSellsCubit.get(context).filteredSells.length,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        !sells[i].isRefunded
+                            ? Text(
+                                sells[i].profit >= 0
+                                    ? "+${sells[i].profit}"
+                                    : "-${sells[i].profit}",
+                                style: TextStyle(
+                                  color: sells[i].profit >= 0
+                                      ? Colors.green
+                                      : Colors.red,
+                                ),
+                              )
+                            : Text(
+                                "Refunded",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                      ],
+                    ),
+                  );
+                }, 
+                separatorBuilder: (context, i) => SizedBox(height: 10,), 
+                itemCount: OneProductSellsCubit.get(context).filteredSells.length,
+              ),
             );
           }
         ),
@@ -265,7 +270,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
             SellInfo(sell: sell),
             SizedBox(height: 20),
             if (!sell.isRefunded)
-              BlocBuilder<OneProductSellsCubit, OneProductSellsState>(
+              BlocBuilder<AllSellsCubit, AllSellsState>(
                 builder: (context, state) {
                   if (state is LoadingRefundSellsState) {
                     return Center(
@@ -275,6 +280,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                   return ElevatedButton(
                     onPressed: () {
                       AllSellsCubit.get(context).refund(context, sell);
+                      navigatorKey.currentState?..pop()..pop();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

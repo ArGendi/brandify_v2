@@ -41,7 +41,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
         actions: [
           IconButton(
             onPressed: () => _showFilterBottomSheet(context),
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(Icons.sort),
           ),
         ],
       ),
@@ -52,7 +52,8 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
             if(state is BestProductsLoadingState){
               return Loading();
             }
-            else return Visibility(
+            else {
+              return Visibility(
               visible: context.read<BestProductsCubit>().bestProducts.isNotEmpty,
               replacement: Center(
                   child: Column(
@@ -127,6 +128,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
                 ],
               ),
             );
+            }
           },
         ),
       ),

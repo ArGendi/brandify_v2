@@ -351,5 +351,11 @@ class ProductsCubit extends Cubit<ProductsState> {
     }
     
   }
+
+  void reset() {
+    products = [];
+    filteredProducts = [];
+    emit(ProductsInitial());
+  }
 }
 

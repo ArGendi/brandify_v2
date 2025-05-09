@@ -37,7 +37,7 @@ class PlatformTotalsCard extends StatelessWidget {
                   '${entry.value.toStringAsFixed(2)} LE',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.green[700],
+                    color: Colors.red[700],
                   ),
                 ),
               ],

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -62,13 +63,13 @@ class SellCubit extends Cubit<SellState> {
         for(var item in sides){
           totalExpenses += item.side!.price! * (item.usedQuantity ?? 0);
         }
-        int profit = price! - (totalExpenses.toInt() + (product.price ?? 0));
+        int profit = (price! * quantity) - (totalExpenses.toInt() + ( (product.price ?? 0) * quantity ));
         Sell temp = Sell(
           product: product,
           date: DateTime.now(),
           quantity: quantity,
           size: selectedSize,
-          priceOfSell: price!,
+          priceOfSell: price! * quantity,
           profit: profit,
           extraExpenses: extra ?? 0,
           sideExpenses: sides.where((e) => (e.usedQuantity ?? 0) > 0).toList(),
@@ -82,7 +83,7 @@ class SellCubit extends Cubit<SellState> {
             temp.backendId = res.data;
           }, 
           offline: () async{
-            int id = await Hive.box(sellsTable).add(temp.toJson());
+            int id = await Hive.box(HiveServices.getTableName(sellsTable)).add(temp.toJson());
             temp.id = id;
           },
         );

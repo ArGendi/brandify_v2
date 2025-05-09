@@ -11,3 +11,7 @@ final class AdsError extends AdsState {
   final String message;
   AdsError(this.message);
 }
+
+class LoadingDeleteAdState extends AdsState {}
+class SuccessDeleteAdState extends AdsState {}
+class ErrorDeleteAdState extends AdsState {}

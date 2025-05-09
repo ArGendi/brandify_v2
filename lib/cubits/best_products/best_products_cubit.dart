@@ -47,6 +47,7 @@ class BestProductsCubit extends Cubit<BestProductsState> {
     // Group sells by product and calculate total quantity
     final productSales = <String, ProductSells>{};
     for (var sell in filteredSells) {
+      if(sell.isRefunded) continue;
       final product = sell.product;
       print("product: ${product?.toJson()}");
       if (product == null) continue;
