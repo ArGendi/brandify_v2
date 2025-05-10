@@ -26,6 +26,9 @@ import 'package:brandify/view/widgets/reports/recent_transactions_section.dart';
 import 'package:brandify/view/widgets/reports/report_summary_section.dart';
 import 'package:brandify/view/widgets/sell_info.dart';
 import 'package:brandify/view/widgets/recent_sell_item.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:path_provider/path_provider.dart';
 
 class ReportsResult extends StatefulWidget {
   final String title;
@@ -326,26 +329,119 @@ class _ReportsResultState extends State<ReportsResult> {
       );
     }
 
-    // Add this method to handle report sharing
-  void _shareReport(BuildContext context) {
-    var current = ReportsCubit.get(context).currentReport;
-    if (current != null) {
-      final startDate = current.dateRange!.start.toString().split(' ')[0];
-      final endDate = current.dateRange!.end.toString().split(' ')[0];
+    Future<void> _shareReport(BuildContext context) async {
+        var current = ReportsCubit.get(context).currentReport;
+        if (current != null) {
+          // Calculate product summary from sells
+          final Map<String, Map<String, dynamic>> productSummary = {};
+          for (var sell in current.sells) {
+            if(sell.isRefunded) continue;
+            if (!productSummary.containsKey(sell.product?.id.toString())) {
+              productSummary[sell.product!.id.toString()] = {
+                'name': sell.product?.name,
+                'quantity': 0,
+                'totalPrice': 0.0,
+                'totalProfit': 0.0,
+              };
+            }
+            productSummary[sell.product?.id.toString()]!['quantity'] += sell.quantity;
+            productSummary[sell.product?.id.toString()]!['totalPrice'] += sell.priceOfSell! * sell.quantity!;
+            productSummary[sell.product?.id.toString()]!['totalProfit'] += sell.profit * sell.quantity!;
+          }
+
+          final pdf = pw.Document();
+          
+          pdf.addPage(
+            pw.MultiPage(
+              build: (context) => [
+                pw.Header(
+                  level: 0,
+                  child: pw.Text('Sales Report', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                ),
+                pw.Paragraph(text: '${current.dateRange!.start.toString().split(' ')[0]} to ${current.dateRange!.end.toString().split(' ')[0]}'),
+                pw.SizedBox(height: 20),
+                
+                // Summary Section
+                pw.Header(level: 1, child: pw.Text('Summary')),
+                pw.Table.fromTextArray(
+                  context: context,
+                  data: [
+                    ['Metric', 'Value'],
+                    ['Total Sales', '${current.noOfSells}'],
+                    ['Total Profit', '${current.totalProfit} LE'],
+                    ['Total Expenses', '${current.totalExtraExpensesCost + current.totalAdsCost} LE'],
+                  ],
+                ),
+                pw.SizedBox(height: 20),
+                
+                // Products Section
+                if (productSummary.isNotEmpty) ...[
+                  pw.Header(level: 1, child: pw.Text('Products Summary')),
+                  pw.Table.fromTextArray(
+                    context: context,
+                    headers: ['Product', 'Quantity Sold', 'Total Revenue', 'Profit'],
+                    data: productSummary.values.map((product) => [
+                      product['name'],
+                      product['quantity'].toString(),
+                      '${product['totalPrice']} LE',
+                      '${product['totalProfit']} LE',
+                    ]).toList(),
+                  ),
+                  pw.SizedBox(height: 20),
+                ],
+
+                // Ads Section
+                if (current.extraExpenses.isNotEmpty) ...[
+                  pw.Header(level: 1, child: pw.Text('Ads')),
+                  pw.Table.fromTextArray(
+                    context: context,
+                    headers: ['Name', 'Cost', 'Date'],
+                    data: current.ads.map((ad) => [
+                      ad.platform?.name ?? '',
+                      '${ad.cost} LE',
+                      ad.date.toString().split(' ')[0],
+                    ]).toList(),
+                  ),
+                  pw.SizedBox(height: 20),
+                ],
+                
+                // Expenses Section
+                if (current.extraExpenses.isNotEmpty) ...[
+                  pw.Header(level: 1, child: pw.Text('Expenses')),
+                  pw.Table.fromTextArray(
+                    context: context,
+                    headers: ['Name', 'Cost', 'Date'],
+                    data: current.extraExpenses.map((expense) => [
+                      expense.name ?? '',
+                      '${expense.price} LE',
+                      expense.date.toString().split(' ')[0],
+                    ]).toList(),
+                  ),
+                ],
+                
+                // Footer
+                pw.Footer(
+                  trailing: pw.Text(
+                    'Generated by Brandify on ${DateTime.now().toString().split(' ')[0]}',
+                    style: pw.TextStyle(fontSize: 10, fontStyle: pw.FontStyle.italic),
+                  ),
+                ),
+              ],
+            ),
+          );
       
-      String reportText = '''
-📊 Sales Report ($startDate to $endDate)
-
-💰 Total Sales: ${current.noOfSells} LE
-📈 Total Profit: ${current.totalProfit} LE
-💸 Total Expenses: ${current.totalExtraExpensesCost} LE
-📦 Total Orders: ${current.sells.length}
-
-Generated by Brandify
-''';
-      Share.share(reportText);
-    }
-  }
+          // Save the PDF
+          final directory = await getApplicationDocumentsDirectory();
+          final file = File('${directory.path}/sales_report.pdf');
+          await file.writeAsBytes(await pdf.save());
+      
+          // Share the PDF
+          await Share.shareXFiles(
+            [XFile(file.path)],
+            text: 'Sales Report',
+          );
+        }
+      }
 }
 
 

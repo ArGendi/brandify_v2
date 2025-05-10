@@ -272,22 +272,33 @@ class ProductsCubit extends Cubit<ProductsState> {
     emit(FilterState());
   }
 
-  void sellSize(Product p, ProductSize size, int quantity) {
+  Future<bool> sellSize(Product p, ProductSize size, int quantity) async{
     int i = products.indexOf(p);
+    bool result = false;
     if (i != -1) {
       int j = products[i].sizes.indexOf(size);
       products[i].sizes[j].quantity = products[i].sizes[j].quantity! - quantity;
       products[i].noOfSells += quantity;
       Package.checkAccessability(
         online: () async {
-          await FirestoreServices().update(productsTable, products[i].backendId.toString(), products[i].toJson());
+          var res = await FirestoreServices().update(productsTable, products[i].backendId.toString(), products[i].toJson());
+          if(res.status == Status.success){
+            result = true;
+          }
         },
         offline: () async {
           await Hive.box(HiveServices.getTableName(productsTable)).put(products[i].id!, products[i].toJson());
+          result = true;
+        },
+        shopify: () async{
+          if(products[i].sizes[j].id != null){
+            result = await ShopifyServices().updateProductQuantity(products[i].sizes[j].id!, quantity * -1);
+          }
         }
       );
       emit(SellSizeState());
     }
+    return result;
   }
 
   Product? refundProduct(dynamic id, ProductSize size, int quantity) {

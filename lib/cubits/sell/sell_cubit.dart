@@ -87,24 +87,31 @@ class SellCubit extends Cubit<SellState> {
             temp.id = id;
           },
         );
-        
-        // add in sell list
-        AllSellsCubit.get(context).add(context, temp);
-        // -1 for sold size
-        ProductsCubit.get(context).sellSize(product, selectedSize!, quantity);
-        // -1 from selected sides
-        SidesCubit.get(context).subtract(sides);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              profit >=0 ? "+$profit 💸" : "$profit 💳",
-            ),
-            backgroundColor: profit >=0 ? Colors.green : mainColor,
-          )
-        );
-        emit(SuccessSellState());
-        Navigator.of(context)..pop()..pop();
+        // -1 for sold size
+        var isSellSizeChanged = await ProductsCubit.get(context).sellSize(product, selectedSize!, quantity);
+        if(isSellSizeChanged){
+          // add in sell list
+          AllSellsCubit.get(context).add(context, temp);
+          // -1 from selected sides
+          SidesCubit.get(context).subtract(sides);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                profit >=0 ? "+$profit 💸" : "$profit 💳",
+              ),
+              backgroundColor: profit >=0 ? Colors.green : mainColor,
+            )
+          );
+          emit(SuccessSellState());
+          Navigator.of(context)..pop()..pop();
+        }
+        else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Something went wrong"), backgroundColor: Colors.red,)
+          );
+        }
       }
       else{
         ScaffoldMessenger.of(context).showSnackBar(

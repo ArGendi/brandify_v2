@@ -79,20 +79,37 @@ class PackageCubit extends Cubit<PackageState> {
       } else {
         // Converting from online to offline
         final response = await FirestoreServices().getAllData();
-        
+        print("hereeeeee 1");
         if (response.status == Status.success) {
           // Save data to Hive boxes
+          print("hereeeeee 2");
           await Hive.box(_productsTable).addAll(response.data[productsTable] ?? []);
           await Hive.box(_sellsTable).addAll(response.data[sellsTable] ?? []);
           await Hive.box(_sidesTable).addAll(response.data[sidesTable] ?? []);
           await Hive.box(_adsTable).addAll(response.data[adsTable] ?? []);
           await Hive.box(_extraExpensesTable).addAll(response.data[extraExpensesTable] ?? []);
-          
+          print("hereeeeee 3");
           await FirestoreServices().updateUserData({
             "package": PACKAGE_TYPE_OFFLINE,
           });
-          await Cache.setPackageType(PACKAGE_TYPE_OFFLINE);
+          var userData = await FirestoreServices().getUserData();
+          print("hereeeeee 4");
+          if(userData != null){
+            print("hereeeeee 5");
+            await Cache.setName(userData['name']);
+            await Cache.setPhone(userData['phone']);
+            await Cache.setTotal(userData['total']?? 0);
+            await Cache.setTotalProfit(userData['totalProfit']?? 0);
+            await Cache.setPackageType(PACKAGE_TYPE_OFFLINE);
+            //Package.type = PackageType.offline;
+          }
+
+          print("hereeeeee 6");
+          _resetAllCubits(context);
+          await AppUserCubit.get(context).getUserData();
+          print("hereeeeee 7");
           Package.type = PackageType.offline;
+          
           emit(PackageSuccess('Successfully converted to offline package'));
         } else {
           emit(PackageError(response.data['error']));

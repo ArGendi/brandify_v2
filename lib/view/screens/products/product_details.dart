@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brandify/enum.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ],
               ),
             ),
-            actions: [
+            actions: Package.type != PackageType.shopify ? [
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.white),
                 onPressed: () {
@@ -118,7 +119,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 icon: const Icon(Icons.delete, color: Colors.white),
                 onPressed: () => showDeleteAlertDialog(context),
               ),
-            ],
+            ] : null,
           ),
           SliverToBoxAdapter(
             child: Container(

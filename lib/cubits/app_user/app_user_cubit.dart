@@ -40,6 +40,7 @@ class AppUserCubit extends Cubit<AppUserState> {
       else{
         Package.getTypeFromString(PACKAGE_TYPE_ONLINE);
       }
+      print("Packaaaaaage: ${Package.type}");
       await Package.checkAccessability(
         online: () async{
           var userData = await FirestoreServices().getUserData();

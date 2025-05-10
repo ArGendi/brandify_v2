@@ -154,41 +154,41 @@ class FirestoreServices{
         final productsSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .collection('products')
+            .collection(productsTable)
             .get();
-        allData['products'] = productsSnapshot.docs.map((doc) => doc.data()).toList();
+        allData[productsTable] = productsSnapshot.docs.map((doc) => doc.data()).toList();
   
         // Get sells
         final sellsSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .collection('sells')
+            .collection(sellsTable)
             .get();
-        allData['sells'] = sellsSnapshot.docs.map((doc) => doc.data()).toList();
+        allData[sellsTable] = sellsSnapshot.docs.map((doc) => doc.data()).toList();
   
         // Get sides
         final sidesSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .collection('sides')
+            .collection(sidesTable)
             .get();
-        allData['sides'] = sidesSnapshot.docs.map((doc) => doc.data()).toList();
+        allData[sidesTable] = sidesSnapshot.docs.map((doc) => doc.data()).toList();
   
         // Get ads
         final adsSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .collection('ads')
+            .collection(adsTable)
             .get();
-        allData['ads'] = adsSnapshot.docs.map((doc) => doc.data()).toList();
+        allData[adsTable] = adsSnapshot.docs.map((doc) => doc.data()).toList();
   
         // Get extra expenses
         final expensesSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .collection('extraExpenses')
+            .collection(extraExpensesTable)
             .get();
-        allData['extraExpenses'] = expensesSnapshot.docs.map((doc) => doc.data()).toList();
+        allData[extraExpensesTable] = expensesSnapshot.docs.map((doc) => doc.data()).toList();
   
         return Data<Map<String, dynamic>, Status>(allData, Status.success);
       } catch (e) {

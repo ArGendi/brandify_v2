@@ -15,7 +15,7 @@ class ReportSummarySection extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ReportCard(
-              text: "Number of sells",
+              text: "Number of sales",
               quantity: current!.noOfSells,
             ),
             Divider(),

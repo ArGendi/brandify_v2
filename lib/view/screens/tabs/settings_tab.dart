@@ -1,3 +1,4 @@
+import 'package:brandify/main.dart';
 import 'package:brandify/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -212,10 +213,11 @@ class SettingsTab extends StatelessWidget {
                                                   }
                                                   else{
                                                     return ElevatedButton(
-                                                    onPressed: () {
-                                                      PackageCubit.get(
+                                                    onPressed: () async{
+                                                      await PackageCubit.get(
                                                         context,
                                                       ).convertPackage(context);
+                                                      navigatorKey.currentState?.pop();
                                                     },
                                                     style: ElevatedButton.styleFrom(
                                                       backgroundColor:

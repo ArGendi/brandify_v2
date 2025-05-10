@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     child: Text(
                       "Brandify",
                       style: TextStyle(
-                        fontSize: 40,
+                        fontSize: 32,
                         fontWeight: FontWeight.w800,
                         color: mainColor,
                         letterSpacing: 1.2,
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     ),
                   ],
                 ),
-                SizedBox(height: 10,),
+                SizedBox(height: 20,),
                 Column(
                   children: [
                     // Text(

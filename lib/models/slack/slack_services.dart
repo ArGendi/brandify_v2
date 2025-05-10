@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SlackServices {
-  static const String _webhookUrl = 'https://hooks.slack.com/services/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';
+  static const String _webhookUrl = 'https://hooks.slack.com/services/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';
 
   Future<bool> sendMessage({
     required String message,

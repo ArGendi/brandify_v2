@@ -324,5 +324,54 @@ String? _extractNextPageToken(String linkHeader) {
     }
   }
 
+  Future<bool> updateProductQuantity(int variantId, int quantityChange) async {
+      try {
+        // First get the variant details to get inventory_item_id
+        final variantResponse = await http.get(
+          Uri.parse('https://$storeId.myshopify.com/admin/api/2023-10/variants/$variantId.json'),
+          headers: {
+            'X-Shopify-Access-Token': adminAPIAcessToken!,
+            'Content-Type': 'application/json',
+          },
+        );
+  
+        if (variantResponse.statusCode != 200) {
+          debugPrint('Failed to get variant details: ${variantResponse.statusCode}');
+          return false;
+        }
+  
+        final variantData = json.decode(variantResponse.body)['variant'];
+        final inventoryItemId = variantData['inventory_item_id'];
+        final currentQuantity = variantData['inventory_quantity'] ?? 0;
+        final newQuantity = currentQuantity + quantityChange;
+  
+        // Update inventory level
+        final inventoryResponse = await http.post(
+          Uri.parse('https://$storeId.myshopify.com/admin/api/2023-10/inventory_levels/set.json'),
+          headers: {
+            'X-Shopify-Access-Token': adminAPIAcessToken!,
+            'Content-Type': 'application/json',
+          },
+          body: json.encode({ 
+            'location_id': locationId!,
+            'inventory_item_id': inventoryItemId,
+            'available': newQuantity
+          }),
+        );
+  
+        if (inventoryResponse.statusCode == 200) {
+          debugPrint('Inventory updated successfully. New quantity: $newQuantity');
+          return true;
+        } else {
+          debugPrint('Failed to update inventory: ${inventoryResponse.statusCode} ${inventoryResponse.body}');
+          return false;
+        }
+      } catch (e) {
+        debugPrint('Error updating product quantity: $e');
+        return false;
+      }
+    }
+   
+   
 }
 

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:brandify/enum.dart';
+import 'package:brandify/models/package.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -172,7 +174,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: Package.type != PackageType.shopify? FloatingActionButton.extended(
         onPressed: () {
           ProductsCubit.get(context).filteredProducts = ProductsCubit.get(context).products;
           navigatorKey.currentState?.push(
@@ -187,7 +189,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         label: const Text("Add Product"),
         icon: const Icon(Icons.add),
         backgroundColor: mainColor,
-      ),
+      ) : null,
     );
   }
 }
