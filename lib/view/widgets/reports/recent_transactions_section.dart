@@ -149,6 +149,7 @@ class RecentTransactionsSection extends StatelessWidget {
             color: AdsCubit.get(context).getAdColor(recentAds[i]),
             icon: AdsCubit.get(context).getAdIcon(recentAds[i]),
             onTap: (_, __) {},
+            showBackground: false,
           ),
           separatorBuilder: (_, __) => SizedBox(height: 10),
           itemCount: recentAds.length,

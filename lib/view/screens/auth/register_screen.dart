@@ -215,6 +215,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // ),
                   ],
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
                 // Spacer(),
                 // Text(
                 //   AppLocalizations.of(context)!.registration_agreement,

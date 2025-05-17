@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -26,6 +27,7 @@ part 'products_state.dart';
 class ProductsCubit extends Cubit<ProductsState> {
   List<Product> filteredProducts = [];
   List<Product> products = [];
+  bool gettingData = false;
   final TextEditingController searchController = TextEditingController();
 
   ProductsCubit() : super(ProductsInitial()) {
@@ -48,42 +50,56 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   Future<void> getProducts() async {
-    if (products.isNotEmpty) return;
+    if (products.isNotEmpty || gettingData) return;
 
-    emit(LoadingProductsState());
-    await Package.checkAccessability(
-      online: () async {
-        var response = await ProductServices().getProducts();
-        print("online read product: ${response.data}");
-        if (response.status == Status.success) {
-          products = response.data as List<Product>;
-        }
-      },
-      offline: () async {
-        products = await getProductsFromDB();
-      },
-      shopify: () async{
-        List shopifyProducts = await ShopifyServices().getAllProducts();
-        log("getting product");
-        for(var prod in shopifyProducts){
-          log("getting product prod");
-          products.add(Product.fromShopify(prod));
-          log(products.last.toJson().toString());
-        }
-        var response = await ProductServices().getProducts();
-        if (response.status == Status.success) {
-          List<Product> firebaseProducts = response.data as List<Product>;
-          for(var prod in firebaseProducts){
-            int index = products.indexWhere((element) => element.shopifyId.toString() == prod.backendId);
-            if(index != -1){
-              products[index].price = prod.price;
+    gettingData = true;
+    try{
+      emit(LoadingProductsState());
+      await Package.checkAccessability(
+        online: () async {
+          var response = await ProductServices().getProducts();
+          print("online read product: ${response.data}");
+          if (response.status == Status.success) {
+            products = response.data as List<Product>;
+          }
+        },
+        offline: () async {
+          print("getting product from offline");
+          products = await getProductsFromDB();
+          print("getting product from offline: ${products.length}");
+        },
+        shopify: () async{
+          print("getting product from shopify");
+          print("Admin: ${ShopifyServices.adminAPIAcessToken}");
+          print(ShopifyServices.storeFrontAPIAcessToken);
+          print("Store id: ${ShopifyServices.storeId}");
+          print(ShopifyServices.locationId);
+          List shopifyProducts = await ShopifyServices().getAllProducts();
+          print("getting product");
+          for(var prod in shopifyProducts){
+            products.add(Product.fromShopify(prod));
+          }
+          var response = await ProductServices().getProducts();
+          if (response.status == Status.success) {
+            List<Product> firebaseProducts = response.data as List<Product>;
+            for(var prod in firebaseProducts){
+              int index = products.indexWhere((element) => element.shopifyId.toString() == prod.backendId);
+              if(index != -1){
+                products[index].price = prod.price;
+              }
             }
           }
-        }
-      },
-    );
-    filteredProducts = products;
-    emit(SuccessProductsState());
+        },
+      );
+      filteredProducts = products;
+      gettingData = false;
+      emit(SuccessProductsState());
+    }
+    catch(e){
+      gettingData = false;
+      emit(FailProductsState());
+    }
+    
   }
 
   Future<void> addProduct(Product product, BuildContext context) async {
@@ -273,32 +289,56 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   Future<bool> sellSize(Product p, ProductSize size, int quantity) async{
-    int i = products.indexOf(p);
-    bool result = false;
-    if (i != -1) {
-      int j = products[i].sizes.indexOf(size);
-      products[i].sizes[j].quantity = products[i].sizes[j].quantity! - quantity;
-      products[i].noOfSells += quantity;
-      Package.checkAccessability(
-        online: () async {
-          var res = await FirestoreServices().update(productsTable, products[i].backendId.toString(), products[i].toJson());
-          if(res.status == Status.success){
+    try{
+      int i = products.indexOf(p);
+      bool result = false;
+      if (i != -1) {
+        int j = products[i].sizes.indexOf(size);
+        products[i].sizes[j].quantity = products[i].sizes[j].quantity! - quantity;
+        products[i].noOfSells += quantity;
+        await Package.checkAccessability(
+          online: () async {
+            var res = await FirestoreServices().update(productsTable, products[i].backendId.toString(), products[i].toJson());
+            if(res.status == Status.success){
+              result = true;
+            }
+          },
+          offline: () async {
+            print("updating product");
+            print(products[i].toJson());
+            print(HiveServices.getTableName(productsTable));
+            await Hive.box(HiveServices.getTableName(productsTable)).put(products[i].id!, products[i].toJson());
             result = true;
+            print("result: $result");
+          },
+          shopify: () async{
+            if(products[i].sizes[j].id != null){
+              result = await ShopifyServices().updateProductQuantity(products[i].sizes[j].id!, quantity * -1);
+            }
           }
-        },
-        offline: () async {
-          await Hive.box(HiveServices.getTableName(productsTable)).put(products[i].id!, products[i].toJson());
-          result = true;
-        },
-        shopify: () async{
-          if(products[i].sizes[j].id != null){
-            result = await ShopifyServices().updateProductQuantity(products[i].sizes[j].id!, quantity * -1);
-          }
-        }
-      );
-      emit(SellSizeState());
+        );
+        emit(SellSizeState());
+      }
+      print("final result: $result");
+      return result;
     }
-    return result;
+    catch(e){
+      String errorMessage = "Failed to fetch products: ";
+      if (e is SocketException) {
+        errorMessage += "No internet connection";
+      } else if (e is TimeoutException) {
+        errorMessage += "Connection timed out";
+      } else if (e.toString().contains("permission-denied")) {
+        errorMessage += "Access denied";
+      } else {
+        errorMessage += e.toString();
+      }
+      
+      if (navigatorKey.currentContext != null) {
+        _showErrorSnackBar(navigatorKey.currentContext!, errorMessage);
+      }
+      return false;
+    }
   }
 
   Product? refundProduct(dynamic id, ProductSize size, int quantity) {
@@ -364,6 +404,12 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   void reset() {
+    products = [];
+    filteredProducts = [];
+    emit(ProductsInitial());
+  }
+
+  void clear() {
     products = [];
     filteredProducts = [];
     emit(ProductsInitial());

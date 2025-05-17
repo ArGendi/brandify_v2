@@ -289,17 +289,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
           decoration: BoxDecoration(
-            border: Border.all(color: Color(0xFF93B0A2)),
+            border: Border.all(color: mainColor),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
             children: [
-              Icon(icon, color: Color(0xFF93B0A2)),
+              Icon(icon, color: mainColor),
               const SizedBox(width: 10),
               Text(
                 text,
                 style: TextStyle(
-                  color: Color(0xFF93B0A2),
+                  color: mainColor,
                   fontSize: 16,
                 ),
               ),

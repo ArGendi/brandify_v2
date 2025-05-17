@@ -193,6 +193,7 @@ class _SidesScreenState extends State<SidesScreen> {
                 children: <Widget>[
                   CustomTextFormField(
                     text: "Name",
+                    hintText: "Ex. Order package",
                     onSaved: (value) {
                       SidesCubit.get(context).name = value;
                     },
@@ -212,6 +213,7 @@ class _SidesScreenState extends State<SidesScreen> {
                         child: CustomTextFormField(
                           keyboardType: TextInputType.number,
                           text: "Price per item",
+                          hintText: "Ex. 20 (LE)",
                           onSaved: (value) {
                             if (value!.isNotEmpty)
                               SidesCubit.get(context).price =
@@ -232,6 +234,7 @@ class _SidesScreenState extends State<SidesScreen> {
                         child: CustomTextFormField(
                           keyboardType: TextInputType.number,
                           text: "Quantity",
+                          hintText: "Ex. 100 (pieces)",
                           onSaved: (value) {
                             if (value!.isNotEmpty)
                               SidesCubit.get(context).quantity =

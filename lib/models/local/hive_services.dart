@@ -5,6 +5,9 @@ import 'package:brandify/models/local/cache.dart';
 class HiveServices {
 
   static Future<void> openUserBoxes() async {
+    if(Hive.isBoxOpen(getTableName(adsTable))) {
+     return; 
+    }
     final phone = Cache.getPhone();
     if (phone != null) {
       await Future.wait([

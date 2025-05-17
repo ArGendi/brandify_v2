@@ -209,11 +209,10 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
           
           pw.Table.fromTextArray(
             context: context,
-            headers: ['Product', 'Quantity Sold', 'Total Revenue', 'Profit'],
+            headers: ['Product', 'Quantity Sold', 'Profit'],
             data: bestProducts.map((product) => [
               product.product.name ?? 'Unnamed Product',
               product.quantity.toString(),
-              '${product.quantity * (product.product.price ?? 0)} LE',
               '${product.profit} LE',
             ]).toList(),
           ),

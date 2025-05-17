@@ -13,3 +13,4 @@ class LoadingRefundSellsState extends AllSellsState {}
 class RefundSellsState extends AllSellsState {}
 class FailRefundSellsState extends AllSellsState {}
 class ResetAllSellsState extends AllSellsState {}
+class SellsUpdatedState extends AllSellsState {}

@@ -7,6 +7,7 @@ class AdItem extends StatelessWidget {
   final Ad ad;
   final Color color;
   final Widget icon;
+  final bool showBackground;
   final Function(BuildContext, Ad) onTap;
 
   const AdItem({
@@ -14,7 +15,8 @@ class AdItem extends StatelessWidget {
     required this.ad,
     required this.color,
     required this.icon,
-    required this.onTap,
+    required this.onTap, 
+    this.showBackground = true,
   });
 
   @override
@@ -24,37 +26,55 @@ class AdItem extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: color,
+          color: showBackground ? color : null,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          padding: EdgeInsets.symmetric(
+            horizontal: showBackground ? 15 : 5, 
+            vertical: showBackground ? 15 : 5,
+          ),
           child: Row(
             children: [
-              icon,
+              icon.copyWith(color: showBackground? Colors.white : Colors.black),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
                   ad.platform?.name ?? "null",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: showBackground? Colors.white : Colors.black,
+                    ),
                 ),
               ),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
                   DateFormat('yyyy-MM-dd').format(ad.date!),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: showBackground? Colors.white : Colors.black,
+                  ),
                 ),
               ),
               SizedBox(width: 10),
               Text(
                 "${ad.cost} LE",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: showBackground? Colors.white : Colors.black,
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+extension on Widget {
+  copyWith({required Color color}) {
+    return ColorFiltered(
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      child: this, 
     );
   }
 }

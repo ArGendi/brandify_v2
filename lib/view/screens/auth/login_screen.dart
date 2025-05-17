@@ -261,6 +261,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     // ),
                   ],
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
                 // Spacer(),
                 // Text(
                 //   AppLocalizations.of(context)!.registration_agreement,

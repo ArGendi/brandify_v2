@@ -241,5 +241,39 @@ class AllSellsCubit extends Cubit<AllSellsState> {
     total = 0;
     emit(AllSellsInitial());
   }
+
+  void remove(Sell sell) async {
+      dynamic productId;
+      await Package.checkAccessability(
+        online: () async {
+          productId = sell.product?.backendId;
+        },
+        offline: () async {
+          productId = sell.product?.id;
+        },
+        shopify: () async {
+          productId = sell.product?.shopifyId;
+        }
+      );
+  
+      final index = sells.indexWhere((s) => 
+        s.date == sell.date && 
+        (s.product?.backendId == productId || s.product?.id == productId || s.product?.shopifyId == productId) &&
+        s.size?.name == sell.size?.name &&
+        s.quantity == sell.quantity
+      );
+      
+      if (index != -1) {
+        sells.removeAt(index);
+        emit(SellsUpdatedState());
+      }
+    }
+
+  void clear() {
+    sells = [];
+    totalProfit = 0;
+    total = 0;
+    emit(AllSellsInitial());
+  }
 }
 

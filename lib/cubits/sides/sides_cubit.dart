@@ -207,4 +207,40 @@ class SidesCubit extends Cubit<SidesState> {
     quantity = null;
     emit(SidesInitial());
   }
+
+  void add(List<SellSide> sellSides) async {
+      for (var sellSide in sellSides) {
+        if (sellSide.usedQuantity != null && sellSide.usedQuantity! > 0) {
+          late final int index;
+          
+          await Package.checkAccessability(
+            online: () async {
+              index = sides.indexWhere((side) => 
+                side.backendId == sellSide.side!.backendId
+              );
+            },
+            offline: () async {
+              index = sides.indexWhere((side) => 
+                side.id == sellSide.side!.id
+              );
+            },
+            shopify: () async {
+              index = sides.indexWhere((side) => 
+                side.backendId == sellSide.side!.backendId
+              );
+            },
+          );
+  
+          if (index != -1) {
+            sides[index].quantity = (sides[index].quantity ?? 0) + sellSide.usedQuantity!;
+            emit(SidesUpdatedState());
+          }
+        }
+      }
+    }
+
+  void clear() {
+    sides = [];
+    emit(SidesInitial());
+  }
 }

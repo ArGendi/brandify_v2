@@ -1,7 +1,11 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/cubits/extra_expenses/extra_expenses_cubit.dart';
@@ -147,7 +151,8 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                     children: [
                       Expanded(
                         child: CustomTextFormField(
-                          text: "Name",
+                          text: "Title",
+                          hintText: "Ex. Meeting",
                           onSaved: (value) {
                             if (value!.isNotEmpty)
                               ExtraExpensesCubit.get(context).name = value;
@@ -167,6 +172,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                         child: CustomTextFormField(
                           keyboardType: TextInputType.number,
                           text: "Price",
+                          hintText: "Ex. 200",
                           onSaved: (value) {
                             if (value!.isNotEmpty)
                               ExtraExpensesCubit.get(context).price =
@@ -386,17 +392,118 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: InkWell(
-                    onTap: () {
-                      final expenses = ExtraExpensesCubit.get(context).expenses;
-                      final total = _calculateTotalExpenses();
-                      
-                      String expenseDetails = 'Expenses Summary:\n\n';
-                      for (var expense in expenses) {
-                        expenseDetails += '${expense.name}: ${expense.price} LE\n';
+                    onTap: () async {
+                      try {
+                        final expenses = ExtraExpensesCubit.get(context).expenses;
+                        if (expenses.isEmpty) return;
+                        
+                        final total = _calculateTotalExpenses();
+                        final pdf = pw.Document();
+                        
+                        pdf.addPage(
+                          pw.MultiPage(
+                            pageTheme: pw.PageTheme(
+                              pageFormat: PdfPageFormat.a4,
+                              margin: pw.EdgeInsets.all(32),
+                              theme: pw.ThemeData.withFont(
+                                base: pw.Font.helvetica(),
+                                bold: pw.Font.helveticaBold(),
+                              ),
+                            ),
+                            build: (context) => [
+                              pw.Header(
+                                level: 0,
+                                child: pw.Row(
+                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    pw.Text('Expenses Summary', 
+                                      style: pw.TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: pw.FontWeight.bold,
+                                      )
+                                    ),
+                                    pw.Text(DateTime.now().toString().split(' ')[0],
+                                      style: pw.TextStyle(
+                                        fontSize: 14,
+                                        color: PdfColors.grey700,
+                                      )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              pw.SizedBox(height: 20),
+                              
+                              ...expenses.map((expense) => pw.Container(
+                                margin: pw.EdgeInsets.only(bottom: 15),
+                                padding: pw.EdgeInsets.all(15),
+                                decoration: pw.BoxDecoration(
+                                  border: pw.Border.all(color: PdfColors.grey300),
+                                  borderRadius: pw.BorderRadius.circular(8),
+                                ),
+                                child: pw.Column(
+                                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                  children: [
+                                    pw.Text(expense.name ?? 'N/A',
+                                      style: pw.TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: pw.FontWeight.bold,
+                                      )
+                                    ),
+                                    pw.SizedBox(height: 8),
+                                    pw.Row(
+                                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        pw.Text('Amount: ${expense.price} LE'),
+                                        pw.Text('Date: ${expense.date?.toString().split(' ')[0] ?? 'N/A'}'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )).toList(),
+                              
+                              pw.SizedBox(height: 20),
+                              pw.Container(
+                                padding: pw.EdgeInsets.all(15),
+                                decoration: pw.BoxDecoration(
+                                  color: PdfColors.grey100,
+                                  borderRadius: pw.BorderRadius.circular(8),
+                                ),
+                                child: pw.Row(
+                                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    pw.Text('Total Expenses:',
+                                      style: pw.TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: pw.FontWeight.bold,
+                                      )
+                                    ),
+                                    pw.Text('$total LE',
+                                      style: pw.TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: pw.FontWeight.bold,
+                                        color: PdfColors.teal,
+                                      )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        final directory = await getApplicationDocumentsDirectory();
+                        final file = File('${directory.path}/expenses_summary.pdf');
+                        await file.writeAsBytes(await pdf.save());
+
+                        await Share.shareXFiles(
+                          [XFile(file.path)],
+                          text: 'Expenses Summary',
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to generate PDF')),
+                        );
                       }
-                      expenseDetails += '\nTotal Expenses: $total LE';
-                      
-                      Share.share(expenseDetails);
                     },
                     child: Icon(
                       Icons.share,
@@ -417,9 +524,22 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
         physics: BouncingScrollPhysics(),
         itemBuilder: (_, i) {
           final expense = ExtraExpensesCubit.get(context).expenses[i];
-          return ExpenseItem(
-            expense: expense,
-            onTap: (ctx, exp) => showExpenseDetails(ctx, exp, i),
+          return Row(
+            children: [
+              Expanded(
+                child: ExpenseItem(
+                  expense: expense,
+                  onTap: (ctx, exp) => showExpenseDetails(ctx, exp, i),
+                ),
+              ),
+              SizedBox(width: 5),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  ExtraExpensesCubit.get(context).deleteExpense(i); 
+                },
+              ),
+            ],
           );
         },
         separatorBuilder: (_, __) => SizedBox(height: 12),

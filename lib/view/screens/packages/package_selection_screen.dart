@@ -1,3 +1,4 @@
+import 'package:brandify/view/screens/settings/shopify_setup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/enum.dart';
@@ -82,7 +83,7 @@ class PackageSelectionScreen extends StatelessWidget {
               ],
               color: Colors.grey,
               icon: Icons.shopping_bag,
-              isComingSoon: true,
+              isComingSoon: false,
             ),
             SizedBox(height: 20),
           ],
@@ -196,6 +197,26 @@ class PackageSelectionScreen extends StatelessWidget {
                                       (route) => false,
                                     );
                                   } else {
+                                    navigatorKey.currentState?.pop();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(response.data),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
+                                shopify: () async{
+                                  var response = await FirestoreServices().updateUserData({
+                                    "package": PACKAGE_TYPE_SHOPIFY,
+                                  });
+                                  if (response.status == Status.success){
+                                    await Cache.setPackageType(PACKAGE_TYPE_SHOPIFY);
+                                    navigatorKey.currentState?.push(
+                                      MaterialPageRoute(builder: (context) => ShopifySetupScreen()),
+                                    );
+                                  }
+                                  else {
                                     navigatorKey.currentState?.pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

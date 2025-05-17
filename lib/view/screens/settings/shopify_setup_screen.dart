@@ -1,3 +1,6 @@
+import 'package:brandify/enum.dart';
+import 'package:brandify/main.dart';
+import 'package:brandify/view/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/firebase/firestore/shopify_services.dart';
@@ -39,41 +42,51 @@ class _ShopifySetupScreenState extends State<ShopifySetupScreen> {
 
   bool _isLoading = false;
   
-  void _saveSettings() async {
+  Future<bool> _saveSettings() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
       
       try {
-        ShopifyServices.setParamters(
-          newAdminAcessToken: _adminTokenController.text,
-          newStoreFrontAcessToken: _storefrontTokenController.text,
-          newStoreId: _storeIdController.text,
-          newLocationId: int.parse(_locationIdController.text),
-        );
-        
-        await FirestoreServices().updateUserData({
+        var res = await FirestoreServices().updateUserData({
           "adminAPIAcessToken": _adminTokenController.text,
           "storeFrontAPIAcessToken": _storefrontTokenController.text,
           "storeId": _storeIdController.text,
           "locationId": _locationIdController.text,
         });
+        if(res.status == Status.success){
+          ShopifyServices.setParamters(
+            newAdminAcessToken: _adminTokenController.text,
+            newStoreFrontAcessToken: _storefrontTokenController.text,
+            newStoreId: _storeIdController.text,
+            newLocationId: int.parse(_locationIdController.text),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Shopify settings saved successfully')),
+          );
+          return true;
+        }
+        else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error saving settings')),
+          ); 
+          return false;
+        }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Shopify settings saved successfully')),
-        );
-        //Navigator.pop(context);
+        
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error saving settings: $e')),
         );
+        return false;
       } finally {
         setState(() {
           _isLoading = false;
         });
       }
     }
+    return false;
   }
 
   @override
@@ -138,7 +151,15 @@ class _ShopifySetupScreenState extends State<ShopifySetupScreen> {
               const SizedBox(height: 30),
               CustomButton(
                 text: _isLoading ? 'Saving...' : 'Save Settings',
-                onPressed: _isLoading ? null : _saveSettings,
+                onPressed: _isLoading ? null : () async {
+                  bool res = await _saveSettings();
+                  if(res){
+                    navigatorKey.currentState?.pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      (route) => false,
+                    );
+                  }
+                },
               ),
             ],
           ),

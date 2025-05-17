@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:brandify/main.dart';
 import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,10 +40,16 @@ class ExtraExpensesCubit extends Cubit<ExtraExpensesState> {
 
   Future<void> getAllExpensesFromHive() async {
     var box = Hive.box(HiveServices.getTableName(extraExpensesTable));
-    _allExpenses = box.values.map((e) {
-      Map<String, dynamic> expenseMap = Map<String, dynamic>.from(e);
-      return ExtraExpense.fromJson(expenseMap);
-    }).toList();
+    var keys = box.keys.toList();
+    _allExpenses = [];
+    
+    for (var key in keys) {
+      var expenseMap = Map<String, dynamic>.from(box.get(key));
+      var expense = ExtraExpense.fromJson(expenseMap);
+      expense.id = key;
+      _allExpenses.add(expense);
+    }
+    
     expenses = List.from(_allExpenses);
     emit(ExtraExpensesLoaded()); 
   }
@@ -60,7 +67,7 @@ class ExtraExpensesCubit extends Cubit<ExtraExpensesState> {
         },
         offline: () async {
           await getAllExpensesFromHive();
-          _allExpenses = List.from(expenses); // Store all expenses
+          //_allExpenses = List.from(expenses); // Store all expenses
           sortExpenses(byPrice: false, descending: true);
         },
       );
@@ -146,15 +153,29 @@ class ExtraExpensesCubit extends Cubit<ExtraExpensesState> {
       
       await Package.checkAccessability(
         online: () async{
-          await FirestoreServices().delete(extraExpensesTable, expenses[index].backendId!);
+          var res = await FirestoreServices().delete(extraExpensesTable, expenses[index].backendId!);
+          if(res.status == Status.success){
+            expenses.removeAt(index);
+            AppUserCubit.get(navigatorKey.currentState!.context).addToProfit(expenses[index].price?? 0); 
+            emit(ExtraExpensesLoaded());
+          }
+          else{
+            emit(FailDeleteExtraExpenseState());
+            ScaffoldMessenger.of(navigatorKey.currentState!.context).showSnackBar(
+              SnackBar(content: Text(res.data.toString())),
+            );
+          }
         }, 
         offline: () async{
+          print("delete offline");
+          print("expenses nameeee: ${expenses[index].name} - expenses idddd: ${expenses[index].id}");
           await Hive.box(HiveServices.getTableName(extraExpensesTable)).delete(expenses[index].id);
+          expenses.removeAt(index);
+          AppUserCubit.get(navigatorKey.currentState!.context).addToProfit(expenses[index].price?? 0);
+          emit(ExtraExpensesLoaded());
         },
       );
-      expenses.removeAt(index);
       
-      emit(ExtraExpensesLoaded());
     } catch (e) {
       emit(ExtraExpensesError(e.toString()));
     }
@@ -201,6 +222,14 @@ class ExtraExpensesCubit extends Cubit<ExtraExpensesState> {
     _allExpenses = [];
     name = null;
     price = null;
+    emit(ExtraExpensesInitial());
+  }
+
+  void clear() {
+    name = null;
+    price = null;
+    expenses = [];
+    _allExpenses = [];
     emit(ExtraExpensesInitial());
   }
 }

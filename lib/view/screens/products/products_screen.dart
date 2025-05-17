@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:brandify/enum.dart';
 import 'package:brandify/models/package.dart';
+import 'package:brandify/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -43,12 +44,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
           child: BlocBuilder<ProductsCubit, ProductsState>(
             builder: (context, state) {
               if (state is LoadingProductsState) {
-                return Center(
-                  child: CircularProgressIndicator(color: mainColor),
-                );
+                return Loading();
               }
-
-              return Visibility(
+              else return Visibility(
                 visible: ProductsCubit.get(context).products.isNotEmpty,
                 replacement: Center(
                   child: Column(

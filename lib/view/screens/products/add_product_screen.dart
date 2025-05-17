@@ -83,38 +83,38 @@ class _AddProductScreenState extends State<AddProductScreen> {
               Expanded(
                 child: ListView(
                   children: [
-                    GestureDetector(
-                      onTap: () async {
-                        _imageBottomSheet(context);
-                      },
-                      child: BlocBuilder<AddProductCubit, AddProductState>(
-                        builder: (context, state) {
-                          if (state is LoadingImageState) {
-                            return SizedBox(
-                              width: double.infinity,
-                              height: 180,
-                              child: Loading(),
-                            );
-                          } else {
-                            return BlocBuilder<AddProductCubit, AddProductState>(
-                              builder: (context, state) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: 180,
-                                  decoration: BoxDecoration(
-                                      color: mainColor,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: getProductImage(widget.product),
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
+                    // GestureDetector(
+                    //   onTap: () async {
+                    //     _imageBottomSheet(context);
+                    //   },
+                    //   child: BlocBuilder<AddProductCubit, AddProductState>(
+                    //     builder: (context, state) {
+                    //       if (state is LoadingImageState) {
+                    //         return SizedBox(
+                    //           width: double.infinity,
+                    //           height: 180,
+                    //           child: Loading(),
+                    //         );
+                    //       } else {
+                    //         return BlocBuilder<AddProductCubit, AddProductState>(
+                    //           builder: (context, state) {
+                    //             return Container(
+                    //               width: double.infinity,
+                    //               height: 180,
+                    //               decoration: BoxDecoration(
+                    //                   color: mainColor,
+                    //                   borderRadius: BorderRadius.circular(10)),
+                    //               child: getProductImage(widget.product),
+                    //             );
+                    //           },
+                    //         );
+                    //       }
+                    //     },
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: 15,
+                    // ),
                     Row(
                       children: [
                         Expanded(
@@ -126,7 +126,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     AddProductCubit.get(context).codeController,
                                 // initial:
                                 //     AddProductCubit.get(context).product.code,
-                                text: "Code",
+                                text: "Barcode",
                                 onSaved: (value) {
                                   AddProductCubit.get(context).product.code =
                                       value;

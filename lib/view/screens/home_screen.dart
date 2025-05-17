@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void initializeData() async {
     await HiveServices.openUserBoxes();
-    await context.read<AppUserCubit>().getUserData();
+    await context.read<AppUserCubit>().refreshUserData();
     await context.read<ProductsCubit>().getProducts();
     int cost = await context.read<AdsCubit>().getAllAds();
     await context.read<AllSellsCubit>().getSells(
@@ -106,10 +106,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index){
-            if(index == 1){
-              ProductsCubit.get(context).getProducts();
-            }
-            else if(index == 2){
+            // if(index == 1){
+            //   ProductsCubit.get(context).getProducts();
+            // }
+            if(index == 2){
               initializeReports(
                 context.read<AllSellsCubit>().sells,
                 context.read<AdsCubit>().ads,

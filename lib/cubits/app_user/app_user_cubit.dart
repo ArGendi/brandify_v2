@@ -1,3 +1,8 @@
+import 'package:brandify/cubits/ads/ads_cubit.dart';
+import 'package:brandify/cubits/all_sells/all_sells_cubit.dart';
+import 'package:brandify/cubits/extra_expenses/extra_expenses_cubit.dart';
+import 'package:brandify/cubits/products/products_cubit.dart';
+import 'package:brandify/cubits/sides/sides_cubit.dart';
 import 'package:brandify/main.dart';
 import 'package:brandify/models/ad.dart';
 import 'package:brandify/models/extra_expense.dart';
@@ -25,10 +30,15 @@ class AppUserCubit extends Cubit<AppUserState> {
   int totalOrders = 0; 
   String? brandName;
   String? brandPhone;
+  bool isLoggedInNow = false;
 
   AppUserCubit() : super(AppUserInitial());
 
   static AppUserCubit get(BuildContext context) => BlocProvider.of(context);
+
+  void setIsLoggedInNow(bool value){
+    isLoggedInNow = value;
+  }
 
   Future<void> getUserData() async {
     try {
@@ -100,14 +110,53 @@ class AppUserCubit extends Cubit<AppUserState> {
           totalProfit = Cache.getTotalProfit() ?? 0;
           total = Cache.getTotal() ?? 0;
           Package.getTypeFromString(PACKAGE_TYPE_OFFLINE);
-        }, 
+        },
+        shopify: () async{
+          var userData = await FirestoreServices().getUserData();
+          print("user data : $userData");
+          
+          if (userData != null) {
+            print("user dataaaaaa : $userData");
+            brandName = userData['brandName'];
+            brandPhone = userData['brandPhone'];
+            totalOrders = userData['totalOrders'] ?? 0;
+            totalProfit = userData['totalProfit'] ?? 0;
+            total = userData['total'] ?? 0;
+            // Set Shopify parameters if they exist
+            ShopifyServices.setParamters(
+              newAdminAcessToken: userData['adminAPIAcessToken'],
+              newStoreFrontAcessToken: userData['storeFrontAPIAcessToken'],
+              newStoreId: userData['storeId'],
+              newLocationId: userData['locationId'],
+            );
+            Package.getTypeFromString(
+              userData["package"] ?? PACKAGE_TYPE_SHOPIFY,
+            );
+          }
+          else{
+            Package.type = PackageType.shopify;
+            ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+              SnackBar(
+                content: Text('Could not get user data, please login again'),
+                backgroundColor: Colors.red,
+              ),
+            );
+            FirebaseAuth.instance.signOut();
+            navigatorKey.currentState?.pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => LoginScreen()),
+              (route) => false,  
+            );
+          }
+        },
       );
-       
+      
       emit(AppUserLoaded());
     } catch (e) {
       emit(AppUserError(e.toString()));
     }
   }
+
+   
 
   void calculateTotalAndProfit(List<Sell> sells, List<Ad> ads, List<ExtraExpense> extraExpenses){
     if(Cache.getTotal() != 0) return;
@@ -260,6 +309,12 @@ class AppUserCubit extends Cubit<AppUserState> {
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
     await _clearLocalData();
+    total = 0;
+    totalProfit = 0;
+    totalOrders = 0;
+    brandName = null;
+    brandPhone = null;
+    emit(AppUserInitial());
     _navigateToLogin(context);
       // await Package.checkAccessability(
       //   online: () async {
@@ -276,11 +331,13 @@ class AppUserCubit extends Cubit<AppUserState> {
   
     Future<void> _clearLocalData() async {
       await Cache.clear();
-      // await Hive.box(HiveServices.getTableName(productsTable)).clear();
-      // await Hive.box(HiveServices.getTableName(sellsTable)).clear();
-      // await Hive.box(HiveServices.getTableName(sidesTable)).clear();
-      // await Hive.box(HiveServices.getTableName(adsTable)).clear();
-      // await Hive.box(HiveServices.getTableName(extraExpensesTable)).clear();
+      
+      ProductsCubit.get(navigatorKey.currentContext!).clear();
+      AllSellsCubit.get(navigatorKey.currentContext!).clear();
+      SidesCubit.get(navigatorKey.currentContext!).clear();
+      AdsCubit.get(navigatorKey.currentContext!).clear();
+      ExtraExpensesCubit.get(navigatorKey.currentContext!).clear();
+      
       emit(AppUserInitial());
     }
   
@@ -360,4 +417,133 @@ class AppUserCubit extends Cubit<AppUserState> {
         );
       }
     }
+
+    Future<void> refreshUserData() async {
+    if (isLoggedInNow){
+      try {
+        emit(AppUserLoading());
+        
+        // First get user data and check if successful
+        var userData = await FirestoreServices().getUserData();
+        if (userData == null) {
+          emit(AppUserError('Failed to get user data from Firebase'));
+          return;
+        }
+        
+        // Get package type and continue with data processing
+        var packageType = userData['package'] ?? PACKAGE_TYPE_ONLINE;
+        Package.getTypeFromString(packageType);
+        
+        if (Package.type == PackageType.online || Package.type == PackageType.shopify) {
+          brandName = userData['brandName'];
+          brandPhone = userData['brandPhone'];
+          totalOrders = userData['totalOrders'] ?? 0;
+          totalProfit = userData['totalProfit'] ?? 0;
+          total = userData['total'] ?? 0;
+          
+          // Save to cache
+          await Cache.setName(brandName ?? '');
+          await Cache.setPhone(brandPhone ?? '');
+          await Cache.setTotalOrders(totalOrders);
+          await Cache.setTotalProfit(totalProfit);
+          await Cache.setTotal(total);
+        } 
+        else if (Package.type == PackageType.offline) {
+          // Get data from Hive
+          //var productsBox = Hive.box(HiveServices.getTableName(productsTable));
+          var sellsBox = Hive.box(HiveServices.getTableName(sellsTable));
+          var adsBox = Hive.box(HiveServices.getTableName(adsTable));
+          var expensesBox = Hive.box(HiveServices.getTableName(extraExpensesTable));
+          
+          // Calculate totals
+          int salesTotal = 0;
+          int profitTotal = 0;
+          int ordersCount = 0;
+          
+          // Calculate from sells
+          for (var key in sellsBox.keys) {
+            try {
+              var sellData = Map<String, dynamic>.from(sellsBox.get(key) ?? {});
+              int priceOfSell = sellData['priceOfSell'] is int ? sellData['priceOfSell'] : 0;
+              int profit = sellData['profit'] is int ? sellData['profit'] : 0;
+              bool isRefunded = sellData['isRefunded'] == true;
+              
+              if (!isRefunded) {
+                salesTotal += priceOfSell;
+                profitTotal += profit;
+                ordersCount++;
+              }
+            } catch (e) {
+              print('Error processing sell data: $e');
+            }
+          }
+          
+          // Deduct ads costs
+          for (var key in adsBox.keys) {
+            try {
+              var adData = Map<String, dynamic>.from(adsBox.get(key) ?? {});
+              int cost = adData['cost'] is int ? adData['cost'] : 0;
+              profitTotal -= cost;
+            } catch (e) {
+              print('Error processing ad data: $e');
+            }
+          }
+          
+          // Deduct extra expenses
+          for (var key in expensesBox.keys) {
+            try {
+              var expenseData = Map<String, dynamic>.from(expensesBox.get(key) ?? {});
+              int price = expenseData['price'] is int ? expenseData['price'] : 0;
+              profitTotal -= price;
+            } catch (e) {
+              print('Error processing expense data: $e');
+            }
+          }
+          
+          // Update local variables
+          total = salesTotal;
+          totalProfit = profitTotal;
+          totalOrders = ordersCount;
+          brandName = Cache.getName();
+          brandPhone = Cache.getPhone();
+          
+          // Save to cache
+          await Cache.setTotal(total);
+          await Cache.setTotalProfit(totalProfit);
+          await Cache.setTotalOrders(totalOrders);
+        }
+        
+        emit(AppUserLoaded());
+      } catch (e) {
+        emit(AppUserError(e.toString()));
+      }
+    }
+    else{
+      var packageType = Cache.getPackageType();
+      Package.getTypeFromString(packageType?? PACKAGE_TYPE_ONLINE);
+      if (packageType == PACKAGE_TYPE_ONLINE || packageType == PACKAGE_TYPE_SHOPIFY) {
+        var userData = await FirestoreServices().getUserData();
+        if (userData != null) {
+          brandName = userData['brandName'];
+          brandPhone = userData['brandPhone'];
+          totalOrders = userData['totalOrders'] ?? 0;
+          totalProfit = userData['totalProfit'] ?? 0;
+          total = userData['total'] ?? 0;
+          emit(AppUserLoaded());
+        } else {
+          emit(AppUserError('Could not get user data'));
+        }
+      } else {
+        // Offline mode - get from cache
+        brandName = Cache.getName();
+        brandPhone = Cache.getPhone();
+        totalOrders = Cache.getTotalOrders() ?? 0;
+        totalProfit = Cache.getTotalProfit() ?? 0;
+        total = Cache.getTotal() ?? 0;
+        emit(AppUserLoaded());
+      }
+    }
+    
+  }
 }
+

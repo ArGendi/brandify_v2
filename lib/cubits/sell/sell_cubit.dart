@@ -52,73 +52,152 @@ class SellCubit extends Cubit<SellState> {
   }
   
 
-  Future<void> onDone(BuildContext context, Product product) async{
-    bool valid = formKey.currentState?.validate() ?? false;
-    if(valid){
-      formKey.currentState?.save();
-      if(selectedSize != null || product.sizes.length == 1){
-        selectedSize ??= product.sizes.first;
+  Future<void> onDone(BuildContext context, Product product) async {
+    try {
+      if (!_validateForm()) return;
+      if (!_validateSize(context, product)) return;
+      
+      selectedSize ??= product.sizes.first;
+      final Sell sellTransaction = _createSellTransaction(product);
+      
+      emit(LoadingSellState());
+      
+      // Try to update product inventory first
+      final isSellSizeChanged = await ProductsCubit.get(context)
+          .sellSize(product, selectedSize!, quantity);
+      
+      if (!isSellSizeChanged) {
+        _showInventoryError(context);
+        return;
+      }
 
-        double totalExpenses = extra?.toDouble() ?? 0;
-        for(var item in sides){
-          totalExpenses += item.side!.price! * (item.usedQuantity ?? 0);
-        }
-        int profit = (price! * quantity) - (totalExpenses.toInt() + ( (product.price ?? 0) * quantity ));
-        Sell temp = Sell(
-          product: product,
-          date: DateTime.now(),
-          quantity: quantity,
-          size: selectedSize,
-          priceOfSell: price! * quantity,
-          profit: profit,
-          extraExpenses: extra ?? 0,
-          sideExpenses: sides.where((e) => (e.usedQuantity ?? 0) > 0).toList(),
-          place: place ?? SellPlace.other
-        );
+      try {
+        // Update related data
+        AllSellsCubit.get(context).add(context, sellTransaction);
+        SidesCubit.get(context).subtract(sides);
 
-        emit(LoadingSellState());
+        // Save sell transaction
         await Package.checkAccessability(
-          online: () async{
-            var res = await FirestoreServices().add(sellsTable, temp.toJson());
-            temp.backendId = res.data;
-          }, 
-          offline: () async{
-            int id = await Hive.box(HiveServices.getTableName(sellsTable)).add(temp.toJson());
-            temp.id = id;
+          online: () async {
+            var res = await FirestoreServices()
+                .add(sellsTable, sellTransaction.toJson());
+            sellTransaction.backendId = res.data;
+          },
+          offline: () async {
+            int id = await Hive.box(HiveServices.getTableName(sellsTable))
+                .add(sellTransaction.toJson());
+            sellTransaction.id = id;
           },
         );
 
-        // -1 for sold size
-        var isSellSizeChanged = await ProductsCubit.get(context).sellSize(product, selectedSize!, quantity);
-        if(isSellSizeChanged){
-          // add in sell list
-          AllSellsCubit.get(context).add(context, temp);
-          // -1 from selected sides
-          SidesCubit.get(context).subtract(sides);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                profit >=0 ? "+$profit 💸" : "$profit 💳",
-              ),
-              backgroundColor: profit >=0 ? Colors.green : mainColor,
-            )
-          );
-          emit(SuccessSellState());
-          Navigator.of(context)..pop()..pop();
-        }
-        else{
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Something went wrong"), backgroundColor: Colors.red,)
-          );
-        }
+        _showSuccessMessage(context, sellTransaction.profit);
+        emit(SuccessSellState());
+        Navigator.of(context)..pop()..pop();
+      } catch (e) {
+        // Rollback all changes if saving fails
+        await _rollbackChanges(context, product, sellTransaction);
+        _showErrorMessage(context, "Failed to save transaction");
+        emit(FailSellState());
       }
-      else{
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Choose a size"), backgroundColor: Colors.red,)
-        );
-      }
+    } catch (e) {
+      _showErrorMessage(context, "Unexpected error occurred");
+      emit(FailSellState());
     }
+  }
+
+  bool _validateForm() {
+    bool valid = formKey.currentState?.validate() ?? false;
+    if (valid) {
+      formKey.currentState?.save();
+      return true;
+    }
+    return false;
+  }
+
+  bool _validateSize(BuildContext context, Product product) {
+    if (selectedSize != null || product.sizes.length == 1) {
+      return true;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Choose a size"),
+        backgroundColor: Colors.red,
+      )
+    );
+    return false;
+  }
+
+  Sell _createSellTransaction(Product product) {
+    double totalExpenses = extra?.toDouble() ?? 0;
+    for (var item in sides) {
+      totalExpenses += item.side!.price! * (item.usedQuantity ?? 0);
+    }
+    
+    int profit = (price! * quantity) - 
+        (totalExpenses.toInt() + ((product.price ?? 0) * quantity));
+        
+    return Sell(
+      product: product,
+      date: DateTime.now(),
+      quantity: quantity,
+      size: selectedSize,
+      priceOfSell: price! * quantity,
+      profit: profit,
+      extraExpenses: extra ?? 0,
+      sideExpenses: sides.where((e) => (e.usedQuantity ?? 0) > 0).toList(),
+      place: place ?? SellPlace.other
+    );
+  }
+
+  void _showInventoryError(BuildContext context) {
+    String errorMessage = "";
+    if (selectedSize!.quantity == 0) {
+      errorMessage = "Product is out of stock";
+    } else if (selectedSize!.quantity! < quantity) {
+      errorMessage = "Not enough quantity available (Only ${selectedSize!.quantity} left)";
+    } else {
+      errorMessage = "Failed to update inventory";
+    }
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      )
+    );
+    emit(FailSellState());
+  }
+
+  void _showSuccessMessage(BuildContext context, int profit) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(profit >= 0 ? "+$profit 💸" : "$profit 💳"),
+        backgroundColor: profit >= 0 ? Colors.green : mainColor,
+      )
+    );
+  }
+
+  void _showErrorMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      )
+    );
+  }
+
+  Future<void> _rollbackChanges(BuildContext context, Product product, Sell sell) async {
+    // Restore product quantity
+    await ProductsCubit.get(context)
+        .sellSize(product, selectedSize!, -quantity); // Negative quantity to add back
+    
+    // Restore sides quantities
+    SidesCubit.get(context).add(sides);
+    
+    // Remove from sells list if added
+    AllSellsCubit.get(context).remove(sell);
   }
 
   bool checkSelectedSize(BuildContext context){

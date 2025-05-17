@@ -12,3 +12,4 @@ class SuccessSidesState extends SidesState {}
 class FailSidesState extends SidesState {}
 class LoadingOneSideState extends SidesState {}
 class FailOneSideState extends SidesState {}
+class SidesUpdatedState extends SidesState {}

@@ -278,4 +278,10 @@ class AdsCubit extends Cubit<AdsState> {
       filteredAds = [];
       emit(AdsInitial());
     }
+
+  void clear() {
+    ads = [];
+    filteredAds = [];
+    emit(AdsInitial());
+  }
 }

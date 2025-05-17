@@ -19,3 +19,4 @@ class LoadingAddExtraExpenseState extends ExtraExpensesState {}
 class ExtraExpenseAddedState extends ExtraExpensesState {}
 
 class FailAddExtraExpenseState extends ExtraExpensesState {}
+class FailDeleteExtraExpenseState extends ExtraExpensesState {}

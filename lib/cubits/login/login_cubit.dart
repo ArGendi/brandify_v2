@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:brandify/constants.dart';
+import 'package:brandify/cubits/app_user/app_user_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,16 +46,19 @@ class LoginCubit extends Cubit<LoginState> {
           _showError(context, 'Failed to load user data');
           return;
         }
+
+        AppUserCubit.get(context).setIsLoggedInNow(true);
         
         // Save user data
-        await Cache.setInitialUserData(
-          name: userData['brandName'] ?? "Brandify", 
-          phone: userData['brandPhone'],
-          total: userData['total']?? 0,
-          totalProfit: userData['totalProfit']?? 0,
-          totalOrders: userData['totalOrders']?? 0,
-          packageType: userData['package']?? PACKAGE_TYPE_ONLINE,
-        );
+        // await Cache.setInitialUserData(
+        //   name: userData['brandName'] ?? "Brandify", 
+        //   phone: userData['brandPhone'],
+        //   total: userData['total']?? 0,
+        //   totalProfit: userData['totalProfit']?? 0,
+        //   totalOrders: userData['totalOrders']?? 0,
+        //   packageType: userData['package']?? PACKAGE_TYPE_ONLINE,
+        // );
+
         
         // Validate and set Shopify parameters
         // if (!_validateShopifyData(userData)) {
@@ -63,16 +67,9 @@ class LoginCubit extends Cubit<LoginState> {
         //   return;
         // }
 
-        ShopifyServices.setParamters(
-          newAdminAcessToken: userData['adminAPIAcessToken'],
-          newStoreFrontAcessToken: userData['storeFrontAPIAcessToken'],
-          newStoreId: userData['storeId'],
-          newLocationId: userData['locationId'],
-        );
-
-        Package.getTypeFromString(
-          userData["package"] ?? PACKAGE_TYPE_ONLINE,
-        );
+        // Package.getTypeFromString(
+        //   userData["package"] ?? PACKAGE_TYPE_ONLINE,
+        // );
         
         emit(SuccessState());
         Navigator.pushAndRemoveUntil(
