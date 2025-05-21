@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/enum.dart';
@@ -32,11 +33,68 @@ class Package {
         fit: BoxFit.cover,
       ).image; 
     }
-    if(type == PackageType.offline){
-      return Image.file(File(imageUrl)).image;
+    if(imageUrl.trim().startsWith("http")){
+      return Image.network(
+        imageUrl,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+            return Image.asset(
+              width: double.infinity,
+              height: 380,
+              "assets/images/default.png",
+              fit: BoxFit.cover,
+            );
+        },
+        color: Colors.grey.shade300,
+      ).image;
     }
     else{
-      return Image.network(imageUrl).image;
+      return Image.file(File(imageUrl)).image;
+    }
+  }
+
+  static Widget getImageCachedWidget(String? imageUrl){
+    if(imageUrl == null){
+      return Image.asset(
+        width: double.infinity,
+        height: 380,
+        "assets/images/default.png",
+        fit: BoxFit.cover,
+      ); 
+    }
+    if(imageUrl.trim().startsWith("http")){
+      return CachedNetworkImage(
+        imageUrl: imageUrl,
+        width: double.infinity,
+        height: 380,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Image.asset(
+          "assets/images/default.png",
+          width: double.infinity,
+          height: 380, 
+        ),
+        errorWidget: (context, url, error) => Image.asset(
+          "assets/images/default.png",
+          width: double.infinity,
+          height: 380,
+        ),
+      );
+      // return Image.network(
+      //   imageUrl,
+      //   loadingBuilder: (context, child, loadingProgress) {
+      //     if (loadingProgress == null) return child;
+      //       return Image.asset(
+      //         width: double.infinity,
+      //         height: 380,
+      //         "assets/images/default.png",
+      //         fit: BoxFit.cover,
+      //       );
+      //   },
+      //   color: Colors.grey.shade300,
+      // ).image;
+    }
+    else{
+      return Image.file(File(imageUrl));
     }
   }
 

@@ -50,10 +50,11 @@ class _ProductDetailsState extends State<ProductDetails> {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image(
-                    image: Package.getImageWidget(widget.product.image),
-                    fit: BoxFit.cover,
-                  ),
+                  Package.getImageCachedWidget(widget.product.image),
+                  // Image(
+                  //   image: Package.getImageWidget(widget.product.image),
+                  //   fit: BoxFit.cover,
+                  // ),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(

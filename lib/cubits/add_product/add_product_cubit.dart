@@ -35,7 +35,10 @@ class AddProductCubit extends Cubit<AddProductState> {
   Future<void> getImage(ImageSource source) async{
     emit(LoadingImageState());
     ImagePicker picker = ImagePicker();
-      var xfile = await picker.pickImage(source: source);
+      var xfile = await picker.pickImage(
+        source: source,
+        imageQuality: 40,
+      );
       if (xfile != null) {
         product.image = xfile.path;
         // await Package.checkAccessability(

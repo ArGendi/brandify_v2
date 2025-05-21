@@ -107,6 +107,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     try {
       await Package.checkAccessability(
         online: () async {
+          print("adding product with image ${product.image}");
           if(product.image != null){
             product.image = await StorageServices.uploadFile(File(product.image!));
           }

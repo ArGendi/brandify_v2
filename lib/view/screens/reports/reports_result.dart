@@ -391,7 +391,7 @@ class _ReportsResultState extends State<ReportsResult> {
                 ],
 
                 // Ads Section
-                if (current.extraExpenses.isNotEmpty) ...[
+                if (current.ads.isNotEmpty) ...[
                   pw.Header(level: 1, child: pw.Text('Ads')),
                   pw.Table.fromTextArray(
                     context: context,

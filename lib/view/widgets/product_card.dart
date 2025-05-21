@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:brandify/cubits/products/products_cubit.dart';
 import 'package:brandify/main.dart';
@@ -36,34 +37,62 @@ class ProductCard extends StatelessWidget {
           children: [
             Expanded(
               flex: 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: Package.getImageWidget(product.image),
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                    child: Package.getImageCachedWidget(product.image),
                   ),
-                ),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      "${product.getNumberOfAllItems()} in stock",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        "${product.getNumberOfAllItems()} in stock",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  ), 
+                ]
               ),
+              // child: Container(
+              //   decoration: BoxDecoration(
+              //     borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+              //     color: Colors.grey[200],
+              //     image: DecorationImage(
+              //       fit: BoxFit.cover,
+              //       image: Package.getImageWidget(product.image),
+              //     ),
+              //   ),
+              //   child: Align(
+              //     alignment: Alignment.topRight,
+              //     child: Container(
+              //       margin: const EdgeInsets.all(10),
+              //       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              //       decoration: BoxDecoration(
+              //         color: Colors.black.withOpacity(0.7),
+              //         borderRadius: BorderRadius.circular(20),
+              //       ),
+              //       child: Text(
+              //         "${product.getNumberOfAllItems()} in stock",
+              //         style: const TextStyle(
+              //           color: Colors.white,
+              //           fontSize: 12,
+              //           fontWeight: FontWeight.w500,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ),
             Expanded(
               flex: 2,

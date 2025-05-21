@@ -5,18 +5,23 @@ import 'package:brandify/models/local/cache.dart';
 class HiveServices {
 
   static Future<void> openUserBoxes() async {
-    if(Hive.isBoxOpen(getTableName(adsTable))) {
-     return; 
-    }
     final phone = Cache.getPhone();
     if (phone != null) {
-      await Future.wait([
-        Hive.openBox(getTableName(productsTable)),
-        Hive.openBox(getTableName(sellsTable)),
-        Hive.openBox(getTableName(extraExpensesTable)),
-        Hive.openBox(getTableName(sidesTable)),
-        Hive.openBox(getTableName(adsTable)),
-      ]);
+      if(!Hive.isBoxOpen(getTableName(productsTable))) {
+        await Hive.openBox(getTableName(productsTable));
+      }
+      if(!Hive.isBoxOpen(getTableName(sellsTable))) {
+        await Hive.openBox(getTableName(sellsTable));
+      }
+      if(!Hive.isBoxOpen(getTableName(extraExpensesTable))) {
+        await Hive.openBox(getTableName(extraExpensesTable));
+      }
+      if(!Hive.isBoxOpen(getTableName(sidesTable))) {
+        await Hive.openBox(getTableName(sidesTable));
+      }
+      if(!Hive.isBoxOpen(getTableName(adsTable))) {
+        await Hive.openBox(getTableName(adsTable));
+      }
     }
   }
 

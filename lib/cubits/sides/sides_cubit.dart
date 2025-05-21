@@ -72,14 +72,14 @@ class SidesCubit extends Cubit<SidesState> {
   }
 
   Future<void> getAllSides() async{
-    if(sides.isNotEmpty) return;
+    //if(sides.isNotEmpty) return;
     
     emit(LoadingSidesState());
     await Package.checkAccessability(
       online: () async{
         var response = await SidesServices().getSides();
         if(response.status == Status.success){
-          sides.addAll(response.data);
+          sides = List.from(response.data);
         }
       },
       offline: () async{
@@ -137,7 +137,16 @@ class SidesCubit extends Cubit<SidesState> {
   Future<void> refundSide(List<SellSide> values) async {
     try {
       for (var value in values) {
-        int i = sides.indexOf(value.side!);
+        late final int i;
+        await Package.checkAccessability(
+          online: () async {
+            i = sides.indexWhere((side) => side.backendId == value.side?.backendId);
+          },
+          offline: () async {
+            i = sides.indexWhere((side) => side.id == value.side?.id);
+          },
+        );
+        
         if (i != -1) {
           await _handleExistingSideRefund(i, value);
         } else {

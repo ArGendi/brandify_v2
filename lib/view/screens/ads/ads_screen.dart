@@ -204,21 +204,21 @@ class AdsScreen extends StatelessWidget {
                   BlocBuilder<AdsCubit, AdsState>(
                     builder: (context, state) {
                       return CustomButton(
+                        icon: Icon(Icons.date_range),
                         text: AdsCubit.get(context).getDate(),
                         onPressed: () async {
+                          var now = DateTime.now();
                           var date = await showDatePicker(
                             context: context,
                             initialDate: AdsCubit.get(context).date,
-                            firstDate: DateTime(2025),
-                            lastDate: DateTime(
-                              AdsCubit.get(context).date.year + 1,
-                            ),
+                            firstDate: DateTime(now.year - 1),
+                            lastDate: now,
                           );
                           if (date != null) {
                             AdsCubit.get(context).setDate(date);
                           }
                         },
-                        bgColor: Colors.grey.shade700,
+                        bgColor: mainColor,
                       );
                     },
                   ),

@@ -11,7 +11,7 @@ abstract class StorageServices{
   
   static Future<String?> uploadFile(File file) async{
     try{
-      String name = "$_id/${DateTime.now()}.png";
+      String name = "${DateTime.now()}.png";
       UploadTask task = FirebaseStorage.instance.ref(_id).child(name).putFile(file);
       String? url;
       await task.whenComplete(() async{

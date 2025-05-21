@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:brandify/models/firebase/storage_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:brandify/constants.dart';
@@ -95,14 +97,35 @@ class FirestoreServices{
   // var doc = await docRef.collection(productsTable).add(product);
   
 
-  Future<Data<String, Status>> uploadLocalData(Map<String, dynamic> localData) async {
+  Future<Data<Map<String, List<String>>, Status>> uploadLocalData(Map<String, dynamic> localData) async {
       try {
-        
+        Map<String, List<String>> docIds = {
+          productsTable: [],
+          sellsTable: [],
+          sidesTable: [],
+          adsTable: [],
+          extraExpensesTable: [],
+        };
+
         // Upload products
         if (localData[productsTable] != null) {
           for (var product in localData[productsTable]) {
             Map<String, dynamic> p = Map<String, dynamic>.from(product);
-            await docRef.collection(productsTable).add(p);
+            if(p['image'] == null || p['image'].toString().trim().startsWith("http")){
+              var doc = await docRef.collection(productsTable).add(p);
+              docIds[productsTable]!.add(doc.id);
+            }
+            else{
+              var link = await StorageServices.uploadFile(File(p['image']));
+              if(link != null){
+                p['image'] = link;
+                var doc = await docRef.collection(productsTable).add(p);
+                docIds[productsTable]!.add(doc.id);
+              }
+              else{
+                return Data<Map<String, List<String>>, Status>({}, Status.fail);
+              }
+            }
           }
         }
   
@@ -110,7 +133,8 @@ class FirestoreServices{
         if (localData[sellsTable] != null) {
           for (var sell in localData[sellsTable]) {
             Map<String, dynamic> s = Map<String, dynamic>.from(sell);
-            await docRef.collection(sellsTable).add(s);
+            var doc = await docRef.collection(sellsTable).add(s);
+            docIds[sellsTable]!.add(doc.id);
           }
         }
   
@@ -118,7 +142,8 @@ class FirestoreServices{
         if (localData[sidesTable] != null) {
           for (var side in localData[sidesTable]) {
             Map<String, dynamic> s = Map<String, dynamic>.from(side);
-            await docRef.collection(sidesTable).add(s);
+            var doc = await docRef.collection(sidesTable).add(s);
+            docIds[sidesTable]!.add(doc.id);
           }
         }
   
@@ -126,7 +151,8 @@ class FirestoreServices{
         if (localData[adsTable] != null) {
           for (var ad in localData[adsTable]) {
             Map<String, dynamic> a = Map<String, dynamic>.from(ad);
-            await docRef.collection(adsTable).add(a);
+            var doc = await docRef.collection(adsTable).add(a);
+            docIds[adsTable]!.add(doc.id);
           }
         }
   
@@ -134,14 +160,15 @@ class FirestoreServices{
         if (localData[extraExpensesTable] != null) {
           for (var expense in localData[extraExpensesTable]) {
             Map<String, dynamic> e = Map<String, dynamic>.from(expense);
-            await docRef.collection(extraExpensesTable).add(e);
+            var doc = await docRef.collection(extraExpensesTable).add(e);
+            docIds[extraExpensesTable]!.add(doc.id);
           }
         }
   
-        return Data<String, Status>('Data uploaded successfully', Status.success);
+        return Data<Map<String, List<String>>, Status>(docIds, Status.success);
       } catch (e) {
         log('Error uploading local data: $e');
-        return Data<String, Status>(e.toString(), Status.fail);
+        return Data<Map<String, List<String>>, Status>({}, Status.fail);
       }
     }
 
@@ -193,6 +220,35 @@ class FirestoreServices{
         return Data<Map<String, dynamic>, Status>(allData, Status.success);
       } catch (e) {
         return Data<Map<String, dynamic>, Status>({"error": e.toString()}, Status.fail);
+      }
+    }
+
+  Future<Data<String, Status>> deleteAllUserData() async {
+      try {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) return Data<String, Status>('User not found', Status.fail);
+  
+        final batch = FirebaseFirestore.instance.batch();
+        final collections = [
+          productsTable,
+          sellsTable,
+          sidesTable,
+          adsTable,
+          extraExpensesTable,
+        ];
+  
+        for (var collection in collections) {
+          final snapshot = await docRef.collection(collection)
+              .get();
+  
+          for (var doc in snapshot.docs) {
+            batch.delete(doc.reference);
+          }
+        }
+        await batch.commit();
+        return Data<String, Status>('Successfully deleted all user data', Status.success);
+      } catch (e) {
+        return Data<String, Status>(e.toString(), Status.fail);
       }
     }
 }

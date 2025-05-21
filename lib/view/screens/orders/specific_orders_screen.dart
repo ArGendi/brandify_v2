@@ -15,10 +15,7 @@ import 'package:share_plus/share_plus.dart';
 class SpecificOrdersScreen extends StatefulWidget {
   final List<Sell> orders;
 
-  const SpecificOrdersScreen({
-    super.key,
-    required this.orders,
-  });
+  const SpecificOrdersScreen({super.key, required this.orders});
 
   @override
   State<SpecificOrdersScreen> createState() => _SpecificOrdersScreenState();
@@ -26,8 +23,8 @@ class SpecificOrdersScreen extends StatefulWidget {
 
 class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
   List<Sell> filteredOrders = [];
-  List<Sell> selectedOrders = [];  // Add this
-  bool isSelectionMode = false;    // Add this
+  List<Sell> selectedOrders = []; // Add this
+  bool isSelectionMode = false; // Add this
   DateTimeRange? selectedDateRange;
 
   @override
@@ -47,7 +44,8 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
-      initialDateRange: selectedDateRange ??
+      initialDateRange:
+          selectedDateRange ??
           DateTimeRange(
             start: DateTime.now().subtract(Duration(days: 7)),
             end: DateTime.now(),
@@ -56,69 +54,87 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
     if (picked != null) {
       setState(() {
         selectedDateRange = picked;
-        filteredOrders = widget.orders.where((order) {
-          return order.date != null &&
-              order.date!.isAfter(picked.start.subtract(Duration(days: 1))) &&
-              order.date!.isBefore(picked.end.add(Duration(days: 1)));
-        }).toList();
+        filteredOrders =
+            widget.orders.where((order) {
+              return order.date != null &&
+                  order.date!.isAfter(
+                    picked.start.subtract(Duration(days: 1)),
+                  ) &&
+                  order.date!.isBefore(picked.end.add(Duration(days: 1)));
+            }).toList();
       });
     }
   }
 
   Future<void> _createAndShareReceipt() async {
     final pdf = pw.Document();
-    
+    int quantity = 0;
+
     pdf.addPage(
       pw.MultiPage(
-        build: (context) => [
-          pw.Header(
-            level: 0,
-            child: pw.Text('Orders Receipt', 
-              style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)
-            ),
-          ),
-          pw.SizedBox(height: 20),
-          
-          ...selectedOrders.map((order) => pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Divider(),
-              pw.Text('Order Date: ${order.date?.toString().split(' ')[0]}'),
-              pw.Text('Product: ${order.product?.name}'),
-              pw.Text('Size: ${order.size?.name ?? 'N/A'}'),
-              pw.Text('Quantity: ${order.quantity}'),
-              pw.Text('Price: ${order.priceOfSell} LE'),
-              if (order.isRefunded)
-                pw.Text('REFUNDED', 
+        build:
+            (context) => [
+              pw.Header(
+                level: 0,
+                child: pw.Text(
+                  'Orders Receipt',
                   style: pw.TextStyle(
-                    color: PdfColors.red,
-                    fontWeight: pw.FontWeight.bold
-                  )
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
                 ),
-              pw.SizedBox(height: 10),
-            ],
-          )).toList(),
-          
-          pw.Divider(),
-          pw.SizedBox(height: 20),
-          pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-            children: [
-              pw.Text('Total Orders: ${selectedOrders.length}'),
-              pw.Text(
-                'Total Profit: ${selectedOrders.fold(0.0, (sum, order) => sum + order.profit)} LE',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+              pw.SizedBox(height: 20),
+
+              ...selectedOrders.map((order) {
+                quantity += order.quantity ?? 0;
+                return pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Divider(),
+                    pw.Text(
+                      'Order Date: ${order.date?.toString().split(' ')[0]}',
+                    ),
+                    pw.Text('Product: ${order.product?.name}'),
+                    pw.Text('Size: ${order.size?.name ?? 'N/A'}'),
+                    pw.Text('Quantity: ${order.quantity}'),
+                    pw.Text('Price: ${order.priceOfSell} LE'),
+                    if (order.isRefunded)
+                      pw.Text(
+                        'REFUNDED',
+                        style: pw.TextStyle(
+                          color: PdfColors.red,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                    pw.SizedBox(height: 10),
+                  ],
+                );
+              }).toList(),
+
+              pw.Divider(),
+              pw.SizedBox(height: 20),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('Total Orders: $quantity'),
+                  pw.Text(
+                    'Total Profit: ${selectedOrders.fold(0.0, (sum, order) => sum + (order.priceOfSell ?? 0))} LE',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ],
+              ),
+
+              pw.Footer(
+                trailing: pw.Text(
+                  'Generated by Brandify on ${DateTime.now().toString().split(' ')[0]}',
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontStyle: pw.FontStyle.italic,
+                  ),
+                ),
               ),
             ],
-          ),
-          
-          pw.Footer(
-            trailing: pw.Text(
-              'Generated by Brandify on ${DateTime.now().toString().split(' ')[0]}',
-              style: pw.TextStyle(fontSize: 10, fontStyle: pw.FontStyle.italic),
-            ),
-          ),
-        ],
       ),
     );
 
@@ -126,10 +142,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
     final file = File('${directory.path}/orders_receipt.pdf');
     await file.writeAsBytes(await pdf.save());
 
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      text: 'Orders Receipt',
-    );
+    await Share.shareXFiles([XFile(file.path)], text: 'Orders Receipt');
   }
 
   @override
@@ -137,9 +150,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
     double totalProfit = calculateTotalProfit();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isSelectionMode 
-          ? 'Select Orders' 
-          : 'Orders'),
+        title: Text(isSelectionMode ? 'Select Orders' : 'Orders'),
         actions: [
           IconButton(
             icon: Icon(isSelectionMode ? Icons.close : Icons.checklist_rtl),
@@ -172,19 +183,17 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                 children: [
                   Text(
                     'Total Profit',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     '${totalProfit.toStringAsFixed(2)} LE',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: totalProfit >= 0
-                          ? Colors.green[700]
-                          : Colors.red[700],
+                      color:
+                          totalProfit >= 0
+                              ? Colors.green[700]
+                              : Colors.red[700],
                     ),
                   ),
                 ],
@@ -195,42 +204,52 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   'Orders from ${selectedDateRange!.start.toString().split(' ')[0]} to ${selectedDateRange!.end.toString().split(' ')[0]}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(color: Colors.grey[600]),
                 ),
               ),
             SizedBox(height: 20),
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, i) => AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: selectedOrders.contains(filteredOrders[i])
-                        ? Theme.of(context).primaryColor.withOpacity(0.08)
-                        : null,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: RecentSellItem(
-                    sell: filteredOrders[i],
-                    onTap: (x, y) => _handleOrderTap(i),
-                  ),
-                ),
-                separatorBuilder: (_, __) => SizedBox(height: 10),
-                itemCount: filteredOrders.length,
+              child: BlocBuilder<AllSellsCubit, AllSellsState>(
+                builder: (context, state) {
+                  return ListView.separated(
+                    itemBuilder:
+                        (context, i) => AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                selectedOrders.contains(filteredOrders[i])
+                                    ? Theme.of(
+                                      context,
+                                    ).primaryColor.withOpacity(0.08)
+                                    : null,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: RecentSellItem(
+                            sell: filteredOrders[i],
+                            onTap: (x, y) => _handleOrderTap(i),
+                          ),
+                        ),
+                    separatorBuilder: (_, __) => SizedBox(height: 10),
+                    itemCount: filteredOrders.length,
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: isSelectionMode && selectedOrders.isNotEmpty
-          ? FloatingActionButton.extended(
-              onPressed: _createAndShareReceipt,
-              label: Text('Create Receipt'),
-              icon: Icon(Icons.share),
-            )
-          : null,
+      floatingActionButton:
+          isSelectionMode && selectedOrders.isNotEmpty
+              ? FloatingActionButton.extended(
+                onPressed: _createAndShareReceipt,
+                label: Text('Create Receipt'),
+                icon: Icon(Icons.share),
+              )
+              : null,
     );
   }
 
@@ -257,43 +276,45 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Sort By Profit',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+      builder:
+          (context) => Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sort By Profit',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20),
+                ListTile(
+                  leading: Icon(Icons.arrow_upward),
+                  title: Text('Highest Profit'),
+                  onTap: () {
+                    setState(() {
+                      filteredOrders.sort(
+                        (a, b) => b.profit.compareTo(a.profit),
+                      );
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.arrow_downward),
+                  title: Text('Lowest Profit'),
+                  onTap: () {
+                    setState(() {
+                      filteredOrders.sort(
+                        (a, b) => a.profit.compareTo(b.profit),
+                      );
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            ListTile(
-              leading: Icon(Icons.arrow_upward),
-              title: Text('Highest Profit'),
-              onTap: () {
-                setState(() {
-                  filteredOrders.sort((a, b) => b.profit.compareTo(a.profit));
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.arrow_downward),
-              title: Text('Lowest Profit'),
-              onTap: () {
-                setState(() {
-                  filteredOrders.sort((a, b) => a.profit.compareTo(b.profit));
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -302,67 +323,66 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
+      builder:
+          (context) => Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            Center(
-              child: Text(
-                "Order Details",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF5E6C58),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SellInfo(sell: sell),
-            const SizedBox(height: 20),
-            if(!sell.isRefunded)
-            BlocBuilder<AllSellsCubit, AllSellsState>(
-              builder: (context, state) {
-                if(state is LoadingRefundSellsState){
-                  return Center(child: Loading());
-                }
-                else{
-                  return CustomButton(
-                    text: "Refund",
-                    onPressed: () {
-                      AllSellsCubit.get(context).refund(context, sell);
+                Center(
+                  child: Text(
+                    "Order Details",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF5E6C58),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SellInfo(sell: sell),
+                const SizedBox(height: 20),
+                if (!sell.isRefunded)
+                  BlocBuilder<AllSellsCubit, AllSellsState>(
+                    builder: (context, state) {
+                      if (state is LoadingRefundSellsState) {
+                        return Center(child: Loading());
+                      } else {
+                        return CustomButton(
+                          text: "Refund",
+                          onPressed: () {
+                            AllSellsCubit.get(context).refund(context, sell);
+                          },
+                          //bgColor: Color(0xFF5E6C58),
+                        );
+                      }
                     },
-                    //bgColor: Color(0xFF5E6C58),
-                  );
-                }
-              },
+                  ),
+                if (!sell.isRefunded) const SizedBox(height: 10),
+                CustomButton(
+                  text: "Close",
+                  onPressed: () => Navigator.pop(context),
+                  bgColor: Color(0xFF5E6C58),
+                ),
+              ],
             ),
-            if(!sell.isRefunded)
-            const SizedBox(height: 10),
-            CustomButton(
-              text: "Close",
-              onPressed: () => Navigator.pop(context),
-              bgColor: Color(0xFF5E6C58),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 }

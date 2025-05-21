@@ -154,9 +154,9 @@ class ExtraExpensesCubit extends Cubit<ExtraExpensesState> {
       await Package.checkAccessability(
         online: () async{
           var res = await FirestoreServices().delete(extraExpensesTable, expenses[index].backendId!);
-          if(res.status == Status.success){
-            expenses.removeAt(index);
+          if(res.status == Status.success){ 
             AppUserCubit.get(navigatorKey.currentState!.context).addToProfit(expenses[index].price?? 0); 
+            expenses.removeAt(index);
             emit(ExtraExpensesLoaded());
           }
           else{
@@ -170,8 +170,8 @@ class ExtraExpensesCubit extends Cubit<ExtraExpensesState> {
           print("delete offline");
           print("expenses nameeee: ${expenses[index].name} - expenses idddd: ${expenses[index].id}");
           await Hive.box(HiveServices.getTableName(extraExpensesTable)).delete(expenses[index].id);
-          expenses.removeAt(index);
           AppUserCubit.get(navigatorKey.currentState!.context).addToProfit(expenses[index].price?? 0);
+          expenses.removeAt(index);
           emit(ExtraExpensesLoaded());
         },
       );

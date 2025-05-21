@@ -42,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   void initializeData() async {
-    await HiveServices.openUserBoxes();
     await context.read<AppUserCubit>().refreshUserData();
     await context.read<ProductsCubit>().getProducts();
     int cost = await context.read<AdsCubit>().getAllAds();
@@ -51,11 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
       allProducts: context.read<ProductsCubit>().products,
     );
     context.read<SidesCubit>().getAllSides();
-    context.read<AppUserCubit>().calculateTotalAndProfit(
-      context.read<AllSellsCubit>().sells,
-      context.read<AdsCubit>().ads,
-      context.read<ExtraExpensesCubit>().expenses,
-    );
+    // context.read<AppUserCubit>().calculateTotalAndProfit(
+    //   context.read<AllSellsCubit>().sells,
+    //   context.read<AdsCubit>().ads,
+    //   context.read<ExtraExpensesCubit>().expenses,
+    // );
     await context.read<ExtraExpensesCubit>().getAllExpenses();
     initializeReports(
       context.read<AllSellsCubit>().sells,

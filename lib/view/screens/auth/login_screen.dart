@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     ),
                   ],
                 ),
-                SizedBox(height: 20,),
+                SizedBox(height: 30,),
                 Column(
                   children: [
                     // Text(

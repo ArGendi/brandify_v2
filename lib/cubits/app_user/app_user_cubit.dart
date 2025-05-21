@@ -418,11 +418,10 @@ class AppUserCubit extends Cubit<AppUserState> {
       }
     }
 
-    Future<void> refreshUserData() async {
+  Future<void> refreshUserData() async {
+    emit(AppUserLoading());
     if (isLoggedInNow){
       try {
-        emit(AppUserLoading());
-        
         // First get user data and check if successful
         var userData = await FirestoreServices().getUserData();
         if (userData == null) {
@@ -434,21 +433,25 @@ class AppUserCubit extends Cubit<AppUserState> {
         var packageType = userData['package'] ?? PACKAGE_TYPE_ONLINE;
         Package.getTypeFromString(packageType);
         
-        if (Package.type == PackageType.online || Package.type == PackageType.shopify) {
-          brandName = userData['brandName'];
-          brandPhone = userData['brandPhone'];
-          totalOrders = userData['totalOrders'] ?? 0;
-          totalProfit = userData['totalProfit'] ?? 0;
-          total = userData['total'] ?? 0;
+        brandName = userData['brandName'];
+        brandPhone = userData['brandPhone'];
+        totalOrders = userData['totalOrders'] ?? 0;
+        totalProfit = userData['totalProfit'] ?? 0;
+        total = userData['total'] ?? 0;
+        
+        // Save to cache
+        await Cache.setName(brandName ?? '');
+        await Cache.setPhone(brandPhone ?? '');
+        await Cache.setTotalOrders(totalOrders);
+        await Cache.setTotalProfit(totalProfit);
+        await Cache.setTotal(total);
+        await Cache.setPackageType(packageType);
+
+        await HiveServices.openUserBoxes();
+        // if (Package.type == PackageType.online || Package.type == PackageType.shopify) {
           
-          // Save to cache
-          await Cache.setName(brandName ?? '');
-          await Cache.setPhone(brandPhone ?? '');
-          await Cache.setTotalOrders(totalOrders);
-          await Cache.setTotalProfit(totalProfit);
-          await Cache.setTotal(total);
-        } 
-        else if (Package.type == PackageType.offline) {
+        // } 
+        if (Package.type == PackageType.offline) {
           // Get data from Hive
           //var productsBox = Hive.box(HiveServices.getTableName(productsTable));
           var sellsBox = Hive.box(HiveServices.getTableName(sellsTable));
@@ -519,11 +522,15 @@ class AppUserCubit extends Cubit<AppUserState> {
       }
     }
     else{
+      print("herpppppppppppppppppppppppppp");
       var packageType = Cache.getPackageType();
-      Package.getTypeFromString(packageType?? PACKAGE_TYPE_ONLINE);
-      if (packageType == PACKAGE_TYPE_ONLINE || packageType == PACKAGE_TYPE_SHOPIFY) {
+      print("packageType : $packageType");
+      Package.getTypeFromString(packageType ?? PACKAGE_TYPE_ONLINE);
+      if (Package.type == PackageType.online || Package.type == PackageType.shopify) {
+        print("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         var userData = await FirestoreServices().getUserData();
         if (userData != null) {
+          print("user dataaaaaa : $userData");
           brandName = userData['brandName'];
           brandPhone = userData['brandPhone'];
           totalOrders = userData['totalOrders'] ?? 0;
@@ -540,6 +547,9 @@ class AppUserCubit extends Cubit<AppUserState> {
         totalOrders = Cache.getTotalOrders() ?? 0;
         totalProfit = Cache.getTotalProfit() ?? 0;
         total = Cache.getTotal() ?? 0;
+
+        await HiveServices.openUserBoxes();
+        
         emit(AppUserLoaded());
       }
     }

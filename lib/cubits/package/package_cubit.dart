@@ -3,6 +3,7 @@ import 'package:brandify/cubits/all_sells/all_sells_cubit.dart';
 import 'package:brandify/cubits/app_user/app_user_cubit.dart';
 import 'package:brandify/cubits/extra_expenses/extra_expenses_cubit.dart';
 import 'package:brandify/cubits/products/products_cubit.dart';
+import 'package:brandify/cubits/sides/sides_cubit.dart';
 import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,6 +43,7 @@ class PackageCubit extends Cubit<PackageState> {
         // Converting from offline to online
         print("Converting from offline to online");
         print(Hive.box(_productsTable).values.toList());
+
         final Map<String, dynamic> localData = {
           productsTable: Hive.box(_productsTable).values.toList(),
           sellsTable: Hive.box(_sellsTable).values.toList(),
@@ -54,12 +56,46 @@ class PackageCubit extends Cubit<PackageState> {
         final response = await FirestoreServices().uploadLocalData(localData);
         
         if (response.status == Status.success) {
+          final docIds = Map<String, List<String>>.from(response.data);
+          
+          // Update Products Cubit
+          var productsCubit = ProductsCubit.get(context);
+          for (int i = 0; i < productsCubit.products.length; i++) {
+            productsCubit.products[i].backendId = docIds[productsTable]?[i];
+          }
+          
+          // Update Sells Cubit
+          var sellsCubit = AllSellsCubit.get(context);
+          for (int i = 0; i < sellsCubit.sells.length; i++) {
+            sellsCubit.sells[i].backendId = docIds[sellsTable]?[i];
+          }
+          
+          // Update Sides Cubit
+          var sidesCubit = SidesCubit.get(context);
+          for (int i = 0; i < sidesCubit.sides.length; i++) {
+            sidesCubit.sides[i].backendId = docIds[sidesTable]?[i];
+          }
+          
+          // Update Ads Cubit
+          var adsCubit = AdsCubit.get(context);
+          for (int i = 0; i < adsCubit.ads.length; i++) {
+            adsCubit.ads[i].backendId = docIds[adsTable]?[i];
+          }
+          
+          // Update Extra Expenses Cubit
+          var expensesCubit = ExtraExpensesCubit.get(context);
+          for (int i = 0; i < expensesCubit.expenses.length; i++) {
+            expensesCubit.expenses[i].backendId = docIds[extraExpensesTable]?[i];
+          }
+
           await FirestoreServices().updateUserData({
             "package": PACKAGE_TYPE_ONLINE,
             "total": Cache.getTotal() ?? 0,
             "totalProfit": Cache.getTotalProfit()?? 0,
           });
           await Cache.setPackageType(PACKAGE_TYPE_ONLINE);
+
+          
            
           // Clear all Hive boxes
           await Hive.box(_productsTable).clear();
@@ -68,13 +104,13 @@ class PackageCubit extends Cubit<PackageState> {
           await Hive.box(_adsTable).clear();
           await Hive.box(_extraExpensesTable).clear();
           
-          _resetAllCubits(context);
-          await AppUserCubit.get(context).getUserData();  // Add this line here
+          //_resetAllCubits(context);
+          //await AppUserCubit.get(context).getUserData();  // Add this line here
           
           Package.type = PackageType.online;
           emit(PackageSuccess('Successfully converted to online package'));
         } else {
-          emit(PackageError(response.data));
+          emit(PackageError('Failed to upload data to online storage'));
         }
       } else {
         // Converting from online to offline
@@ -83,12 +119,54 @@ class PackageCubit extends Cubit<PackageState> {
         if (response.status == Status.success) {
           // Save data to Hive boxes
           print("hereeeeee 2");
-          await Hive.box(_productsTable).addAll(response.data[productsTable] ?? []);
-          await Hive.box(_sellsTable).addAll(response.data[sellsTable] ?? []);
-          await Hive.box(_sidesTable).addAll(response.data[sidesTable] ?? []);
-          await Hive.box(_adsTable).addAll(response.data[adsTable] ?? []);
-          await Hive.box(_extraExpensesTable).addAll(response.data[extraExpensesTable] ?? []);
+          var productsIds = (await Hive.box(_productsTable).addAll(response.data[productsTable] ?? [])).toList();
+          var sellsIds = (await Hive.box(_sellsTable).addAll(response.data[sellsTable] ?? [])).toList();
+          var sidesIds = (await Hive.box(_sidesTable).addAll(response.data[sidesTable] ?? [])).toList();
+          var adsIds = (await Hive.box(_adsTable).addAll(response.data[adsTable] ?? [])).toList();
+          var extraExpensesIds = (await Hive.box(_extraExpensesTable).addAll(response.data[extraExpensesTable] ?? [])).toList();
           print("hereeeeee 3");
+
+          var productsCubit = ProductsCubit.get(context);
+          for (int i = 0; i < productsCubit.products.length; i++) {
+            productsCubit.products[i].id = productsIds[i];
+          }
+          
+          // Update Sells Cubit
+          var sellsCubit = AllSellsCubit.get(context);
+          for (int i = 0; i < sellsCubit.sells.length; i++) {
+            sellsCubit.sells[i].id = sellsIds[i];
+          }
+          
+          // Update Sides Cubit
+          var sidesCubit = SidesCubit.get(context);
+          for (int i = 0; i < sidesCubit.sides.length; i++) {
+            sidesCubit.sides[i].id = sidesIds[i];
+          }
+          
+          // Update Ads Cubit
+          var adsCubit = AdsCubit.get(context);
+          for (int i = 0; i < adsCubit.ads.length; i++) {
+            adsCubit.ads[i].id = adsIds[i];
+          }
+          
+          // Update Extra Expenses Cubit
+          var expensesCubit = ExtraExpensesCubit.get(context);
+          for (int i = 0; i < expensesCubit.expenses.length; i++) {
+            expensesCubit.expenses[i].id = extraExpensesIds[i];
+          }
+
+          // Delete existing online data first
+          final deleteResponse = await FirestoreServices().deleteAllUserData();
+          if (deleteResponse.status != Status.success) {
+            emit(PackageError('Failed to clear online data'));
+            await Hive.box(_productsTable).clear();
+            await Hive.box(_sellsTable).clear();
+            await Hive.box(_sidesTable).clear();
+            await Hive.box(_adsTable).clear();
+            await Hive.box(_extraExpensesTable).clear();
+            return;
+          }
+
           await FirestoreServices().updateUserData({
             "package": PACKAGE_TYPE_OFFLINE,
           });
@@ -105,8 +183,9 @@ class PackageCubit extends Cubit<PackageState> {
           }
 
           print("hereeeeee 6");
-          _resetAllCubits(context);
-          await AppUserCubit.get(context).getUserData();
+           
+          //_resetAllCubits(context);
+          //await AppUserCubit.get(context).getUserData();
           print("hereeeeee 7");
           Package.type = PackageType.offline;
           

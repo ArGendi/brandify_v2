@@ -168,7 +168,7 @@ class AdsCubit extends Cubit<AdsState> {
 
   Future<int> getAllAds() async {
     try {
-      if (ads.isNotEmpty) return 0;
+      //if (ads.isNotEmpty) return 0;
 
       emit(AdsLoading());
       int totalCost = 0;

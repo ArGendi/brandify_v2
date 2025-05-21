@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:brandify/main.dart';
+import 'package:brandify/models/package.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -155,12 +156,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                       children: [
                         CircleAvatar(
                           radius: 28,
-                          backgroundImage:
-                              sells[i].product!.image != null
-                                  ? FileImage(
-                                      File(sells[i].product!.image!),
-                                    )
-                                  : AssetImage("assets/images/default.png"),
+                          backgroundImage: Package.getImageWidget(sells[i].product!.image),
                         ),
                         SizedBox(
                           width: 10,
@@ -278,8 +274,8 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                     );
                   }
                   return ElevatedButton(
-                    onPressed: () {
-                      AllSellsCubit.get(context).refund(context, sell);
+                    onPressed: () async{
+                      await AllSellsCubit.get(context).refund(context, sell);
                       navigatorKey.currentState?..pop()..pop();
                     },
                     style: ElevatedButton.styleFrom(
