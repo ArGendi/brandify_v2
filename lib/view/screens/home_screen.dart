@@ -326,12 +326,27 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon, color: color),
           const SizedBox(height: 10),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
-            ),
+          Row(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                ),
+              ),
+              if (subtitle != null) ...[
+                const SizedBox(width: 8),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: color.withOpacity(0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 5),
           isLoading
@@ -343,29 +358,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     valueColor: AlwaysStoppedAnimation<Color>(color),
                   ),
                 )
-              : Row(
-                  children: [
-                    Text(
-                      value,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
-                    ),
-                    if (subtitle != null) ...[
-                      const SizedBox(width: 8),
-                      Text(
-                        subtitle,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: color.withOpacity(0.8),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ],
+              : Text(
+                value,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: color,
                 ),
+              ),
         ],
       ),
     );
@@ -402,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               title,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
             ),

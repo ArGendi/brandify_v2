@@ -156,7 +156,11 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                       children: [
                         CircleAvatar(
                           radius: 28,
-                          backgroundImage: Package.getImageWidget(sells[i].product!.image),
+                          backgroundColor: mainColor,
+                          child: Icon(
+                            Icons.shopping_bag,
+                            color: Colors.white,
+                          )
                         ),
                         SizedBox(
                           width: 10,

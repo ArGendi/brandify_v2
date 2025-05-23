@@ -31,6 +31,7 @@ class AppUserCubit extends Cubit<AppUserState> {
   String? brandName;
   String? brandPhone;
   bool isLoggedInNow = false;
+  DateTime? createdAt;
 
   AppUserCubit() : super(AppUserInitial());
 
@@ -438,6 +439,8 @@ class AppUserCubit extends Cubit<AppUserState> {
         totalOrders = userData['totalOrders'] ?? 0;
         totalProfit = userData['totalProfit'] ?? 0;
         total = userData['total'] ?? 0;
+        createdAt = userData['createdAt'] != null ? 
+          DateTime.parse(userData['createdAt']) : null;
         
         // Save to cache
         await Cache.setName(brandName ?? '');
@@ -522,12 +525,10 @@ class AppUserCubit extends Cubit<AppUserState> {
       }
     }
     else{
-      print("herpppppppppppppppppppppppppp");
       var packageType = Cache.getPackageType();
       print("packageType : $packageType");
       Package.getTypeFromString(packageType ?? PACKAGE_TYPE_ONLINE);
       if (Package.type == PackageType.online || Package.type == PackageType.shopify) {
-        print("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         var userData = await FirestoreServices().getUserData();
         if (userData != null) {
           print("user dataaaaaa : $userData");
@@ -536,6 +537,8 @@ class AppUserCubit extends Cubit<AppUserState> {
           totalOrders = userData['totalOrders'] ?? 0;
           totalProfit = userData['totalProfit'] ?? 0;
           total = userData['total'] ?? 0;
+          createdAt = userData['createdAt'] != null ? 
+            DateTime.parse(userData['createdAt']) : null;
           emit(AppUserLoaded());
         } else {
           emit(AppUserError('Could not get user data'));

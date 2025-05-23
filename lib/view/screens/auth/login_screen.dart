@@ -67,14 +67,25 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 Center(
                   child: SlideTransition(
                     position: animation,
-                    child: Text(
-                      "Brandify",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: mainColor,
-                        letterSpacing: 1.2,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/logo_primary.png",
+                          width: 70,
+                          //height: 100,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "Brandify",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: mainColor,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -83,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   children: [
                     Container(
                       width: 60,
-                      height: 2,
+                      height: 1.5,
                       margin: EdgeInsets.only(top: 8),
                       decoration: BoxDecoration(
                         color: mainColor.withOpacity(0.3),
@@ -92,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     ),
                   ],
                 ),
-                SizedBox(height: 30,),
+                SizedBox(height: 25,),
                 Column(
                   children: [
                     // Text(

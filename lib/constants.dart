@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 // colors
 //const Color mainColor =Color.fromARGB(255, 9, 85, 64);
-const Color mainColor =Color(0xff162A2C);
+//const Color mainColor =Color(0xff162A2C);
+const Color mainColor =Color(0xff132A2C);
 
 // tables
 const String productsTable = "products";

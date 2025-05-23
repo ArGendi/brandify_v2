@@ -104,8 +104,8 @@ class _MyAppState extends State<MyApp> {
           floatingActionButtonTheme: FloatingActionButtonThemeData(
             backgroundColor: mainColor,
             foregroundColor: Colors.white,
-          )
-          //fontFamily: 'times new roman',
+          ),
+          fontFamily: 'CreatoDisplay',
           ),
       home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : WelcomeScreen(),
       //home: WelcomeScreen(),

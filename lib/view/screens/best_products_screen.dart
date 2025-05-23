@@ -107,10 +107,18 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
                               borderRadius: BorderRadius.circular(6)
                             ),
                             child: ListTile(
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundImage: Package.getImageWidget(productSales.product.image),
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: Package.getImageCachedWidget(productSales.product.image),
+                                ),
                               ),
+                              // leading: CircleAvatar(
+                              //   radius: 25,
+                              //   backgroundImage: Package.getImageWidget(productSales.product.image),
+                              // ),
                               title: CustomText(
                                 text: productSales.product.name ??
                                     "Unnamed Product",

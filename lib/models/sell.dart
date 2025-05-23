@@ -21,10 +21,13 @@ class Sell{
   ProductSize? size;
   bool isRefunded = false;
   SellPlace? place;
+  DateTime? createdAt;
 
   Sell({this.id, this.backendId, this.product, this.date, this.quantity, this.priceOfSell, 
     this.profit = 0, this.sideExpenses = const [], this.extraExpenses = 0, this.size,
-    this.place});
+    this.place}){
+      createdAt = DateTime.now();
+    }
 
   Sell.fromJson(Map<dynamic, dynamic> json){
     id = json["id"];
@@ -40,6 +43,7 @@ class Sell{
     size = ProductSize.fromJson(json["size"]);
     isRefunded = json["isRefunded"] ?? false;
     place = convertPlaceFromString(json["place"]);
+    createdAt = json["createdAt"] != null ? DateTime.parse(json["createdAt"]) : null;
   }
 
   Sell.fromShopifyOrder(Map<String, dynamic> order, List<Product> allProducts) {
@@ -99,6 +103,7 @@ class Sell{
       "size": size?.toJson(),
       "isRefunded": isRefunded,
       "place": getPlace(),
+      "created_at": createdAt != null ? DateFormat('yyyy-MM-dd HH:mm:ss').format(createdAt!) : null,
     };
   }
 

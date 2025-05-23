@@ -72,11 +72,13 @@ class Package {
           "assets/images/default.png",
           width: double.infinity,
           height: 380, 
+          fit: BoxFit.cover,
         ),
         errorWidget: (context, url, error) => Image.asset(
           "assets/images/default.png",
           width: double.infinity,
           height: 380,
+          fit: BoxFit.cover,
         ),
       );
       // return Image.network(
@@ -94,7 +96,15 @@ class Package {
       // ).image;
     }
     else{
-      return Image.file(File(imageUrl));
+      return Image.file(
+        File(imageUrl),
+        errorBuilder: (context, error, stackTrace) => Image.asset(
+          "assets/images/default.png",
+          width: double.infinity,
+          height: 380,
+          fit: BoxFit.cover,
+        ),
+      );
     }
   }
 

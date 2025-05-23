@@ -1,4 +1,5 @@
 import 'package:brandify/models/size.dart';
+import 'package:intl/intl.dart';
 
 class Product{
   int? id;
@@ -14,8 +15,12 @@ class Product{
   int? shopifyPrice;
   List<ProductSize> sizes = [];
   int noOfSells = 0;
+  DateTime? createdAt;
 
-  Product({this.id, this.shopifyId, this.name, this.description, this.image, this.price, this.noOfSells = 0, this.code});
+  Product({this.id, this.shopifyId, this.name, this.description, 
+  this.image, this.price, this.noOfSells = 0, this.code}){
+    createdAt = DateTime.now();
+  }
   Product.fromJson(Map<dynamic, dynamic> json){
     id = json["id"];
     backendId = json["backendId"];
@@ -30,6 +35,7 @@ class Product{
     shopifyPrice = json["shopifyPrice"];
     noOfSells = json["noOfSells"] ?? 0;
     sizes = json["sizes"] != null ? [for(var x in json["sizes"]) ProductSize.fromJson(x)] : []; 
+    createdAt = json["createdAt"] != null? DateTime.parse(json["createdAt"]): null;
   }
 
   Product.fromShopify(Map<String, dynamic> shopifyProduct) {
@@ -71,6 +77,7 @@ class Product{
       "shopifyPrice": shopifyPrice,
       "noOfSells": noOfSells,
       "sizes": [for(var size in sizes) size.toJson()],
+      "created_at": createdAt != null ? DateFormat('yyyy-MM-dd HH:mm:ss').format(createdAt!) : null,
     };
   }
 

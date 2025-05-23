@@ -26,6 +26,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     var registerCubit = BlocProvider.of<RegisterCubit>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.grey[800]),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -35,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: 60, 
+                  height: 30,  // Reduced from 60 to account for AppBar
                 ),
                 Center(
                   child: Text(

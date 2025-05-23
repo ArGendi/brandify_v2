@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:brandify/models/slack/slack_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/enum.dart';
@@ -36,6 +37,7 @@ class RegisterCubit extends Cubit<RegisterState> {
           "total": 0,
           "totalProfit": 0,
           "totalOrders": 0,
+          "createdAt": DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
         };
         brandData.addAll(newBrand.toJson());
         var brandResponse = await FirestoreServices().setUserData(brandData);
@@ -45,9 +47,9 @@ class RegisterCubit extends Cubit<RegisterState> {
             name: name,
             phone: phone,
           );
-          SlackServices().sendMessage(
-            message: "New Brand Registered: ${newBrand.name} - ${newBrand.phone}",
-          );
+          // SlackServices().sendMessage(
+          //   message: "New Brand Registered: ${newBrand.name} - ${newBrand.phone}",
+          // );
           emit(RegisterSuccessState());
           return Data("", RegisterStatus.pass);
         }

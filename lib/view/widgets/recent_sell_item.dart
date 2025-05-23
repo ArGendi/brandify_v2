@@ -19,9 +19,13 @@ class RecentSellItem extends StatelessWidget {
       onTap: () => onTap(context, sell),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 25,
-            backgroundImage: Package.getImageWidget(sell.product?.image),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(50),
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: Package.getImageCachedWidget(sell.product?.image),
+            ),
           ),
           SizedBox(width: 10),
           Expanded(

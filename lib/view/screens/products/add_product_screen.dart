@@ -33,7 +33,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     print("imageeee: ${addOrEdit}");
     print("imageeee: ${AddProductCubit.get(context).product.image}");
     if (addOrEdit != null) {
-      return Image(image: Package.getImageWidget(addOrEdit.image));
+      return Package.getImageCachedWidget(addOrEdit.image);
     }
     else {
       if(AddProductCubit.get(context).product.image == null){

@@ -217,6 +217,11 @@ class SellCubit extends Cubit<SellState> {
       quantity++;
       emit(QuantityChangedSellState());
     }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Not enough quantity available")),
+      );
+    }
   }
 
   void decQuantity(BuildContext context){

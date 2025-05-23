@@ -10,7 +10,6 @@ class Brand {
     id = json["id"];
     name = json["name"];
     phone = json["phone"];
-
   }
 
   Map<String, dynamic> toJson(){

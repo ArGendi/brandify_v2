@@ -4,6 +4,7 @@ import 'package:brandify/cubits/app_user/app_user_cubit.dart';
 import 'package:brandify/cubits/extra_expenses/extra_expenses_cubit.dart';
 import 'package:brandify/cubits/products/products_cubit.dart';
 import 'package:brandify/cubits/sides/sides_cubit.dart';
+import 'package:brandify/main.dart';
 import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,31 +60,31 @@ class PackageCubit extends Cubit<PackageState> {
           final docIds = Map<String, List<String>>.from(response.data);
           
           // Update Products Cubit
-          var productsCubit = ProductsCubit.get(context);
+          var productsCubit = ProductsCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < productsCubit.products.length; i++) {
             productsCubit.products[i].backendId = docIds[productsTable]?[i];
           }
           
           // Update Sells Cubit
-          var sellsCubit = AllSellsCubit.get(context);
+          var sellsCubit = AllSellsCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < sellsCubit.sells.length; i++) {
             sellsCubit.sells[i].backendId = docIds[sellsTable]?[i];
           }
           
           // Update Sides Cubit
-          var sidesCubit = SidesCubit.get(context);
+          var sidesCubit = SidesCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < sidesCubit.sides.length; i++) {
             sidesCubit.sides[i].backendId = docIds[sidesTable]?[i];
           }
           
           // Update Ads Cubit
-          var adsCubit = AdsCubit.get(context);
+          var adsCubit = AdsCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < adsCubit.ads.length; i++) {
             adsCubit.ads[i].backendId = docIds[adsTable]?[i];
           }
           
           // Update Extra Expenses Cubit
-          var expensesCubit = ExtraExpensesCubit.get(context);
+          var expensesCubit = ExtraExpensesCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < expensesCubit.expenses.length; i++) {
             expensesCubit.expenses[i].backendId = docIds[extraExpensesTable]?[i];
           }
@@ -119,74 +120,76 @@ class PackageCubit extends Cubit<PackageState> {
         if (response.status == Status.success) {
           // Save data to Hive boxes
           print("hereeeeee 2");
+          await Cache.setPhone(AppUserCubit.get(navigatorKey.currentState!.context).brandPhone?? "");
+          print("hereeeeee 3");
+          await HiveServices.openUserBoxes();
+          print("hereeeeee 4");
           var productsIds = (await Hive.box(_productsTable).addAll(response.data[productsTable] ?? [])).toList();
           var sellsIds = (await Hive.box(_sellsTable).addAll(response.data[sellsTable] ?? [])).toList();
           var sidesIds = (await Hive.box(_sidesTable).addAll(response.data[sidesTable] ?? [])).toList();
           var adsIds = (await Hive.box(_adsTable).addAll(response.data[adsTable] ?? [])).toList();
           var extraExpensesIds = (await Hive.box(_extraExpensesTable).addAll(response.data[extraExpensesTable] ?? [])).toList();
-          print("hereeeeee 3");
+          print("hereeeeee 5");
 
-          var productsCubit = ProductsCubit.get(context);
+          var productsCubit = ProductsCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < productsCubit.products.length; i++) {
             productsCubit.products[i].id = productsIds[i];
           }
+          print("11111111");
           
           // Update Sells Cubit
-          var sellsCubit = AllSellsCubit.get(context);
+          var sellsCubit = AllSellsCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < sellsCubit.sells.length; i++) {
             sellsCubit.sells[i].id = sellsIds[i];
           }
+          print("22222222");
           
           // Update Sides Cubit
-          var sidesCubit = SidesCubit.get(context);
+          var sidesCubit = SidesCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < sidesCubit.sides.length; i++) {
             sidesCubit.sides[i].id = sidesIds[i];
           }
+          print("33333333");
           
           // Update Ads Cubit
-          var adsCubit = AdsCubit.get(context);
+          var adsCubit = AdsCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < adsCubit.ads.length; i++) {
             adsCubit.ads[i].id = adsIds[i];
           }
+          print("44444444");
           
           // Update Extra Expenses Cubit
-          var expensesCubit = ExtraExpensesCubit.get(context);
+          var expensesCubit = ExtraExpensesCubit.get(navigatorKey.currentState!.context);
           for (int i = 0; i < expensesCubit.expenses.length; i++) {
             expensesCubit.expenses[i].id = extraExpensesIds[i];
           }
-
+          print("hereeeeee 6");
           // Delete existing online data first
-          final deleteResponse = await FirestoreServices().deleteAllUserData();
-          if (deleteResponse.status != Status.success) {
-            emit(PackageError('Failed to clear online data'));
-            await Hive.box(_productsTable).clear();
-            await Hive.box(_sellsTable).clear();
-            await Hive.box(_sidesTable).clear();
-            await Hive.box(_adsTable).clear();
-            await Hive.box(_extraExpensesTable).clear();
-            return;
-          }
+          // final deleteResponse = await FirestoreServices().deleteAllUserData();
+          // if (deleteResponse.status != Status.success) {
+          //   emit(PackageError('Failed to clear online data'));
+          //   await Hive.box(_productsTable).clear();
+          //   await Hive.box(_sellsTable).clear();
+          //   await Hive.box(_sidesTable).clear();
+          //   await Hive.box(_adsTable).clear();
+          //   await Hive.box(_extraExpensesTable).clear();
+          //   return;
+          // }
+          print("hereeeeee 7");
 
           await FirestoreServices().updateUserData({
             "package": PACKAGE_TYPE_OFFLINE,
           });
-          var userData = await FirestoreServices().getUserData();
-          print("hereeeeee 4");
-          if(userData != null){
-            print("hereeeeee 5");
-            await Cache.setName(userData['name']);
-            await Cache.setPhone(userData['phone']);
-            await Cache.setTotal(userData['total']?? 0);
-            await Cache.setTotalProfit(userData['totalProfit']?? 0);
-            await Cache.setPackageType(PACKAGE_TYPE_OFFLINE);
-            //Package.type = PackageType.offline;
-          }
-
-          print("hereeeeee 6");
+          print("hereeeeee 8");
+          await Cache.setName(AppUserCubit.get(navigatorKey.currentState!.context).brandName ?? "");
+          await Cache.setPhone(AppUserCubit.get(navigatorKey.currentState!.context).brandPhone?? "");
+          await Cache.setTotal(AppUserCubit.get(navigatorKey.currentState!.context).total);
+          await Cache.setTotalProfit(AppUserCubit.get(navigatorKey.currentState!.context).totalProfit);
+          await Cache.setPackageType(PACKAGE_TYPE_OFFLINE);
            
           //_resetAllCubits(context);
           //await AppUserCubit.get(context).getUserData();
-          print("hereeeeee 7");
+          print("hereeeeee 9");
           Package.type = PackageType.offline;
           
           emit(PackageSuccess('Successfully converted to offline package'));

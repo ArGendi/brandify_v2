@@ -34,7 +34,8 @@ class _SellScreenState extends State<SellScreen> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     SellCubit.get(context).sides = [
-      for (var item in SidesCubit.get(context).sides) SellSide(item)
+      for (var item in SidesCubit.get(context).sides) 
+        if((item.quantity ?? 0) > 0) SellSide(item)
     ];
     if (widget.product.sizes.length == 1) {
       SellCubit.get(context).selectedSize = widget.product.sizes[0];
