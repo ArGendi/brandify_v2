@@ -279,13 +279,14 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-                "assets/images/empty.png",
-                height: 200, 
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+            Icon(Icons.money_off, size: 50, color: Colors.grey),
+            // Image.asset(
+            //     "assets/images/empty.png",
+            //     height: 200, 
+            //   ),
+            const SizedBox(
+              height: 20,
+            ),
             const Text(
               "No expenses yet.\nAdd any external expenses that cost your business like food, meeting expense, etc.",
               textAlign: TextAlign.center,

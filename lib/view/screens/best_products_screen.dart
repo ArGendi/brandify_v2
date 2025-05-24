@@ -78,22 +78,17 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
               ),
               child: Column(
                 children: [
-                  // CustomButton(
-                  //   onPressed: () => context.read<BestProductsCubit>().selectDateRange(context),
-                  //   text: context.read<BestProductsCubit>().selectedDateRange == null
-                  //       ? "Select Date Range"
-                  //       : "${context.read<BestProductsCubit>().selectedDateRange!.start.toString().split(' ')[0]} to ${context.read<BestProductsCubit>().selectedDateRange!.end.toString().split(' ')[0]}",
-                  // ),
-                  // const SizedBox(height: 20),
-                  // if (context.read<BestProductsCubit>().selectedDateRange !=
-                  //         null &&
-                  //     context.read<BestProductsCubit>().bestProducts.isEmpty)
-                    
-                  // else if (context
-                  //     .read<BestProductsCubit>()
-                  //     .bestProducts
-                  //     .isNotEmpty)
-                    Expanded(
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Text(
+                      "Products sorted by ${context.watch<BestProductsCubit>().sortBy == 'quantity' ? 'Quantity' : 'Profit'}",
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  Expanded(
                       child: ListView.builder(
                         itemCount:
                             context.read<BestProductsCubit>().bestProducts.length,
@@ -173,9 +168,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
                 leading: const Icon(Icons.sort),
                 title: const Text("Sort by Quantity"),
                 onTap: () {
-                  final cubit = context.read<BestProductsCubit>();
-                  cubit.bestProducts.sort((a, b) => b.quantity.compareTo(a.quantity));
-                  cubit.emit(BestProductsChangedState());
+                  context.read<BestProductsCubit>().sortByQuantity();
                   Navigator.pop(context);
                 },
               ),
@@ -183,9 +176,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
                 leading: const Icon(Icons.attach_money),
                 title: const Text("Sort by Profit"),
                 onTap: () {
-                  final cubit = context.read<BestProductsCubit>();
-                  cubit.bestProducts.sort((a, b) => b.profit.compareTo(a.profit));
-                  cubit.emit(BestProductsChangedState());
+                  context.read<BestProductsCubit>().sortByProfit();
                   Navigator.pop(context);
                 },
               ),

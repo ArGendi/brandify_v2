@@ -16,8 +16,17 @@ class OneProductSellsCubit extends Cubit<OneProductSellsState> {
   List<Sell> filteredSells = [];
 
   void getAllSellsOfProduct(List<Sell> allSells, Product product) {
-    sells = allSells.where((sell) => sell.product!.id == product.id).toList();
+    sells = allSells.where((sell){
+      //sell.product!.id == product.id
+      if(sell.product!.backendId != null && product.backendId!= null){
+        return sell.product!.backendId == product.backendId;
+      }
+      else{
+        return sell.product!.id == product.id;
+      } 
+    }).toList();
     filteredSells = List.from(sells);
+    filteredSells.sort((a, b) => b.date!.compareTo(a.date!));
     emit(OneProductSellsSuccess());
   }
 
@@ -33,11 +42,13 @@ class OneProductSellsCubit extends Cubit<OneProductSellsState> {
           sell.date!.isBefore(endDate.add(Duration(days: 1)));
     }).toList();
     print(sells);
+    //filteredSells.sort((a, b) => b.date!.compareTo(a.date!));
     emit(OneProductSellsSuccess());
   }
 
   void clearFilter() {
     filteredSells = List.from(sells);
+    filteredSells.sort((a, b) => b.date!.compareTo(a.date!));
     emit(OneProductSellsSuccess());
   }
 }

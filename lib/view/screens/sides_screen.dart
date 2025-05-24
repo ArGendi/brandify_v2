@@ -46,10 +46,15 @@ class _SidesScreenState extends State<SidesScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.asset(
-                        "assets/images/empty.png",
-                        height: 200, 
+                      Icon(
+                        Icons.card_giftcard,
+                        color: Colors.grey,
+                        size: 50,
                       ),
+                      // Image.asset(
+                      //   "assets/images/empty.png",
+                      //   height: 200, 
+                      // ),
                       const SizedBox(
                         height: 20,
                       ),

@@ -98,6 +98,9 @@ class Package {
     else{
       return Image.file(
         File(imageUrl),
+        width: double.infinity,
+        height: 380,
+        fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => Image.asset(
           "assets/images/default.png",
           width: double.infinity,

@@ -109,6 +109,7 @@ class SettingsTab extends StatelessWidget {
                   Icons.card_membership_outlined,
                   'Upgrade or change your current plan',
                   () {
+                    if(Package.type == PackageType.offline)
                     showModalBottomSheet(
                       context: context,
                       shape: RoundedRectangleBorder(
@@ -250,6 +251,13 @@ class SettingsTab extends StatelessWidget {
                             ),
                           ),
                     );
+                    else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('You are already in online package ✌️'),
+                        ),
+                      );
+                    }
                   },
                 ),
                 _buildSettingItem(
@@ -258,7 +266,7 @@ class SettingsTab extends StatelessWidget {
                   'Get help from our support team',
                   () {
                     final Uri whatsappUrl = Uri.parse(
-                      'https://wa.me/+201227701988?text=Hello, I need help with Brandify app.',
+                      'https://wa.me/+201107356032?text=',
                     );
                     launchUrl(
                       whatsappUrl,

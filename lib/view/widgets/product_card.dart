@@ -15,6 +15,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int numberOfAllItems = product.getNumberOfAllItems();
     return GestureDetector(
       onTap: () {
         ProductsCubit.get(context).filteredProducts = ProductsCubit.get(context).products;
@@ -49,11 +50,11 @@ class ProductCard extends StatelessWidget {
                       margin: const EdgeInsets.all(10),
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
+                        color: numberOfAllItems > 0? Colors.black.withOpacity(0.7) : Colors.red.withOpacity(0.7),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        "${product.getNumberOfAllItems()} in stock",
+                        "$numberOfAllItems in stock",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,

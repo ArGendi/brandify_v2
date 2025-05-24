@@ -13,6 +13,7 @@ part 'best_products_state.dart';
 class BestProductsCubit extends Cubit<BestProductsState> {
   List<ProductSells> bestProducts = [];
   DateTimeRange? selectedDateRange;
+  String sortBy = 'quantity';  // Add this field
 
   BestProductsCubit() : super(BestProductsInitial());
   static BestProductsCubit get(BuildContext context) => BlocProvider.of(context);
@@ -93,6 +94,19 @@ class BestProductsCubit extends Cubit<BestProductsState> {
     }
   }
 
+  // Update your sort methods to set this field
+  void sortByQuantity() {
+    sortBy = 'quantity';
+    bestProducts.sort((a, b) => b.quantity.compareTo(a.quantity));
+    emit(BestProductsChangedState());
+  }
+
+  void sortByProfit() {
+    sortBy = 'profit';
+    bestProducts.sort((a, b) => b.profit.compareTo(a.profit));
+    emit(BestProductsChangedState());
+  }
+
   // void getBestProducts(List<Product> products){
   //   bestProducts = products.where((e) => e.noOfSells > 0).toList();
   //   bestProducts.sort((a,b) => b.noOfSells.compareTo(a.noOfSells));
@@ -158,3 +172,5 @@ class BestProductsCubit extends Cubit<BestProductsState> {
 
   
 }
+
+

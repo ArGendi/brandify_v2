@@ -98,10 +98,15 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.asset(
-                        "assets/images/empty.png",
-                        height: 200, 
+                      Icon(
+                        FontAwesomeIcons.bullhorn,
+                        color: Colors.grey,
+                        size: 50,
                       ),
+                      // Image.asset(
+                      //   "assets/images/empty.png",
+                      //   height: 200, 
+                      // ),
                       const SizedBox(
                         height: 20,
                       ),

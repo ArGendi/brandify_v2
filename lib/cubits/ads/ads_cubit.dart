@@ -101,15 +101,18 @@ class AdsCubit extends Cubit<AdsState> {
 
   int getAllAdsFromHive(){
     try{
+      List<Ad> tempAds = [];
       int totalCost = 0;
       var adsBox = Hive.box(HiveServices.getTableName(adsTable));
       var keys = adsBox.keys.toList();
       for(var key in keys){
         Ad temp = Ad.fromJson(adsBox.get(key));
         temp.id = key;
-        ads.add(temp);
+        tempAds.add(temp);
         totalCost += temp.cost ?? 0;
       }
+      ads = tempAds;
+      emit(AdsChangedState());
       return totalCost;
     }
     catch(e){

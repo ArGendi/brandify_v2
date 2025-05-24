@@ -288,14 +288,23 @@ class _ProductDetailsState extends State<ProductDetails> {
               child: CustomButton(
                 text: "Sell Now",
                 onPressed: () {
-                  navigatorKey.currentState?.push(
-                    MaterialPageRoute(
-                      builder: (_) => BlocProvider(
-                        create: (context) => SellCubit(),
-                        child: SellScreen(product: widget.product),
+                  if(totalQuantity > 0){
+                    navigatorKey.currentState?.push(
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                          create: (context) => SellCubit(),
+                          child: SellScreen(product: widget.product),
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
+                  else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("No items in stock"),
+                      ),
+                    );
+                  }
                 },
               ),
             ),

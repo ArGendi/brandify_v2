@@ -83,7 +83,7 @@ class PackageSelectionScreen extends StatelessWidget {
               ],
               color: Colors.grey,
               icon: Icons.shopping_bag,
-              isComingSoon: false,
+              isComingSoon: true,
             ),
             SizedBox(height: 20),
           ],

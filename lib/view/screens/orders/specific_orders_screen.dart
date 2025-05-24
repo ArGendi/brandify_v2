@@ -115,7 +115,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
 
               pw.Divider(),
               pw.SizedBox(height: 20),
-              pw.Row(
+              pw.Column(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
                   pw.Text('Total Orders: $quantity'),
@@ -127,8 +127,8 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
               ),
 
               pw.Footer(
-                trailing: pw.Text(
-                  'By ${Cache.getName()}\n${DateTime.now().toString().split(' ')[0]}',
+                leading: pw.Text(
+                  'From ${Cache.getName()} on ${DateTime.now().toString().split(' ')[0]}',
                   style: pw.TextStyle(
                     fontSize: 10,
                     fontStyle: pw.FontStyle.italic,
