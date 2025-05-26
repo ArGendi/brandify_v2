@@ -30,6 +30,7 @@ import 'package:brandify/view/screens/reports/reports_screen.dart';
 import 'package:brandify/view/screens/sides_screen.dart';
 import 'package:brandify/view/screens/tabs/settings_tab.dart';
 import 'package:brandify/view/widgets/package_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -122,22 +123,22 @@ class _HomeScreenState extends State<HomeScreen> {
           unselectedItemColor: Colors.grey[400],
           backgroundColor: Colors.white,
           elevation: 0,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_rounded),
-              label: 'Home',
+              label: AppLocalizations.of(context)!.home,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.inventory_2_rounded),
-              label: 'Products',
+              label: AppLocalizations.of(context)!.productsTab,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_rounded),
-              label: 'Reports',
+              label: AppLocalizations.of(context)!.reports,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings_rounded),
-              label: 'Settings',
+              label: AppLocalizations.of(context)!.settings,
             ),
           ],
         ),
@@ -153,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               Row(
                 children: [
                   Expanded(
@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome back,',
+                          AppLocalizations.of(context)!.welcomeBack,
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 14,
@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                           child: _buildStatCard(
-                            'Total Sales',
+                            AppLocalizations.of(context)!.totalSales,
                             '...',
                             Icons.shopping_bag_rounded,
                             Colors.blue,
@@ -210,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(width: 15),
                         Expanded(
                           child: _buildStatCard(
-                            'Profit',
+                            AppLocalizations.of(context)!.profit,
                             '...',
                             Icons.trending_up_rounded,
                             Colors.green,
@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Expanded(
                         child: _buildStatCard(
-                          'Total Sales',
+                          AppLocalizations.of(context)!.totalSales,
                           appUserCubit.total.toString(),
                           Icons.shopping_bag_rounded,
                           Colors.blue,
@@ -235,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 15),
                       Expanded(
                         child: _buildStatCard(
-                          'Profit',
+                          AppLocalizations.of(context)!.profit,
                           appUserCubit.totalProfit.toString(),
                           appUserCubit.totalProfit >= 0 ? 
                             Icons.trending_up_rounded 
@@ -256,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // Quick Actions Grid
               Text(
-                'Quick Actions',
+                AppLocalizations.of(context)!.quickActions,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -273,32 +273,32 @@ class _HomeScreenState extends State<HomeScreen> {
                 childAspectRatio: 1.3,
                 children: [
                   _buildActionCard(
-                    'Products',
-                    'Manage your inventory',
+                    AppLocalizations.of(context)!.products,
+                    AppLocalizations.of(context)!.manageInventory,
                     Icons.inventory_2_rounded,
                     Colors.purple,
                     () => navigatorKey.currentState?.push(MaterialPageRoute(
                         builder: (_) => const ProductsScreen())),
                   ),
                   _buildActionCard(
-                    'Order Expenses',
-                    'Additional order costs',
+                    AppLocalizations.of(context)!.orderExpenses,
+                    AppLocalizations.of(context)!.additionalOrderCosts,
                     Icons.account_balance_wallet_rounded,
                     Colors.orange,
                     () => navigatorKey.currentState?.push(
                         MaterialPageRoute(builder: (_) => const SidesScreen())),
                   ),
                   _buildActionCard(
-                    'Ads',
-                    'Manage campaigns',
+                    AppLocalizations.of(context)!.ads,
+                    AppLocalizations.of(context)!.manageCampaigns,
                     Icons.campaign_rounded,
                     Colors.blue,
                     () => navigatorKey.currentState?.push(MaterialPageRoute(
                         builder: (_) => const AllAdsScreen())),
                   ),
                   _buildActionCard(
-                    'External Expenses',
-                    'Other expenses',
+                    AppLocalizations.of(context)!.externalExpenses,
+                    AppLocalizations.of(context)!.otherExpenses,
                     Icons.receipt_long_rounded,
                     Colors.teal,
                     () => navigatorKey.currentState?.push(MaterialPageRoute(

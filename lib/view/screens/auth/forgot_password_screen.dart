@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -26,7 +27,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Password reset email sent! Check your inbox.'),
+              content: Text(AppLocalizations.of(context)!.resetEmailSent),
               backgroundColor: Colors.green,
             ),
           );
@@ -63,7 +64,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Forgot\nPassword?',
+                AppLocalizations.of(context)!.forgotPassword,
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -73,7 +74,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                'Don\'t worry! It happens. Please enter the email address associated with your account.',
+                AppLocalizations.of(context)!.forgotPasswordDesc,
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 15,
@@ -84,7 +85,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 key: _formKey,
                 child: CustomTextFormField(
                   controller: _emailController,
-                  text: 'Phone Number',
+                  text: AppLocalizations.of(context)!.phoneNumber,
                   prefix: Icon(
                     Icons.phone_iphone_outlined,
                     color: Colors.grey[600],
@@ -93,10 +94,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   onSaved: (value) {},
                   onValidate: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your phone';
+                      return AppLocalizations.of(context)!.enterPhone;
                     }
                     if (value.length != 11) {
-                      return 'Please enter a valid phone';
+                      return AppLocalizations.of(context)!.enterValidPhone;
                     }
                     return null;
                   },
@@ -108,7 +109,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       child: CircularProgressIndicator(color: mainColor),
                     )
                   : CustomButton(
-                      text: 'Reset Password',
+                      text: AppLocalizations.of(context)!.resetPassword,
                       onPressed: _resetPassword,
                     ),
               SizedBox(height: 20),

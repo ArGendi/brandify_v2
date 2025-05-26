@@ -1,3 +1,4 @@
+import 'package:brandify/cubits/language/language_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,9 @@ import 'package:brandify/view/screens/sell_screen.dart';
 import 'package:brandify/view/screens/settings/shopify_setup_screen.dart';
 import 'package:brandify/view/screens/shopify_orders_screen.dart';
 import 'package:brandify/view/screens/welcome_screen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:brandify/l10n/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +55,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => LanguageCubit()),
         BlocProvider(create: (_) => LoginCubit()),
         BlocProvider(create: (_) => ProductsCubit()),
         BlocProvider(create: (_) => SidesCubit()),
@@ -80,35 +85,44 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  // }
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Brandify',
-      navigatorKey: navigatorKey,
-      theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: mainColor),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: mainColor,
-            foregroundColor: Colors.white,
-            elevation: 5,
-            centerTitle: true,
-          ),
-          floatingActionButtonTheme: FloatingActionButtonThemeData(
-            backgroundColor: mainColor,
-            foregroundColor: Colors.white,
-          ),
-          fontFamily: 'CreatoDisplay',
-          ),
-      home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : WelcomeScreen(),
-      //home: WelcomeScreen(),
+    return BlocBuilder<LanguageCubit, Locale>(
+      builder: (context, locale) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Brandify',
+          navigatorKey: navigatorKey,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'), // English
+            Locale('ar'), // Arabic
+          ],
+          locale: Locale(Cache.getLanguage() ?? 'en'),
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: mainColor),
+              useMaterial3: true,
+              appBarTheme: const AppBarTheme(
+                backgroundColor: mainColor,
+                foregroundColor: Colors.white,
+                elevation: 5,
+                centerTitle: true,
+              ),
+              floatingActionButtonTheme: FloatingActionButtonThemeData(
+                backgroundColor: mainColor,
+                foregroundColor: Colors.white,
+              ),
+              fontFamily: locale.languageCode == 'ar' ? 'Jazeera' : 'CreatoDisplay',
+              ),
+          home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : WelcomeScreen(),
+          //home: WelcomeScreen(),
+        );
+      },
     );
   }
 }

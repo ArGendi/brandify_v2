@@ -12,6 +12,7 @@ import 'package:brandify/view/screens/packages/package_selection_screen.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/view/widgets/loading.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -47,20 +48,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 Center(
                   child: Text(
-                    "Register",
+                    AppLocalizations.of(context)!.register,
                     style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: mainColor),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 Column(
                   children: [
                     Text(
-                      "Start Your Business Journey",
+                      AppLocalizations.of(context)!.startJourney,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey[800],
@@ -71,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      "Create your account and unlock powerful business tools",
+                      AppLocalizations.of(context)!.createAccountDesc,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey[600],
@@ -102,80 +101,74 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Icons.text_fields_rounded,
                               color: Colors.grey[600],
                             ),
-                            text: "Brand name",
+                            text: AppLocalizations.of(context)!.brandName,
                             keyboardType: TextInputType.emailAddress,
                             onSaved: (value) {
                               registerCubit.name = value.toString();
                             },
                             onValidate: (value) {
                               if (value!.isEmpty) {
-                                return "Enter brand name";
+                                return AppLocalizations.of(context)!.brandNameRequired;
                               }
                               return null;
                             },
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             prefix: Icon(
                               Icons.phone_iphone_rounded,
                               color: Colors.grey[600],
                             ),
-                            text: "Phone number",
+                            text: AppLocalizations.of(context)!.phoneNumber,
                             keyboardType: TextInputType.phone,
                             onSaved: (value) {
                               registerCubit.phone = value.toString();
                             },
                             onValidate: (value) {
                               if (value!.isEmpty) {
-                                return "Enter phone number";
+                                return AppLocalizations.of(context)!.phoneEmpty;
                               } else if (value.length != 11) {
-                                return "Wrong phone number";
+                                return AppLocalizations.of(context)!.phoneInvalid;
                               }
                               return null;
                             },
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             prefix: Icon(
                               Icons.lock,
                               color: Colors.grey[600],
                             ),
-                            text: "Password",
+                            text: AppLocalizations.of(context)!.password,
                             obscureText: true,
                             onSaved: (value) {
                               registerCubit.password = value.toString();
                             },
                             onValidate: (value) {
                               if (value!.isEmpty) {
-                                return "Enter your password";
+                                return AppLocalizations.of(context)!.passwordEmpty;
                               } else if (value.length < 8) {
-                                return "Minimum 8 characters";
+                                return AppLocalizations.of(context)!.passwordTooShort;
                               }
                               return null;
                             },
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           CustomTextFormField(
                             prefix: Icon(
                               Icons.lock,
                               color: Colors.grey[600],
                             ),
-                            text: "Confirm password",
+                            text: AppLocalizations.of(context)!.confirmPassword,
                             obscureText: true,
                             onSaved: (value) {
                               registerCubit.confirmPassword = value.toString();
                             },
                             onValidate: (value) {
                               if (value! != RegisterCubit.get(context).password) {
-                                return "Password doesn't match";
-                              } else
-                                return null;
+                                return AppLocalizations.of(context)!.passwordMismatch;
+                              }
+                              return null;
                             },
                           ),
                         ],
@@ -201,8 +194,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               else{
                                 return CustomButton(
                                   bgColor: Colors.green.shade600,
-                                  text: "Create new account",
-                                  onPressed: () async{
+                                  text: AppLocalizations.of(context)!.registerNow,
+                                  onPressed: () async {
                                     var status = await registerCubit.onRegister();
                                     RegisterStatusHandler(status);
                                   },

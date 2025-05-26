@@ -14,6 +14,7 @@ import 'package:brandify/main.dart';
 import 'package:brandify/view/screens/products/add_product_screen.dart';
 import 'package:brandify/view/widgets/product_card.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -34,7 +35,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Products Inventory"),
+        title: Text(AppLocalizations.of(context)!.productsInventory),
         elevation: 0,
       ),
       body: Container(
@@ -57,10 +58,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         width: 300,
                       ),
                       //const SizedBox(height: 10),
-                      const Text(
-                        "No products yet. Add your first product!",
+                      Text(
+                        AppLocalizations.of(context)!.noProductsYet,
                         style: TextStyle(
-                          //fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -92,7 +92,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(vertical: 15),
                                 prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                                hintText: "Search products...",
+                                hintText: AppLocalizations.of(context)!.searchProducts,
                                 border: InputBorder.none,
                               ),
                             ),
@@ -184,7 +184,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           );
         },
-        label: const Text("Add Product"),
+        label: Text(AppLocalizations.of(context)!.addProduct),
         icon: const Icon(Icons.add),
         backgroundColor: mainColor,
       ) : null,

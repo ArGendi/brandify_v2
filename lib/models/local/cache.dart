@@ -94,4 +94,12 @@ class Cache{
     setTotalProfit(totalProfit);
     setTotalOrders(totalOrders);
   }
+
+  static Future<void> setLanguage(String languageCode) async{
+    sharedPreferences.setString('languageCode', languageCode);
+  }
+  
+  static String? getLanguage(){
+    return sharedPreferences.getString('languageCode');
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/cubits/language/language_cubit.dart';
 import 'package:brandify/main.dart';
 import 'package:brandify/view/widgets/loading.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +84,7 @@ class SettingsTab extends StatelessWidget {
 
                 // Settings Options
                 Text(
-                  'Settings',
+                  AppLocalizations.of(context)!.settings,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -92,9 +94,9 @@ class SettingsTab extends StatelessWidget {
                 SizedBox(height: 20),
 
                 _buildSettingItem(
-                  'Account Settings',
+                  AppLocalizations.of(context)!.accountSettings,
                   Icons.manage_accounts_outlined,
-                  'Manage your account details',
+                  AppLocalizations.of(context)!.manageAccount,
                   () {
                     Navigator.push(
                       context,
@@ -105,9 +107,9 @@ class SettingsTab extends StatelessWidget {
                   },
                 ),
                 _buildSettingItem(
-                  'Change Package',
+                  AppLocalizations.of(context)!.changePackage,
                   Icons.card_membership_outlined,
-                  'Upgrade or change your current plan',
+                  AppLocalizations.of(context)!.upgradePlan,
                   () {
                     if(Package.type == PackageType.offline)
                     showModalBottomSheet(
@@ -260,10 +262,137 @@ class SettingsTab extends StatelessWidget {
                     }
                   },
                 ),
+                 
                 _buildSettingItem(
-                  'Contact Us',
+                  AppLocalizations.of(context)!.language,
+                  Icons.language_outlined,
+                  AppLocalizations.of(context)!.changeLanguage,
+                  () {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 4,
+                              margin: EdgeInsets.only(bottom: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: mainColor.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.language,
+                                size: 40,
+                                color: mainColor,
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Text(
+                              AppLocalizations.of(context)!.selectLanguage,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              //margin: EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[50],
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    leading: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Cache.getLanguage() == 'en' 
+                                            ? mainColor.withOpacity(0.1) 
+                                            : Colors.transparent,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.check_circle,
+                                        color: Cache.getLanguage() == 'en' ? mainColor : Colors.transparent,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      'English',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                                    ),
+                                    onTap: () {
+                                      context.read<LanguageCubit>().changeLanguage('en');
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  Divider(height: 10),
+                                  ListTile(
+                                    leading: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Cache.getLanguage() == 'ar' 
+                                            ? mainColor.withOpacity(0.1) 
+                                            : Colors.transparent,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.check_circle,
+                                        color: Cache.getLanguage() == 'ar' ? mainColor : Colors.transparent,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      "عربي",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+                                    ),
+                                    onTap: () {
+                                      context.read<LanguageCubit>().changeLanguage('ar');
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                _buildSettingItem(
+                  AppLocalizations.of(context)!.contactUs,
                   Icons.support_agent_outlined,
-                  'Get help from our support team',
+                  AppLocalizations.of(context)!.getSupport,
                   () {
                     final Uri whatsappUrl = Uri.parse(
                       'https://wa.me/+201107356032?text=',
@@ -355,7 +484,7 @@ class SettingsTab extends StatelessWidget {
                       Icon(Icons.logout, size: 40, color: Colors.red),
                       SizedBox(height: 15),
                       Text(
-                        'Logout',
+                        AppLocalizations.of(context)!.logout,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -363,7 +492,7 @@ class SettingsTab extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Are you sure you want to logout?',
+                        AppLocalizations.of(context)!.logoutConfirm,
                         style: TextStyle(color: Colors.grey[600], fontSize: 16),
                       ),
                       // if(Package.type == PackageType.offline)
@@ -380,7 +509,7 @@ class SettingsTab extends StatelessWidget {
                           Expanded(
                             child: TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: Text('Cancel'),
+                              child: Text(AppLocalizations.of(context)!.cancel),
                               style: TextButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 15),
                               ),
@@ -401,7 +530,7 @@ class SettingsTab extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              child: Text('Logout'),
+                              child: Text(AppLocalizations.of(context)!.logout),
                             ),
                           ),
                         ],
@@ -426,7 +555,7 @@ class SettingsTab extends StatelessWidget {
             Icon(Icons.logout, size: 20),
             SizedBox(width: 8),
             Text(
-              'Logout',
+              AppLocalizations.of(context)!.logout,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ],

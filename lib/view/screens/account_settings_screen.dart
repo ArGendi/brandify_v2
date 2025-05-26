@@ -7,6 +7,7 @@ import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/firebase/firestore/shopify_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -40,7 +41,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Account Settings'),
+        title: Text(AppLocalizations.of(context)!.accountSettings),
         actions: [
           IconButton(
             icon: Icon(_isEditing ? Icons.save : Icons.edit),
@@ -217,7 +218,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                   Expanded(
                                     child: TextButton(
                                       onPressed: () => Navigator.pop(context),
-                                      child: Text('Cancel'),
+                                      child: Text(AppLocalizations.of(context)!.cancel),
                                       style: TextButton.styleFrom(
                                         padding: EdgeInsets.symmetric(vertical: 15),
                                       ),
@@ -238,7 +239,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                                           borderRadius: BorderRadius.circular(10),
                                         ),
                                       ),
-                                      child: Text('Delete'),
+                                      child: Text(AppLocalizations.of(context)!.delete),
                                     ),
                                   ),
                                 ],
@@ -396,12 +397,12 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         
         if (response == true) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Changes saved successfully')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.changesSaved)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to save changes'),
+              content: Text(AppLocalizations.of(context)!.saveFailed),
               backgroundColor: Colors.red,
             ),
           );

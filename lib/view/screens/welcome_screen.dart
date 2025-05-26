@@ -1,8 +1,10 @@
+import 'package:brandify/view/screens/auth/language_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/view/screens/auth/login_screen.dart';
 import 'package:brandify/view/screens/packages/package_selection_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -21,14 +23,9 @@ class WelcomeScreen extends StatelessWidget {
                 height: 300,
                 fit: BoxFit.contain,
               ),
-              // Container(
-              //   width: 300,
-              //   height: 300,
-              //   color: Colors.grey,
-              // ),
               const SizedBox(height: 40),
               Text(
-                'Welcome to Brandify',
+                AppLocalizations.of(context)!.welcomeToBrandify,
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -38,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                'Manage your business efficiently with our comprehensive suite of tools',
+                AppLocalizations.of(context)!.welcomeDescription,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey[600],
@@ -48,10 +45,10 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => LoginScreen(),
+                      builder: (_) => LanguageSelectionScreen(),
                     ),
                   );
                 },
@@ -63,7 +60,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'Get Started',
+                  AppLocalizations.of(context)!.getStarted,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     // ),
                     //SizedBox(height: 8),
                     Text(
-                      "Manage inventory, track sales, and grow your business with ease",
+                      AppLocalizations.of(context)!.appSlogan,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey[600],
@@ -171,17 +172,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               Icons.phone_iphone_rounded,
                               color: Colors.grey[600],
                             ),
-                            text: "Phone number",
+                            text: AppLocalizations.of(context)!.phoneNumber,
                             keyboardType: TextInputType.phone,
                             onSaved: (value) {
                               loginCubit.phone = value.toString();
                             },
                             onValidate: (value) {
                               if (value!.isEmpty) {
-                                return "Enter phone number";
+                                return AppLocalizations.of(context)!.phoneEmpty;
                               }
                               else if (value.length != 11) {
-                                return "Wrong phone number";
+                                return AppLocalizations.of(context)!.phoneInvalid;
                               }
                               return null;
                             },
@@ -194,17 +195,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               Icons.lock,
                               color: Colors.grey[600],
                             ),
-                            text: "Password",
+                            text: AppLocalizations.of(context)!.password,
                             obscureText: true,
                             onSaved: (value) {
                               loginCubit.password = value.toString();
                             },
                             onValidate: (value) {
                               if (value!.isEmpty) {
-                                return "Enter your password";
+                                return AppLocalizations.of(context)!.enterPassword;
                               }
                               else if(value.length < 8){
-                                return "Minimum 8 characters";
+                                return AppLocalizations.of(context)!.minPassword;
                               }
                               return null;
                             },
@@ -226,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             );
                           },
                           child: Text(
-                            "Forgot password?",
+                            AppLocalizations.of(context)!.forgotPassword,
                             style: TextStyle(
                               color: mainColor,
                               fontSize: 14,
@@ -248,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                         }
                         else{
                           return CustomButton(
-                            text: "Login",
+                            text: AppLocalizations.of(context)!.login,
                             onPressed: () {
                               loginCubit.onLogin(context);
                             },
@@ -259,9 +260,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     const SizedBox(height: 10,),
                     CustomButton(
                       bgColor: Colors.green.shade600,
-                      text: "Create new account",
-                      onPressed: (){
-                        navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => RegisterScreen()));
+                      text: AppLocalizations.of(context)!.createAccount,
+                      onPressed: () {
+                        navigatorKey.currentState!.push(
+                          MaterialPageRoute(builder: (context) => RegisterScreen())
+                        );
                       },
                     ),
                     // const SizedBox(height: 5,),

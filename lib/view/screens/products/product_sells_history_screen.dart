@@ -6,6 +6,7 @@ import 'package:brandify/cubits/one_product_sells/one_product_sells_cubit.dart';
 import 'package:brandify/cubits/products/products_cubit.dart';
 import 'package:brandify/models/product.dart';
 import 'package:brandify/models/sell.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductSellsHistoryScreen extends StatefulWidget {
   final Product product;
@@ -33,11 +34,12 @@ class _ProductSellsHistoryScreenState extends State<ProductSellsHistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "${widget.product.name} sales",
+          AppLocalizations.of(context)!.productSalesTitle(widget.product.name.toString()),
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
+            tooltip: AppLocalizations.of(context)!.dateRangeFilter,
             icon: Icon(Icons.date_range),
             onPressed: _selectDateRange,
           ),
@@ -58,7 +60,7 @@ class _ProductSellsHistoryScreenState extends State<ProductSellsHistoryScreen> {
                   Icon(Icons.calendar_today, size: 20, color: mainColor),
                   SizedBox(width: 8),
                   Text(
-                    "${selectedDateRange!.start.toString().split(' ')[0]} - ${selectedDateRange!.end.toString().split(' ')[0]}",
+                    AppLocalizations.of(context)!.selectedDateRange(selectedDateRange!.start.toString().split(' ')[0], selectedDateRange!.end.toString().split(' ')[0]),
                     style: TextStyle(color: mainColor, fontWeight: FontWeight.w500),
                   ),
                   Spacer(),
@@ -87,7 +89,7 @@ class _ProductSellsHistoryScreenState extends State<ProductSellsHistoryScreen> {
                 if (filteredSells.isEmpty) {
                   return Center(
                     child: Text(
-                      "No sales found for this period",
+                      AppLocalizations.of(context)!.noSalesInPeriod,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[600],
@@ -129,7 +131,7 @@ class _ProductSellsHistoryScreenState extends State<ProductSellsHistoryScreen> {
                                 ),
                               ),
                               Text(
-                                "${sell.priceOfSell} EGP",
+                                "${AppLocalizations.of(context)!.priceAmount(sell.priceOfSell ?? 0)}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -140,7 +142,7 @@ class _ProductSellsHistoryScreenState extends State<ProductSellsHistoryScreen> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            "Quantity: ${sell.quantity}",
+                            "${AppLocalizations.of(context)!.quantity}: ${sell.quantity}",
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -149,7 +151,7 @@ class _ProductSellsHistoryScreenState extends State<ProductSellsHistoryScreen> {
                           if (sell.size != null) ...[
                             SizedBox(height: 4),
                             Text(
-                              "Size: ${sell.size?.name}",
+                              AppLocalizations.of(context)!.sizeLabel(sell.size?.name ?? ''),
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.grey[700],

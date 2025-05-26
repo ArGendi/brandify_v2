@@ -17,6 +17,7 @@ import 'package:brandify/view/screens/products/products_screen.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/view/widgets/loading.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -72,7 +73,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add product"),
+        title: Text(widget.product == null 
+          ? AppLocalizations.of(context)!.addProduct 
+          : AppLocalizations.of(context)!.editProduct),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -126,7 +129,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     AddProductCubit.get(context).codeController,
                                 // initial:
                                 //     AddProductCubit.get(context).product.code,
-                                text: "Barcode",
+                                text:  AppLocalizations.of(context)!.barcode,
                                 onSaved: (value) {
                                   AddProductCubit.get(context).product.code =
                                       value;
@@ -181,13 +184,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     CustomTextFormField(
                       initial: AddProductCubit.get(context).product.name,
-                      text: "Name*",
+                      text:  AppLocalizations.of(context)!.nameLabel,
                       onSaved: (value) {
                         AddProductCubit.get(context).product.name = value;
                       },
                       onValidate: (value) {
                         if (value!.isEmpty) {
-                          return "Enter name";
+                          return  AppLocalizations.of(context)!.nameRequired;
                         } else
                           return null;
                       },
@@ -201,7 +204,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   .product
                                   .price?.toString(),
                       keyboardType: TextInputType.number,
-                      text: "Original Price*",
+                      text:  AppLocalizations.of(context)!.originalPrice,
                       onSaved: (value) {
                         if (value!.isNotEmpty) {
                           AddProductCubit.get(context).product.price =
@@ -210,7 +213,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       },
                       onValidate: (value) {
                         if (value!.isEmpty) {
-                          return "Enter price";
+                          return  AppLocalizations.of(context)!.priceRequired;
                         } else return null;
                       },
                     ),
@@ -230,7 +233,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                         .toString()
                                     : null,
                             keyboardType: TextInputType.number,
-                            text: "Shopify Price*",
+                            text:  AppLocalizations.of(context)!.shopifyPrice,
                             onSaved: (value) {
                               if (value!.isNotEmpty) {
                                 AddProductCubit.get(context)
@@ -240,7 +243,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             },
                             onValidate: (value) {
                               if (value!.isEmpty) {
-                                return "Enter shopify price";
+                                return  AppLocalizations.of(context)!.shopifyPriceRequired;
                               } else
                                 return null;
                             },
@@ -252,7 +255,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     CustomTextFormField(
                       initial: AddProductCubit.get(context).product.description,
-                      text: "Description",
+                      text:  AppLocalizations.of(context)!.productDescription,
                       onSaved: (value) {
                         AddProductCubit.get(context).product.description =
                             value;
@@ -274,7 +277,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     controller: AddProductCubit.get(context)
                                         .sizesControllers[i]
                                         .sizeController,
-                                    text: "Size",
+                                    text: AppLocalizations.of(context)!.size,
                                     onSaved: (value) {},
                                   ),
                                 ),
@@ -287,7 +290,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                         .sizesControllers[i]
                                         .quantityController,
                                     keyboardType: TextInputType.number,
-                                    text: "Quantity",
+                                    text: AppLocalizations.of(context)!.quantity,
                                     onSaved: (value) {},
                                   ),
                                 ),
@@ -324,7 +327,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: CustomButton(
-                        text: "Add another size",
+                        text: AppLocalizations.of(context)!.addAnotherSize,
                         onPressed: () {
                           AddProductCubit.get(context).addSize();
                         },
@@ -341,7 +344,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     return Loading();
                   } else {
                     return CustomButton(
-                      text: widget.product == null ? "Add" : "Edit",
+                      text: widget.product == null ? 
+                      AppLocalizations.of(context)!.addProduct : AppLocalizations.of(context)!.editProduct,
                       onPressed: () async {
                         Product? product = await AddProductCubit.get(context)
                             .validate(context);
@@ -383,34 +387,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
               textDirection: TextDirection.rtl,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  CustomButton(
-                    icon: Icon(
-                      Icons.photo,
-                      color: Colors.white,
-                    ),
-                    text: "Photos",
-                    onPressed: () {
-                      AddProductCubit.get(context)
-                          .getImage(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  CustomButton(
-                    icon: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                    ),
-                    text: "Camera",
-                    onPressed: () {
-                      AddProductCubit.get(context).getImage(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                  ),
+                children: [
+                  Icon(Icons.add, color: Colors.white),
+                  Text(
+                    AppLocalizations.of(context)!.addPhoto,
+                    style: TextStyle(color: Colors.white),
+                  )
                 ],
               ),
             ),

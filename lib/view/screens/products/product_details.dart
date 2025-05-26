@@ -19,6 +19,7 @@ import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/main.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductDetails extends StatefulWidget {
   final Product product;
@@ -81,9 +82,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                             Icon(Icons.history, color: Colors.white),
                             const SizedBox(width: 8),
                             Text(
-                              "History",
+                              AppLocalizations.of(context)!.viewHistory,
                               style: TextStyle(
-                                //fontSize: 16,
                                 color: Colors.white,
                               ),
                             ),
@@ -150,7 +150,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                "$totalQuantity items in stock",
+                                "${AppLocalizations.of(context)!.itemsInStockCount(totalQuantity)}",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey[600],
@@ -158,7 +158,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               //const SizedBox(height: 4),
                               Text(
-                                "Total ${totalQuantity * (widget.product.price ?? 0)} EGP",
+                                "${AppLocalizations.of(context)!.totalAmount(totalQuantity * (widget.product.price ?? 0))}",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey[600],
@@ -174,7 +174,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            "${widget.product.price} EGP",
+                            "${AppLocalizations.of(context)!.priceAmount(widget.product.price ?? 0) }",
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -187,7 +187,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     if (widget.product.description != null && (widget.product.description?.isNotEmpty ?? false)) ...[
                       const SizedBox(height: 20),
                       Text(
-                        "Description",
+                        AppLocalizations.of(context)!.productDescription,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -206,7 +206,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ],
                     const SizedBox(height: 20),
                     Text(
-                      "Available Sizes",
+                      AppLocalizations.of(context)!.availableSizes,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -286,7 +286,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           children: [
             Expanded(
               child: CustomButton(
-                text: "Sell Now",
+                text: AppLocalizations.of(context)!.sellNowButton,
                 onPressed: () {
                   if(totalQuantity > 0){
                     navigatorKey.currentState?.push(
@@ -300,8 +300,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                   }
                   else{
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("No items in stock"),
+                       SnackBar(
+                        content: Text(AppLocalizations.of(context)!.noItemsInStock),
                       ),
                     );
                   }
@@ -311,7 +311,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             const SizedBox(width: 10),
             Expanded(
               child: CustomButton(
-                text: "Refund",
+                text: AppLocalizations.of(context)!.refundButton,
                 bgColor: Colors.red.shade900,
                 onPressed: () {
                   navigatorKey.currentState?.push(
@@ -333,21 +333,21 @@ class _ProductDetailsState extends State<ProductDetails> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Delete Product"),
-          content: const Text("Are you sure you want to delete this product?"),
+          title:  Text(AppLocalizations.of(context)!.deleteProduct),
+          content:  Text(AppLocalizations.of(context)!.deleteProductConfirm),
           actions: [
             TextButton(
               onPressed: () {
                 navigatorKey.currentState?.pop();
               },
-              child: const Text("Cancel"),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () {
                 ProductsCubit.get(context).deleteProduct(widget.product, context);
                 navigatorKey.currentState?.pop();
               },
-              child: const Text("Delete"),
+              child: Text(AppLocalizations.of(context)!.delete),
             ),
           ],
         );
