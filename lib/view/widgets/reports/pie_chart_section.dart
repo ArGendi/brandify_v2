@@ -2,21 +2,23 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:brandify/cubits/pie_chart/pie_chart_cubit.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PieChartSection extends StatelessWidget {
   const PieChartSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<PieChartCubit, PieChartState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Bought by place"),
+            Text(l10n.boughtByPlace),
             SizedBox(height: 15),
             if (PieChartCubit.get(context).data.isEmpty)
-              _buildEmptyState()
+              _buildEmptyState(l10n)
             else
               _buildPieChartContent(context),
           ],
@@ -25,13 +27,13 @@ class PieChartSection extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.bar_chart, size: 30),
-          Text("No data to show")
+          Text(l10n.noDataToShow)
         ],
       ),
     );
@@ -75,7 +77,7 @@ class PieChartSection extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                '${data.name}',
+                PieChartCubit.get(context).getSellPlace(data.name),
                 style: const TextStyle(fontSize: 12),
               ),
             ],

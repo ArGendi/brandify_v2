@@ -7,6 +7,7 @@ import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/view/screens/home_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PackageSelectionScreen extends StatelessWidget {
   const PackageSelectionScreen({super.key});
@@ -15,7 +16,7 @@ class PackageSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Choose Package'),
+        title: Text(AppLocalizations.of(context)!.choosePackage),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -23,7 +24,7 @@ class PackageSelectionScreen extends StatelessWidget {
           //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Select Your Package',
+              AppLocalizations.of(context)!.selectYourPackage,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -31,7 +32,7 @@ class PackageSelectionScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             Text(
-              'You can change your package at any time',
+              AppLocalizations.of(context)!.changePackageLater,
               style: TextStyle(
                 
                 //fontSize: 24,
@@ -42,14 +43,14 @@ class PackageSelectionScreen extends StatelessWidget {
             SizedBox(height: 25),
             _buildPackageCard(
               context,
-              title: 'Offline Package',
+              title: AppLocalizations.of(context)!.offlinePackage,
               type: PackageType.offline,
-              description: 'Store data locally on your device',
+              description: AppLocalizations.of(context)!.offlinePackageDesc,
               features: [
-                'Work without internet',
-                'Local data storage',
-                'Basic reporting',
-                'Unlimited products',
+                AppLocalizations.of(context)!.workWithoutInternet,
+                AppLocalizations.of(context)!.localDataStorage,
+                AppLocalizations.of(context)!.basicReporting,
+                AppLocalizations.of(context)!.unlimitedProducts,
               ],
               color: Colors.blue,
               icon: Icons.phone_android,
@@ -57,14 +58,14 @@ class PackageSelectionScreen extends StatelessWidget {
             SizedBox(height: 20),
             _buildPackageCard(
               context,
-              title: 'Online Package',
+              title: AppLocalizations.of(context)!.onlinePackage,
               type: PackageType.online,
-              description: 'Cloud storage with advanced features',
+              description: AppLocalizations.of(context)!.onlinePackageDesc,
               features: [
-                'Cloud data storage',
-                'Multi-device sync',
-                'Advanced reporting',
-                'Data backup',
+                AppLocalizations.of(context)!.cloudDataStorage,
+                AppLocalizations.of(context)!.multiDeviceSync,
+                AppLocalizations.of(context)!.advancedReporting,
+                AppLocalizations.of(context)!.dataBackup,
               ],
               color: Colors.green,
               icon: Icons.cloud,
@@ -72,14 +73,14 @@ class PackageSelectionScreen extends StatelessWidget {
             SizedBox(height: 20),
             _buildPackageCard(
               context,
-              title: 'Shopify Package',
+              title: AppLocalizations.of(context)!.shopifyPackage,
               type: PackageType.shopify,
-              description: 'Full integration with Shopify (Coming Soon)',
+              description: AppLocalizations.of(context)!.shopifyPackageDesc,
               features: [
-                'Shopify integration',
-                'Inventory sync',
-                'Order management',
-                'All online features',
+                AppLocalizations.of(context)!.shopifyIntegration,
+                AppLocalizations.of(context)!.inventorySync,
+                AppLocalizations.of(context)!.orderManagement,
+                AppLocalizations.of(context)!.allOnlineFeatures,
               ],
               color: Colors.grey,
               icon: Icons.shopping_bag,
@@ -121,7 +122,7 @@ class PackageSelectionScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           onTap: isComingSoon ? () {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('This package will be available soon!')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.comingSoon)),
             );
           } : () {
             showModalBottomSheet(
@@ -144,7 +145,7 @@ class PackageSelectionScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Confirm Package',
+                      AppLocalizations.of(context)!.confirmPackage,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -152,7 +153,7 @@ class PackageSelectionScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Do you want to select the $title?',
+                      AppLocalizations.of(context)!.confirmPackageSelection(title),
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[600],
@@ -164,7 +165,7 @@ class PackageSelectionScreen extends StatelessWidget {
                         Expanded(
                           child: TextButton(
                             onPressed: () => navigatorKey.currentState?.pop(),
-                            child: Text('Cancel'),
+                            child: Text(AppLocalizations.of(context)!.cancel),
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.symmetric(vertical: 15),
                             ),
@@ -228,7 +229,7 @@ class PackageSelectionScreen extends StatelessWidget {
                                 },
                               );
                             },
-                            child: Text('Confirm'),
+                            child: Text(AppLocalizations.of(context)!.confirm),
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.symmetric(vertical: 15),
                               backgroundColor: color,

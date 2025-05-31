@@ -7,6 +7,7 @@ import 'package:brandify/cubits/ads/ads_cubit.dart';
 import 'package:brandify/enum.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AdsScreen extends StatelessWidget {
   const AdsScreen({super.key});
@@ -14,7 +15,7 @@ class AdsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Ads")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.ads)),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -26,7 +27,7 @@ class AdsScreen extends StatelessWidget {
                     key: AdsCubit.get(context).formKey,
                     child: CustomTextFormField(
                       keyboardType: TextInputType.number,
-                      text: "Ad cost",
+                      text: AppLocalizations.of(context)!.adCost,
                       onSaved: (value) {
                         if (value!.isNotEmpty) {
                           AdsCubit.get(context).cost = int.parse(value);
@@ -34,14 +35,14 @@ class AdsScreen extends StatelessWidget {
                       },
                       onValidate: (value) {
                         if (value!.isEmpty) {
-                          return "Enter ad cost";
+                          return AppLocalizations.of(context)!.enterAdCost;
                         } else
                           return null;
                       },
                     ),
                   ),
                   SizedBox(height: 20),
-                  Text("Your ad platform ?"),
+                  Text(AppLocalizations.of(context)!.yourAdPlatform),
                   SizedBox(height: 10),
                   BlocBuilder<AdsCubit, AdsState>(
                     builder: (context, state) {
@@ -180,7 +181,7 @@ class AdsScreen extends StatelessWidget {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "Other",
+                                    AppLocalizations.of(context)!.other,
                                     style: TextStyle(
                                       fontSize: 18,
                                       color:
@@ -233,7 +234,7 @@ class AdsScreen extends StatelessWidget {
                 }
                 else{
                   return CustomButton(
-                    text: "Add",
+                    text: AppLocalizations.of(context)!.add,
                     onPressed: () {
                       AdsCubit.get(context).onAdd(context);
                     },

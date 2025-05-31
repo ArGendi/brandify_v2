@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/models/sell.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecentSellItem extends StatelessWidget {
   final Sell sell;
@@ -52,13 +53,13 @@ class RecentSellItem extends StatelessWidget {
           SizedBox(width: 10),
           !sell.isRefunded
               ? Text(
-                  sell.profit >= 0 ? "+${sell.profit} LE" : "${sell.profit} LE",
+                  sell.profit >= 0 ? "+${AppLocalizations.of(context)!.priceAmount(sell.profit)}" : "${AppLocalizations.of(context)!.priceAmount(sell.profit)}",
                   style: TextStyle(
                     color: sell.profit >= 0 ? Colors.green : Colors.red,
                   ),
                 )
               : Text(
-                  "Refunded",
+                  AppLocalizations.of(context)!.refunded,
                   style: TextStyle(
                     color: Colors.red,
                   ),

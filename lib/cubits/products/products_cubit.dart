@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +39,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   Future<List<Product>> getProductsFromDB() async {
     List<Product> productsFromDB = [];
+    print("phone: ${Cache.getPhone()}");
     var productsBox = Hive.box(HiveServices.getTableName(productsTable));
     var keys = productsBox.keys.toList();
     

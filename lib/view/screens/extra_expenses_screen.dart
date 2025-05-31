@@ -14,6 +14,7 @@ import 'package:brandify/models/extra_expense.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/view/widgets/expense_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExtraExpensesScreen extends StatefulWidget {
   const ExtraExpensesScreen({super.key});
@@ -36,7 +37,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "External Expenses",
+          AppLocalizations.of(context)!.externalExpenses,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -91,7 +92,8 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _AddBottomSheet(context),
-        label: Text("Add External Expense", style: TextStyle(fontWeight: FontWeight.w600)),
+        label: Text(AppLocalizations.of(context)!.addOrderExpense, 
+          style: TextStyle(fontWeight: FontWeight.w600)),
         icon: Icon(Icons.add),
         backgroundColor: mainColor,
         elevation: 4,
@@ -151,15 +153,15 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                     children: [
                       Expanded(
                         child: CustomTextFormField(
-                          text: "Title",
-                          hintText: "Ex. Meeting",
+                          text: AppLocalizations.of(context)!.expenseName,
+                          hintText: AppLocalizations.of(context)!.electricityExample,
                           onSaved: (value) {
                             if (value!.isNotEmpty)
                               ExtraExpensesCubit.get(context).name = value;
                           },
                           onValidate: (value) {
                             if (value!.isEmpty) {
-                              return "Enter name";
+                              return AppLocalizations.of(context)!.enterName;
                             } else
                               return null;
                           },
@@ -171,8 +173,8 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                       Expanded(
                         child: CustomTextFormField(
                           keyboardType: TextInputType.number,
-                          text: "Price",
-                          hintText: "Ex. 200",
+                          text: AppLocalizations.of(context)!.price,
+                          hintText: AppLocalizations.of(context)!.priceHint,
                           onSaved: (value) {
                             if (value!.isNotEmpty)
                               ExtraExpensesCubit.get(context).price =
@@ -180,7 +182,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                           },
                           onValidate: (value) {
                             if (value!.isEmpty) {
-                              return "Enter price";
+                              return AppLocalizations.of(context)!.enterPrice;
                             } else
                               return null;
                           },
@@ -199,7 +201,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                         );
                       } else {
                         return CustomButton(
-                          text: "Add",
+                          text: AppLocalizations.of(context)!.add,
                           onPressed: () async {
                             bool done = await ExtraExpensesCubit.get(context)
                                 .onAddSide(context);
@@ -287,8 +289,8 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
             const SizedBox(
               height: 20,
             ),
-            const Text(
-              "No expenses yet.\nAdd any external expenses that cost your business like food, meeting expense, etc.",
+             Text(
+              AppLocalizations.of(context)!.noExpensesDesc,
               textAlign: TextAlign.center,
               style: TextStyle(
                 //fontSize: 16,
@@ -320,7 +322,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
             SizedBox(width: 12),
             Expanded(
               child: Text(
-                'From ${selectedDateRange!.start.toString().split(' ')[0]} to ${selectedDateRange!.end.toString().split(' ')[0]}',
+                '${AppLocalizations.of(context)!.from} ${selectedDateRange!.start.toString().split(' ')[0]} ${AppLocalizations.of(context)!.to} ${selectedDateRange!.end.toString().split(' ')[0]}',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[700],
@@ -354,7 +356,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Total Expenses',
+                  AppLocalizations.of(context)!.totalExpenses,
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.grey[600],
@@ -362,7 +364,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  '${_calculateTotalExpenses()} LE',
+                  '${AppLocalizations.of(context)!.priceAmount(_calculateTotalExpenses())}',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -417,7 +419,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                                 child: pw.Row(
                                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                                   children: [
-                                    pw.Text('Expenses Summary', 
+                                    pw.Text(AppLocalizations.of(navigatorKey.currentContext!)!.expensesSummary, 
                                       style: pw.TextStyle(
                                         fontSize: 28,
                                         fontWeight: pw.FontWeight.bold,
@@ -454,8 +456,8 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                                     pw.Row(
                                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                                       children: [
-                                        pw.Text('Amount: ${expense.price} LE'),
-                                        pw.Text('Date: ${expense.date?.toString().split(' ')[0] ?? 'N/A'}'),
+                                        pw.Text('${AppLocalizations.of(navigatorKey.currentContext!)!.totalAmount(expense.price ?? 0)}'),
+                                        pw.Text('${AppLocalizations.of(navigatorKey.currentContext!)!.date}: ${expense.date?.toString().split(' ')[0] ?? 'N/A'}'),
                                       ],
                                     ),
                                   ],
@@ -472,13 +474,13 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                                 child: pw.Row(
                                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                                   children: [
-                                    pw.Text('Total Expenses:',
+                                    pw.Text('${AppLocalizations.of(navigatorKey.currentContext!)!.totalExpenses}:',
                                       style: pw.TextStyle(
                                         fontSize: 16,
                                         fontWeight: pw.FontWeight.bold,
                                       )
                                     ),
-                                    pw.Text('$total LE',
+                                    pw.Text('${AppLocalizations.of(navigatorKey.currentContext!)!.priceAmount(total)}',
                                       style: pw.TextStyle(
                                         fontSize: 16,
                                         fontWeight: pw.FontWeight.bold,
@@ -498,11 +500,11 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
 
                         await Share.shareXFiles(
                           [XFile(file.path)],
-                          text: 'Expenses Summary',
+                          text: AppLocalizations.of(context)!.expensesSummary,
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed to generate PDF')),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.failedToGeneratePdf)),
                         );
                       }
                     },
@@ -571,7 +573,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                 ),
               ),
               Text(
-                'Sort Expenses',
+                AppLocalizations.of(context)!.sortExpenses,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -581,7 +583,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
               SizedBox(height: 20),
               _buildSortOption(
                 Icons.arrow_upward,
-                'Highest Price',
+                AppLocalizations.of(context)!.highestPrice,
                 () {
                   ExtraExpensesCubit.get(context).sortExpenses(byPrice: true, descending: true);
                   Navigator.pop(context);
@@ -589,7 +591,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
               ),
               _buildSortOption(
                 Icons.arrow_downward,
-                'Lowest Price',
+                AppLocalizations.of(context)!.lowestPrice,
                 () {
                   ExtraExpensesCubit.get(context).sortExpenses(byPrice: true, descending: false);
                   Navigator.pop(context);

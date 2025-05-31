@@ -83,26 +83,26 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                 // ),
                 // SizedBox(height: 30),
                 _buildSection(
-                  title: 'Personal Information',
+                  title: AppLocalizations.of(context)!.personalInfo,
                   children: [
                     _buildTextField(
-                      label: 'Brand Name',
+                      label: AppLocalizations.of(context)!.brandName,
                       controller: _nameController,
                       enabled: _isEditing,
                       validator: (value) {
-                        if (value?.isEmpty ?? true) return 'Brand name is required';
+                        if (value?.isEmpty ?? true) return AppLocalizations.of(context)!.brandNameRequired;
                         return null;
                       },
                     ),
                     SizedBox(height: 15),
                     _buildTextField(
-                      label: 'Phone Number',
+                      label: AppLocalizations.of(context)!.phoneNumber,
                       controller: _phoneController,
                       enabled: false,
                       keyboardType: TextInputType.phone,
                       validator: (value) {
-                        if (value?.isEmpty ?? true) return 'Phone number is required';
-                        if (value!.length != 11) return 'Invalid phone number';
+                        if (value?.isEmpty ?? true) return AppLocalizations.of(context)!.phoneRequired;
+                        if (value!.length != 11) return AppLocalizations.of(context)!.invalidPhone;
                         return null;
                       },
                     ),
@@ -110,18 +110,18 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                 ),
                 SizedBox(height: 20),
                 _buildSection(
-                  title: 'Package Information',
+                  title: AppLocalizations.of(context)!.packageInfo,
                   children: [
                     _buildInfoTile(
-                      'Current Package',
+                      AppLocalizations.of(context)!.currentPackage,
                       Package.type.name.toUpperCase(),
                       Icons.card_membership,
                     ),
                     _buildInfoTile(
-                      'Features',
+                      AppLocalizations.of(context)!.features,
                       Package.type == PackageType.offline 
-                          ? 'Basic offline features'
-                          : 'Full online features with cloud storage',
+                          ? AppLocalizations.of(context)!.basicFeatures
+                          : AppLocalizations.of(context)!.fullFeatures,
                       Icons.featured_play_list,
                     ),
                     // TextButton(
@@ -197,7 +197,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                               ),
                               SizedBox(height: 15),
                               Text(
-                                'Delete Account',
+                                AppLocalizations.of(context)!.deleteAccount,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -205,7 +205,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                'This action cannot be undone. All your data will be permanently deleted.',
+                                AppLocalizations.of(context)!.deleteConfirmMessage,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.grey[600],
@@ -258,14 +258,14 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       child: Icon(Icons.delete_forever_outlined, color: Colors.white),
                     ),
                     title: Text(
-                      'Delete Account',
+                      AppLocalizations.of(context)!.deleteAccount,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
                       ),
                     ),
                     subtitle: Text(
-                      'Permanently delete your account',
+                      AppLocalizations.of(context)!.deleteAccountDesc,
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 13,

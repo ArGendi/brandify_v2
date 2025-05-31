@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:brandify/cubits/ads/ads_cubit.dart';
 import 'package:brandify/models/ad.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AdItem extends StatelessWidget {
   final Ad ad;
@@ -57,7 +58,7 @@ class AdItem extends StatelessWidget {
               ),
               SizedBox(width: 10),
               Text(
-                "${ad.cost} LE",
+                AppLocalizations.of(context)!.priceAmount(ad.cost ?? 0),
                 style: TextStyle(
                   color: showBackground? Colors.white : Colors.black,
                 ),

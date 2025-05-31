@@ -7,7 +7,7 @@ import 'package:brandify/main.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/models/product.dart';
 import 'package:brandify/view/screens/products/product_details.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -54,7 +54,7 @@ class ProductCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        "$numberOfAllItems in stock",
+                        AppLocalizations.of(context)!.itemsInStockCount(numberOfAllItems),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -113,7 +113,7 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "${product.price} EGP",
+                      AppLocalizations.of(context)!.priceAmount(product.price ?? 0),
                       style: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).primaryColor,

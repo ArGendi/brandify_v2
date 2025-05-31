@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalculatePercentScreen extends StatefulWidget {
   const CalculatePercentScreen({super.key});
@@ -20,7 +21,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Discount Calculator"),
+        title: Text(AppLocalizations.of(context)!.discountCalculator),
         elevation: 0,
       ),
       body: Container(
@@ -59,7 +60,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                     child: Column(
                       children: [
                         Text(
-                          "Price After Discount",
+                          AppLocalizations.of(context)!.priceAfterDiscount,
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 16,
@@ -79,7 +80,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                               ),
                             ),
                             Text(
-                              " EGP",
+                              AppLocalizations.of(context)!.egp,
                               style: TextStyle(
                                 fontSize: 16,
                                 color: mainColor,
@@ -90,7 +91,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                         ),
                         if (price != null)
                           Text(
-                            "Original Price: $price EGP",
+                            AppLocalizations.of(context)!.originalPriceWithThePrice(price!.toString()),
                             style: TextStyle(
                               color: Colors.grey[600],
                               decoration: TextDecoration.lineThrough,
@@ -117,7 +118,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Calculate Discount",
+                        AppLocalizations.of(context)!.calculateDiscount,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -126,7 +127,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Enter product price and discount percentage",
+                        AppLocalizations.of(context)!.enterPriceAndDiscount,
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 14,
@@ -138,7 +139,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                           Expanded(
                             child: CustomTextFormField(
                               keyboardType: TextInputType.number,
-                              text: "Price",
+                              text: AppLocalizations.of(context)!.price,
                               prefix: Icon(Icons.attach_money_rounded),
                               onSaved: (value) {
                                 if (value!.isNotEmpty) {
@@ -147,7 +148,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                               },
                               onValidate: (value) {
                                 if (value!.isEmpty) {
-                                  return "Enter price";
+                                  return AppLocalizations.of(context)!.enterPrice;
                                 }
                                 return null;
                               },
@@ -157,7 +158,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                           Expanded(
                             child: CustomTextFormField(
                               keyboardType: TextInputType.number,
-                              text: "Discount %",
+                              text: AppLocalizations.of(context)!.discountPercent,
                               prefix: Icon(Icons.percent_rounded),
                               onSaved: (value) {
                                 if (value!.isNotEmpty) {
@@ -166,7 +167,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                               },
                               onValidate: (value) {
                                 if (value!.isEmpty) {
-                                  return "Enter percent";
+                                  return AppLocalizations.of(context)!.enterPercent;
                                 }
                                 return null;
                               },
@@ -176,7 +177,7 @@ class _CalculatePercentScreenState extends State<CalculatePercentScreen> {
                       ),
                       const SizedBox(height: 20),
                       CustomButton(
-                        text: "Calculate Discount",
+                        text: AppLocalizations.of(context)!.calculateDiscountButton,
                         onPressed: () {
                           if (formKey.currentState?.validate() ?? false) {
                             formKey.currentState?.save();

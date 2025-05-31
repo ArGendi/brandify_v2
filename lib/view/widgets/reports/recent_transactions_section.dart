@@ -10,6 +10,7 @@ import 'package:brandify/view/screens/orders/specific_orders_screen.dart';
 import 'package:brandify/view/widgets/ad_item.dart';
 import 'package:brandify/view/widgets/expense_item.dart';
 import 'package:brandify/view/widgets/recent_sell_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecentTransactionsSection extends StatelessWidget {
   final Function showSellDetails;
@@ -24,13 +25,14 @@ class RecentTransactionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final current = ReportsCubit.get(context).currentReport;
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Orders',
+              l10n.orders,
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -46,7 +48,7 @@ class RecentTransactionsSection extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('View All'),
+              child: Text(l10n.viewAll),
             ),
           ],
         ),
@@ -60,7 +62,7 @@ class RecentTransactionsSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Ads',
+                  l10n.ads,
                   style: TextStyle(
                     fontSize: 16,
                   ),
@@ -74,11 +76,10 @@ class RecentTransactionsSection extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text('View All'),
+                  child: Text(l10n.viewAll),
                 ),
               ],
             ),
-            //SizedBox(height: 15),
             _buildRecentAds(context, current),
           ],
         ),
@@ -90,7 +91,7 @@ class RecentTransactionsSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Extra expenses',
+                  l10n.extraExpenses,
                   style: TextStyle(
                     fontSize: 16,
                   ),
@@ -106,15 +107,13 @@ class RecentTransactionsSection extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text('View All'),
+                  child: Text(l10n.viewAll),
                 ),
               ],
             ),
-            //SizedBox(height: 10),
             _buildRecentExpenses(context, current),
           ],
         ),
-        
       ],
     );
   }

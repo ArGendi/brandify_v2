@@ -6,6 +6,7 @@ import 'package:brandify/cubits/sides/sides_cubit.dart';
 import 'package:brandify/main.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SidesScreen extends StatefulWidget {
   const SidesScreen({super.key});
@@ -25,7 +26,7 @@ class _SidesScreenState extends State<SidesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Order Expenses"),
+        title: Text(AppLocalizations.of(context)!.orderExpenses),
         backgroundColor: mainColor, 
       ),
       body: Padding(
@@ -58,11 +59,10 @@ class _SidesScreenState extends State<SidesScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Text(
-                        "Add everything related to your order to use it in your orders like cards, order package, flyers, etc.",
+                      Text(
+                        AppLocalizations.of(context)!.emptyOrderExpensesDesc,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          //fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -127,7 +127,7 @@ class _SidesScreenState extends State<SidesScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "${SidesCubit.get(context).sides[i].price} LE",
+                                    AppLocalizations.of(context)!.priceAmount(SidesCubit.get(context).sides[i].price ?? 0),
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
@@ -166,7 +166,7 @@ class _SidesScreenState extends State<SidesScreen> {
         onPressed: () {
           _addBottomSheet(context);
         },
-        label: const Text("Add Order Expense"),
+        label: Text(AppLocalizations.of(context)!.addOrderExpense),
         icon: const Icon(Icons.add),
         backgroundColor: mainColor,
       ),
@@ -197,59 +197,53 @@ class _SidesScreenState extends State<SidesScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   CustomTextFormField(
-                    text: "Name",
-                    hintText: "Ex. Order package",
+                    text: AppLocalizations.of(context)!.expenseName,
+                    hintText: AppLocalizations.of(context)!.expenseNameHint,
                     onSaved: (value) {
                       SidesCubit.get(context).name = value;
                     },
                     onValidate: (value) {
                       if (value!.isEmpty) {
-                        return "Enter name";
-                      } else
-                        return null;
+                        return AppLocalizations.of(context)!.enterName;
+                      }
+                      return null;
                     },
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
                         child: CustomTextFormField(
                           keyboardType: TextInputType.number,
-                          text: "Price per item",
-                          hintText: "Ex. 20 (LE)",
+                          text: AppLocalizations.of(context)!.pricePerItem,
+                          hintText: AppLocalizations.of(context)!.priceHint,
                           onSaved: (value) {
                             if (value!.isNotEmpty)
-                              SidesCubit.get(context).price =
-                                  int.parse(value);
+                              SidesCubit.get(context).price = int.parse(value);
                           },
                           onValidate: (value) {
                             if (value!.isEmpty) {
-                              return "Enter price";
-                            } else
-                              return null;
+                              return AppLocalizations.of(context)!.enterPrice;
+                            }
+                            return null;
                           },
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: CustomTextFormField(
                           keyboardType: TextInputType.number,
-                          text: "Quantity",
-                          hintText: "Ex. 100 (pieces)",
+                          text: AppLocalizations.of(context)!.quantity,
+                          hintText: AppLocalizations.of(context)!.quantityHint,
                           onSaved: (value) {
                             if (value!.isNotEmpty)
-                              SidesCubit.get(context).quantity =
-                                  int.parse(value);
+                              SidesCubit.get(context).quantity = int.parse(value);
                           },
                           onValidate: (value) {
                             if (value!.isEmpty) {
-                              return "Enter quantity";
-                            } else
-                              return null;
+                              return AppLocalizations.of(context)!.enterQuantity;
+                            }
+                            return null;
                           },
                         ),
                       ),
@@ -267,10 +261,9 @@ class _SidesScreenState extends State<SidesScreen> {
                         );
                       } else {
                         return CustomButton(
-                          text: "Add",
+                          text: AppLocalizations.of(context)!.add,
                           onPressed: () async {
-                            bool done = await SidesCubit.get(context)
-                                .onAddSide(context);
+                            bool done = await SidesCubit.get(context).onAddSide(context);
                             if (done) navigatorKey.currentState?.pop();
                           },
                         );

@@ -14,6 +14,7 @@ import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'package_state.dart';
 
@@ -32,6 +33,7 @@ class PackageCubit extends Cubit<PackageState> {
   }
 
   Future<void> convertPackage(BuildContext context) async {  // Add context parameter
+    final l10n = AppLocalizations.of(context)!;
     final String _productsTable = HiveServices.getTableName(productsTable);
     final String _sellsTable = HiveServices.getTableName(sellsTable);
     final String _sidesTable = HiveServices.getTableName(sidesTable);
@@ -109,9 +111,9 @@ class PackageCubit extends Cubit<PackageState> {
           //await AppUserCubit.get(context).getUserData();  // Add this line here
           
           Package.type = PackageType.online;
-          emit(PackageSuccess('Successfully converted to online package'));
+          emit(PackageSuccess(l10n.successfullyConvertedToOnline));
         } else {
-          emit(PackageError('Failed to upload data to online storage'));
+          emit(PackageError(l10n.failedToUploadData));
         }
       } else {
         // Converting from online to offline
@@ -192,7 +194,7 @@ class PackageCubit extends Cubit<PackageState> {
           print("hereeeeee 9");
           Package.type = PackageType.offline;
           
-          emit(PackageSuccess('Successfully converted to offline package'));
+          emit(PackageSuccess(l10n.successfullyConvertedToOffline));
         } else {
           emit(PackageError(response.data['error']));
         }

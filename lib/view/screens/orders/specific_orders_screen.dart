@@ -12,6 +12,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class SpecificOrdersScreen extends StatefulWidget {
   final List<Sell> orders;
@@ -68,74 +70,77 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
   }
 
   Future<void> _createAndShareReceipt() async {
+    final l10n = AppLocalizations.of(context)!;
     final pdf = pw.Document();
     int quantity = 0;
 
     pdf.addPage(
       pw.MultiPage(
-        build:
-            (context) => [
-              pw.Header(
-                level: 0,
-                child: pw.Text(
-                  'Orders Receipt',
-                  style: pw.TextStyle(
-                    fontSize: 24,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
+        build: (context) => [
+          pw.Header(
+            level: 0,
+            child: pw.Text(
+              l10n.ordersReceipt,
+              style: pw.TextStyle(
+                fontSize: 24,
+                fontWeight: pw.FontWeight.bold,
               ),
-              pw.SizedBox(height: 20),
+            ),
+          ),
+          pw.SizedBox(height: 20),
 
-              ...selectedOrders.map((order) {
-                quantity += order.quantity ?? 0;
-                return pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Divider(),
-                    pw.Text(
-                      'Order Date: ${order.date?.toString().split(' ')[0]}',
-                    ),
-                    pw.Text('Product: ${order.product?.name}'),
-                    pw.Text('Size: ${order.size?.name ?? 'N/A'}'),
-                    pw.Text('Quantity: ${order.quantity}'),
-                    pw.Text('Price: ${order.priceOfSell} LE'),
-                    if (order.isRefunded)
-                      pw.Text(
-                        'REFUNDED',
-                        style: pw.TextStyle(
-                          color: PdfColors.red,
-                          fontWeight: pw.FontWeight.bold,
-                        ),
-                      ),
-                    pw.SizedBox(height: 10),
-                  ],
-                );
-              }).toList(),
-
-              pw.Divider(),
-              pw.SizedBox(height: 20),
-              pw.Column(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text('Total Orders: $quantity'),
+          ...selectedOrders.map((order) {
+            quantity += order.quantity ?? 0;
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Divider(),
+                pw.Text(
+                  '${l10n.orderDate}: ${order.date?.toString().split(' ')[0]}',
+                ),
+                pw.Text('${l10n.product}: ${order.product?.name}'),
+                pw.Text('${l10n.size}: ${order.size?.name ?? l10n.notAvailable}'),
+                pw.Text('${l10n.quantity}: ${order.quantity}'),
+                pw.Text('${l10n.price}: ${order.priceOfSell} LE'),
+                if (order.isRefunded)
                   pw.Text(
-                    'Total Profit: ${selectedOrders.fold(0.0, (sum, order) => sum + (order.priceOfSell ?? 0))} LE',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    l10n.refunded,
+                    style: pw.TextStyle(
+                      color: PdfColors.red,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
                   ),
-                ],
-              ),
+                pw.SizedBox(height: 10),
+              ],
+            );
+          }).toList(),
 
-              pw.Footer(
-                leading: pw.Text(
-                  'From ${Cache.getName()} on ${DateTime.now().toString().split(' ')[0]}',
-                  style: pw.TextStyle(
-                    fontSize: 10,
-                    fontStyle: pw.FontStyle.italic,
-                  ),
-                ),
+          pw.Divider(),
+          pw.SizedBox(height: 20),
+          pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text('${l10n.totalOrders}: $quantity'),
+              pw.Text(
+                '${l10n.totalProfit}: ${selectedOrders.fold(0.0, (sum, order) => sum + (order.priceOfSell ?? 0))} LE',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
               ),
             ],
+          ),
+
+          pw.Footer(
+            leading: pw.Text(
+              l10n.fromBrandify(
+                Cache.getName() ?? 'Brandify',
+                DateTime.now().toString().split(' ')[0],
+              ),
+              style: pw.TextStyle(
+                fontSize: 10,
+                fontStyle: pw.FontStyle.italic,
+              ),
+            ),
+          ),
+        ],
       ),
     );
 
@@ -143,15 +148,16 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
     final file = File('${directory.path}/orders_receipt.pdf');
     await file.writeAsBytes(await pdf.save());
 
-    await Share.shareXFiles([XFile(file.path)], text: 'Orders Receipt');
+    await Share.shareXFiles([XFile(file.path)], text: AppLocalizations.of(context)!.ordersReceipt);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     double totalProfit = calculateTotalProfit();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isSelectionMode ? 'Select Orders' : 'Orders'),
+        title: Text(l10n.orders),
         actions: [
           IconButton(
             icon: Icon(isSelectionMode ? Icons.close : Icons.checklist_rtl),
@@ -183,11 +189,11 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total Profit',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    l10n.totalProfit,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   Text(
-                    '${totalProfit.toStringAsFixed(2)} LE',
+                    '${AppLocalizations.of(context)!.priceAmount(totalProfit)}',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -204,8 +210,11 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  'Orders from ${selectedDateRange!.start.toString().split(' ')[0]} to ${selectedDateRange!.end.toString().split(' ')[0]}',
-                  style: TextStyle(color: Colors.grey[600]),
+                  l10n.ordersFromTo(
+                    DateFormat('MMM d, y').format(selectedDateRange!.start),
+                    DateFormat('MMM d, y').format(selectedDateRange!.end),
+                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
             SizedBox(height: 20),
@@ -247,7 +256,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
           isSelectionMode && selectedOrders.isNotEmpty
               ? FloatingActionButton.extended(
                 onPressed: _createAndShareReceipt,
-                label: Text('Create Receipt'),
+                label: Text(l10n.createReceipt),
                 icon: Icon(Icons.share),
               )
               : null,
@@ -272,6 +281,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
   }
 
   void _showSortBottomSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -285,13 +295,13 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Sort By Profit',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  l10n.sortByProfit,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(height: 20),
                 ListTile(
                   leading: Icon(Icons.arrow_upward),
-                  title: Text('Highest Profit'),
+                  title: Text(l10n.highestProfit),
                   onTap: () {
                     setState(() {
                       filteredOrders.sort(
@@ -303,7 +313,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                 ),
                 ListTile(
                   leading: Icon(Icons.arrow_downward),
-                  title: Text('Lowest Profit'),
+                  title: Text(l10n.lowestProfit),
                   onTap: () {
                     setState(() {
                       filteredOrders.sort(
@@ -320,6 +330,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
   }
 
   void _showSellDetails(BuildContext context, Sell sell) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -348,12 +359,8 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                 ),
                 Center(
                   child: Text(
-                    "Order Details",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF5E6C58),
-                    ),
+                    l10n.orderDetails,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -366,7 +373,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                         return Center(child: Loading());
                       } else {
                         return CustomButton(
-                          text: "Refund",
+                          text: l10n.refund,
                           onPressed: () {
                             AllSellsCubit.get(context).refund(context, sell);
                           },
@@ -377,7 +384,7 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                   ),
                 if (!sell.isRefunded) const SizedBox(height: 10),
                 CustomButton(
-                  text: "Close",
+                  text: l10n.close,
                   onPressed: () => Navigator.pop(context),
                   bgColor: Color(0xFF5E6C58),
                 ),

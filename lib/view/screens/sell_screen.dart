@@ -13,6 +13,7 @@ import 'package:brandify/view/screens/calculate_percent_screen.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/view/widgets/quantity_row.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SellScreen extends StatefulWidget {
   final Product product;
@@ -46,7 +47,7 @@ class _SellScreenState extends State<SellScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sell 🤑"),
+        title: Text(AppLocalizations.of(context)!.sell),
         actions: [
           IconButton(
             onPressed: () {
@@ -66,14 +67,14 @@ class _SellScreenState extends State<SellScreen> {
             children: [
               CustomTextFormField(
                 keyboardType: TextInputType.number,
-                text: "Sell price per item",
+                text: AppLocalizations.of(context)!.sellPricePerItem,
                 onSaved: (value) {
                   if (value!.isNotEmpty)
                     SellCubit.get(context).price = int.parse(value);
                 },
                 onValidate: (value) {
                   if (value!.isEmpty) {
-                    return "Enter price";
+                    return AppLocalizations.of(context)!.enterPrice;
                   } else
                     return null;
                 },
@@ -81,7 +82,7 @@ class _SellScreenState extends State<SellScreen> {
               SizedBox(
                 height: 20,
               ),
-              Text("Where did you sell it ?"),
+              Text(AppLocalizations.of(context)!.whereSell),
               SizedBox(
                 height: 10,
               ),
@@ -108,7 +109,7 @@ class _SellScreenState extends State<SellScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             child: Text(
-                              "Online",
+                              AppLocalizations.of(context)!.online,
                               style: TextStyle(
                                 color: SellCubit.get(context).place ==
                                         SellPlace.online
@@ -142,7 +143,7 @@ class _SellScreenState extends State<SellScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             child: Text(
-                              "Store",
+                              AppLocalizations.of(context)!.store,
                               style: TextStyle(
                                 color: SellCubit.get(context).place ==
                                         SellPlace.store
@@ -176,7 +177,7 @@ class _SellScreenState extends State<SellScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             child: Text(
-                              "Event",
+                              AppLocalizations.of(context)!.event,
                               style: TextStyle(
                                 color: SellCubit.get(context).place ==
                                         SellPlace.inEvent
@@ -210,7 +211,7 @@ class _SellScreenState extends State<SellScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             child: Text(
-                              "Other",
+                              AppLocalizations.of(context)!.other,
                               style: TextStyle(
                                 color: SellCubit.get(context).place ==
                                         SellPlace.other
@@ -233,7 +234,7 @@ class _SellScreenState extends State<SellScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    Text("Choose the size"),
+                    Text(AppLocalizations.of(context)!.chooseSize),
                     SizedBox(
                       height: 10,
                     ),
@@ -290,7 +291,7 @@ class _SellScreenState extends State<SellScreen> {
               SizedBox(
                 height: 20,
               ),
-              Text("Quantity want to sell"),
+              Text(AppLocalizations.of(context)!.enterQuantity),
               SizedBox(
                 height: 10,
               ),
@@ -314,7 +315,7 @@ class _SellScreenState extends State<SellScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Choose order expenses (if you used it only)"),
+                    Text(AppLocalizations.of(context)!.chooseOrderExpenses),
                     SizedBox(
                       height: 10,
                     ),
@@ -349,7 +350,7 @@ class _SellScreenState extends State<SellScreen> {
               ),
               CustomTextFormField(
                 keyboardType: TextInputType.number,
-                text: "Other expenses (ex: delivery)",
+                text: AppLocalizations.of(context)!.otherExpenses,
                 onSaved: (value) {
                   if (value!.isNotEmpty)
                     SellCubit.get(context).extra = int.parse(value);
@@ -368,7 +369,7 @@ class _SellScreenState extends State<SellScreen> {
                     );
                   } else {
                     return CustomButton(
-                      text: "Confirm",
+                      text: AppLocalizations.of(context)!.confirm,
                       onPressed: () {
                         SellCubit.get(context).onDone(context, widget.product);
                       },

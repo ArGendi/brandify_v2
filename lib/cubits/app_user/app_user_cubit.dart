@@ -20,6 +20,7 @@ import 'package:brandify/models/firebase/firestore/shopify_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/view/screens/auth/login_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'app_user_state.dart';
 
@@ -41,9 +42,17 @@ class AppUserCubit extends Cubit<AppUserState> {
     isLoggedInNow = value;
   }
 
-  Future<void> getUserData() async {
+  void _resetAllCubits(BuildContext context) {
+    AdsCubit.get(context).reset();
+    ExtraExpensesCubit.get(context).reset();
+    AllSellsCubit.get(context).reset();
+    ProductsCubit.get(context).reset();
+  }
+
+  Future<void> getUserData(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    emit(AppUserLoading());
     try {
-      emit(AppUserLoading());
       var packageType = Cache.getPackageType();
       if(packageType != null){
         Package.getTypeFromString(packageType);
@@ -92,7 +101,7 @@ class AppUserCubit extends Cubit<AppUserState> {
               Package.getTypeFromString(PACKAGE_TYPE_ONLINE);
               ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
                 SnackBar(
-                  content: Text('Could not get user data, please login again'),
+                  content: Text(l10n.failedToGetUserData),
                   backgroundColor: Colors.red,
                 ), 
               );
@@ -138,7 +147,7 @@ class AppUserCubit extends Cubit<AppUserState> {
             Package.type = PackageType.shopify;
             ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
               SnackBar(
-                content: Text('Could not get user data, please login again'),
+                content: Text(l10n.failedToGetUserData),
                 backgroundColor: Colors.red,
               ),
             );
@@ -153,7 +162,7 @@ class AppUserCubit extends Cubit<AppUserState> {
       
       emit(AppUserLoaded());
     } catch (e) {
-      emit(AppUserError(e.toString()));
+      emit(AppUserError(l10n.errorLoadingUserData(e.toString())));
     }
   }
 
@@ -308,27 +317,22 @@ class AppUserCubit extends Cubit<AppUserState> {
   }
 
   Future<void> logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    await _clearLocalData();
-    total = 0;
-    totalProfit = 0;
-    totalOrders = 0;
-    brandName = null;
-    brandPhone = null;
-    emit(AppUserInitial());
-    _navigateToLogin(context);
-      // await Package.checkAccessability(
-      //   online: () async {
-      //     await FirebaseAuth.instance.signOut();
-      //     await _clearLocalData();
-      //     _navigateToLogin(context);
-      //   },
-      //   offline: () async {
-      //     await _clearLocalData();
-      //     _navigateToLogin(context);
-      //   },
-      // );
+    final l10n = AppLocalizations.of(context)!;
+    emit(AppUserLoading());
+    try {
+      await FirebaseAuth.instance.signOut();
+      await _clearLocalData();
+      total = 0;
+      totalProfit = 0;
+      totalOrders = 0;
+      brandName = null;
+      brandPhone = null;
+      emit(AppUserSuccess());
+      _navigateToLogin(context);
+    } catch (e) {
+      emit(AppUserError(l10n.unexpectedError(e.toString())));
     }
+  }
   
     Future<void> _clearLocalData() async {
       await Cache.clear();
@@ -429,10 +433,11 @@ class AppUserCubit extends Cubit<AppUserState> {
           emit(AppUserError('Failed to get user data from Firebase'));
           return;
         }
-        
+        print("userData package : ${userData['package']}");
         // Get package type and continue with data processing
         var packageType = userData['package'] ?? PACKAGE_TYPE_ONLINE;
         Package.getTypeFromString(packageType);
+        print("packageType : $packageType");
         
         brandName = userData['brandName'];
         brandPhone = userData['brandPhone'];
@@ -450,11 +455,13 @@ class AppUserCubit extends Cubit<AppUserState> {
         await Cache.setTotal(total);
         await Cache.setPackageType(packageType);
 
-        await HiveServices.openUserBoxes();
+        
         // if (Package.type == PackageType.online || Package.type == PackageType.shopify) {
           
         // } 
+        print("Package.type : ${Package.type}");
         if (Package.type == PackageType.offline) {
+          await HiveServices.openUserBoxes();
           // Get data from Hive
           //var productsBox = Hive.box(HiveServices.getTableName(productsTable));
           var sellsBox = Hive.box(HiveServices.getTableName(sellsTable));

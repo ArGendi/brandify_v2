@@ -9,6 +9,7 @@ import 'package:brandify/models/ad.dart';
 import 'package:brandify/view/screens/ads/ads_screen.dart';
 import 'package:brandify/view/widgets/ad_item.dart';
 import 'package:brandify/view/widgets/platform_totals_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AllAdsScreen extends StatefulWidget {
   const AllAdsScreen({super.key});
@@ -63,7 +64,8 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Advertising", 
+        title: Text(
+          AppLocalizations.of(context)!.advertising,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -110,8 +112,8 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Text(
-                        "No Ads Yet. Add the ads you created in social media platforms.",
+                       Text(
+                        AppLocalizations.of(context)!.noAdsDesc,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           //fontSize: 16,
@@ -152,7 +154,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  'From ${DateFormat('MMM d, y').format(selectedDateRange!.start)} to ${DateFormat('MMM d, y').format(selectedDateRange!.end)}',
+                                  '${AppLocalizations.of(context)!.from} ${DateFormat('MMM d, y').format(selectedDateRange!.start)} ${AppLocalizations.of(context)!.to} ${DateFormat('MMM d, y').format(selectedDateRange!.end)}',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[700],
@@ -205,7 +207,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                                               ),
                                             ),
                                             Text(
-                                              "Delete Advertisement",
+                                              AppLocalizations.of(context)!.deleteAdvertisement,
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
@@ -214,7 +216,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                                             ),
                                             SizedBox(height: 15),
                                             Text(
-                                              "Are you sure you want to delete this ad?",
+                                              AppLocalizations.of(context)!.deleteAdConfirm,
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.grey[700],
@@ -233,7 +235,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                                                         borderRadius: BorderRadius.circular(10),
                                                       ),
                                                     ),
-                                                    child: Text("Cancel"),
+                                                    child: Text(AppLocalizations.of(context)!.cancel),
                                                   ),
                                                 ),
                                                 SizedBox(width: 15),
@@ -289,7 +291,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
             MaterialPageRoute(builder: (context) => AdsScreen())
           );
         },
-        label: Text("New Ad", style: TextStyle(fontWeight: FontWeight.w600)),
+        label: Text(AppLocalizations.of(context)!.newAd, style: TextStyle(fontWeight: FontWeight.w600)),
         icon: Icon(Icons.add),
         backgroundColor: mainColor,
         elevation: 4,
@@ -321,7 +323,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
               ),
             ),
             Text(
-              "Advertisement Details",
+              AppLocalizations.of(context)!.advertisementDetails,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -329,9 +331,9 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
               ),
             ),
             SizedBox(height: 20),
-            _buildDetailRow(Icons.campaign, "Platform", ad.platform?.name ?? "N/A"),
-            _buildDetailRow(Icons.attach_money, "Cost", "${ad.cost} LE"),
-            _buildDetailRow(Icons.calendar_today, "Date", ad.date.toString().split(" ").first),
+            _buildDetailRow(Icons.campaign, AppLocalizations.of(context)!.platform, ad.platform?.name ?? AppLocalizations.of(context)!.notAvailable),
+            _buildDetailRow(Icons.attach_money, AppLocalizations.of(context)!.cost, "${ad.cost} ${AppLocalizations.of(context)!.currency}"),
+            _buildDetailRow(Icons.calendar_today, AppLocalizations.of(context)!.date, ad.date.toString().split(" ").first),
             SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -344,7 +346,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text("Close", style: TextStyle(fontSize: 16)),
+                child: Text(AppLocalizations.of(context)!.close, style: TextStyle(fontSize: 16)),
               ),
             ),
           ],

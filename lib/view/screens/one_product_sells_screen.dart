@@ -12,6 +12,7 @@ import 'package:brandify/cubits/sell/sell_cubit.dart';
 import 'package:brandify/models/product.dart';
 import 'package:brandify/models/sell.dart';
 import 'package:brandify/view/widgets/sell_info.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OneProductSellsScreen extends StatefulWidget {
   final Product product;
@@ -37,7 +38,9 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.product.name} sells"),
+        title: Text(
+          AppLocalizations.of(context)!.productSells(widget.product.name ?? ""),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.calendar_today),
@@ -53,7 +56,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Filter by Date',
+                        AppLocalizations.of(context)!.filterByDate,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -62,7 +65,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                       SizedBox(height: 20),
                       ListTile(
                         leading: Icon(Icons.today),
-                        title: Text('Today'),
+                        title: Text(AppLocalizations.of(context)!.today),
                         onTap: () {
                           Navigator.pop(context);
                           OneProductSellsCubit.get(context).filterByDate(
@@ -73,7 +76,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                       ),
                       ListTile(
                         leading: Icon(Icons.calendar_view_week),
-                        title: Text('This Week'),
+                        title: Text(AppLocalizations.of(context)!.thisWeek),
                         onTap: () {
                           final now = DateTime.now();
                           final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
@@ -86,7 +89,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                       ),
                       ListTile(
                         leading: Icon(Icons.calendar_month),
-                        title: Text('This Month'),
+                        title: Text(AppLocalizations.of(context)!.thisMonth),
                         onTap: () {
                           final now = DateTime.now();
                           final startOfMonth = DateTime(now.year, now.month, 1);
@@ -99,7 +102,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                       ),
                       ListTile(
                         leading: Icon(Icons.date_range),
-                        title: Text('Custom Range'),
+                        title: Text(AppLocalizations.of(context)!.customRange),
                         onTap: () async {
                           Navigator.pop(context);
                           final DateTimeRange? picked = await showDateRangePicker(
@@ -121,7 +124,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                       ),
                       ListTile(
                         leading: Icon(Icons.clear_all),
-                        title: Text('Clear Filter'),
+                        title: Text(AppLocalizations.of(context)!.clearFilter),
                         onTap: () {
                           Navigator.pop(context);
                           OneProductSellsCubit.get(context).clearFilter();
@@ -143,7 +146,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
             return Visibility(
               visible: sells.isNotEmpty,
               replacement: Center(
-                child: Text("No sells for this product"),
+                child: Text(AppLocalizations.of(context)!.noSells),
               ),
               child: ListView.separated(
                 itemBuilder: (context, i){
@@ -212,7 +215,7 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
                                 ),
                               )
                             : Text(
-                                "Refunded",
+                                AppLocalizations.of(context)!.refundButton,
                                 style: TextStyle(
                                   color: Colors.red,
                                 ),
@@ -231,85 +234,176 @@ class _OneProductSellsScreenState extends State<OneProductSellsScreen> {
     );
   }
 
-  void showDetailsAlertDialog(BuildContext context, Sell sell) {
+  void showFilterBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
         padding: EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            Center(
-              child: Text(
-                "Sell Information",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+            Text(
+              AppLocalizations.of(context)!.filterByDate,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 20),
-            SellInfo(sell: sell),
-            SizedBox(height: 20),
-            if (!sell.isRefunded)
-              BlocBuilder<AllSellsCubit, AllSellsState>(
-                builder: (context, state) {
-                  if (state is LoadingRefundSellsState) {
-                    return Center(
-                      child: CircularProgressIndicator(color: Colors.red),
-                    );
-                  }
-                  return ElevatedButton(
-                    onPressed: () async{
-                      await AllSellsCubit.get(context).refund(context, sell);
-                      navigatorKey.currentState?..pop()..pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      minimumSize: Size(double.infinity, 45),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text("Refund"),
+            ListTile(
+              leading: Icon(Icons.today),
+              title: Text(AppLocalizations.of(context)!.today),
+              onTap: () {
+                Navigator.pop(context);
+                OneProductSellsCubit.get(context).filterByDate(
+                  DateTime.now(),
+                  DateTime.now(),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_view_week),
+              title: Text(AppLocalizations.of(context)!.thisWeek),
+              onTap: () {
+                final now = DateTime.now();
+                final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+                OneProductSellsCubit.get(context).filterByDate(
+                  startOfWeek,
+                  now,
+                );
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_month),
+              title: Text(AppLocalizations.of(context)!.thisMonth),
+              onTap: () {
+                final now = DateTime.now();
+                final startOfMonth = DateTime(now.year, now.month, 1);
+                OneProductSellsCubit.get(context).filterByDate(
+                  startOfMonth,
+                  now,
+                );
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.date_range),
+              title: Text(AppLocalizations.of(context)!.customRange),
+              onTap: () async {
+                Navigator.pop(context);
+                final DateTimeRange? picked = await showDateRangePicker(
+                  context: context,
+                  firstDate: DateTime(2020),
+                  lastDate: DateTime.now(),
+                  initialDateRange: DateTimeRange(
+                    start: DateTime.now().subtract(Duration(days: 7)),
+                    end: DateTime.now(),
+                  ),
+                );
+                if (picked != null) {
+                  OneProductSellsCubit.get(context).filterByDate(
+                    picked.start,
+                    picked.end,
                   );
-                },
-              ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: mainColor,
-                foregroundColor: Colors.white,
-                minimumSize: Size(double.infinity, 45),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text("Close"),
+                }
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.clear_all),
+              title: Text(AppLocalizations.of(context)!.clearFilter),
+              onTap: () {
+                Navigator.pop(context);
+                OneProductSellsCubit.get(context).clearFilter();
+              },
             ),
           ],
         ),
       ),
     );
   }
+  void showDetailsAlertDialog(BuildContext context, Sell sell) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (context) => Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              margin: EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              "Sell Information",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          SellInfo(sell: sell),
+          SizedBox(height: 20),
+          if (!sell.isRefunded)
+            BlocBuilder<AllSellsCubit, AllSellsState>(
+              builder: (context, state) {
+                if (state is LoadingRefundSellsState) {
+                  return Center(
+                    child: CircularProgressIndicator(color: Colors.red),
+                  );
+                }
+                return ElevatedButton(
+                  onPressed: () async{
+                    await AllSellsCubit.get(context).refund(context, sell);
+                    navigatorKey.currentState?..pop()..pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    minimumSize: Size(double.infinity, 45),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text("Refund"),
+                );
+              },
+            ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: mainColor,
+              foregroundColor: Colors.white,
+              minimumSize: Size(double.infinity, 45),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text("Close"),
+          ),
+        ],
+      ),
+    ));
+  }
 }
+

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brandify/main.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,7 @@ import 'package:brandify/view/widgets/recent_sell_item.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportsResult extends StatefulWidget {
   final String title;
@@ -122,7 +124,7 @@ class _ReportsResultState extends State<ReportsResult> {
                         Icon(Icons.pie_chart, color: Color(0xFF5E6C58)),
                         const SizedBox(width: 10),
                         Text(
-                          "Sales Distribution",
+                          AppLocalizations.of(context)!.salesDistribution,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -163,7 +165,7 @@ class _ReportsResultState extends State<ReportsResult> {
                         Icon(Icons.receipt_long, color: Color(0xFF5E6C58)),
                         const SizedBox(width: 10),
                         Text(
-                          "Recent Transactions",
+                          AppLocalizations.of(context)!.recentTransactions,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -192,7 +194,7 @@ class _ReportsResultState extends State<ReportsResult> {
       builder: (context, state) {
         if ((ReportsCubit.get(context).currentReport?.sells ?? []).isNotEmpty) {
           return CustomButton(
-            text: "Show highest products",
+            text: AppLocalizations.of(context)!.showHighestProducts,
             onPressed: () {
               Navigator.push(
                 context,
@@ -204,7 +206,7 @@ class _ReportsResultState extends State<ReportsResult> {
             },
           );
         }
-        return Center(child: Text("Start selling to see results"));
+        return Center(child: Text(AppLocalizations.of(context)!.startSellingToSeeResults));
       },
     );
   }
@@ -222,24 +224,24 @@ class _ReportsResultState extends State<ReportsResult> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Expense Details",
+              AppLocalizations.of(context)!.expenseDetails,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 20),
-            _buildDetailRow("Name", exp.name ?? ""),
+            _buildDetailRow(AppLocalizations.of(context)!.nameLabel, exp.name ?? ""),
             SizedBox(height: 10),
-            _buildDetailRow("Price", "${exp.price} LE"),
+            _buildDetailRow(AppLocalizations.of(context)!.price, "${exp.price} LE"),
             SizedBox(height: 10),
-            _buildDetailRow("Date", exp.date.toString().split(' ')[0]),
+            _buildDetailRow(AppLocalizations.of(context)!.date, exp.date.toString().split(' ')[0]),
             SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Close"),
+                child: Text(AppLocalizations.of(context)!.close),
               ),
             ),
           ],
@@ -288,7 +290,7 @@ class _ReportsResultState extends State<ReportsResult> {
               ),
               Center(
                 child: Text(
-                  "Order Details",
+                  AppLocalizations.of(context)!.orderDetails,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -307,11 +309,10 @@ class _ReportsResultState extends State<ReportsResult> {
                   }
                   else{
                     return CustomButton(
-                      text: "Refund",
+                      text: AppLocalizations.of(context)!.refundButton,
                       onPressed: () {
                         AllSellsCubit.get(context).refund(context, sell);
                       },
-                      //bgColor: Color(0xFF5E6C58),
                     );
                   }
                 },
@@ -319,7 +320,7 @@ class _ReportsResultState extends State<ReportsResult> {
               if(!sell.isRefunded)
               const SizedBox(height: 10),
               CustomButton(
-                text: "Close", 
+                text: AppLocalizations.of(context)!.close, 
                 onPressed: () => Navigator.pop(context),
                 bgColor: Color(0xFF5E6C58),
               ),
@@ -356,35 +357,40 @@ class _ReportsResultState extends State<ReportsResult> {
               build: (context) => [
                 pw.Header(
                   level: 0,
-                  child: pw.Text('Sales Report', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                  child: pw.Text(AppLocalizations.of(navigatorKey.currentContext!)!.salesReport, style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
                 ),
                 pw.Paragraph(text: '${current.dateRange!.start.toString().split(' ')[0]} to ${current.dateRange!.end.toString().split(' ')[0]}'),
                 pw.SizedBox(height: 20),
                 
                 // Summary Section
-                pw.Header(level: 1, child: pw.Text('Summary')),
+                pw.Header(level: 1, child: pw.Text(AppLocalizations.of(navigatorKey.currentContext!)!.summary)),
                 pw.Table.fromTextArray(
                   context: context,
                   data: [
-                    ['Metric', 'Value'],
-                    ['Total Sales', '${current.noOfSells}'],
-                    ['Total Profit', '${current.totalProfit} LE'],
-                    ['Total Expenses', '${current.totalExtraExpensesCost + current.totalAdsCost} LE'],
+                    [AppLocalizations.of(navigatorKey.currentContext!)!.metric, AppLocalizations.of(navigatorKey.currentContext!)!.value],
+                    [AppLocalizations.of(navigatorKey.currentContext!)!.totalSales, '${current.noOfSells}'],
+                    [AppLocalizations.of(navigatorKey.currentContext!)!.profit, '${current.totalProfit} LE'],
+                    [AppLocalizations.of(navigatorKey.currentContext!)!.totalExpenses, '${current.totalExtraExpensesCost + current.totalAdsCost} LE'],
                   ],
                 ),
                 pw.SizedBox(height: 20),
                 
                 // Products Section
                 if (productSummary.isNotEmpty) ...[
-                  pw.Header(level: 1, child: pw.Text('Products Summary')),
+                  pw.Header(level: 1, child: pw.Text(AppLocalizations.of(navigatorKey.currentContext!)!.productsSummary)),
                   pw.Table.fromTextArray(
                     context: context,
-                    headers: ['Product', 'Quantity Sold', 'Total Revenue', 'Profit'],
+                    headers: [
+                      AppLocalizations.of(navigatorKey.currentContext!)!.product,
+                      AppLocalizations.of(navigatorKey.currentContext!)!.quantitySold,
+                      AppLocalizations.of(navigatorKey.currentContext!)!.totalRevenue,
+                      AppLocalizations.of(navigatorKey.currentContext!)!.profit
+                    ],
                     data: productSummary.values.map((product) => [
                       product['name'],
                       product['quantity'].toString(),
-                      '${product['totalPrice']} LE',
-                      '${product['totalProfit']} LE',
+                      '${AppLocalizations.of(navigatorKey.currentContext!)!.priceAmount(product['totalPrice'])}',
+                      '${AppLocalizations.of(navigatorKey.currentContext!)!.priceAmount(product['totalProfit'])}',
                     ]).toList(),
                   ),
                   pw.SizedBox(height: 20),
@@ -392,13 +398,13 @@ class _ReportsResultState extends State<ReportsResult> {
 
                 // Ads Section
                 if (current.ads.isNotEmpty) ...[
-                  pw.Header(level: 1, child: pw.Text('Ads')),
+                  pw.Header(level: 1, child: pw.Text(AppLocalizations.of(navigatorKey.currentContext!)!.ads)),
                   pw.Table.fromTextArray(
                     context: context,
-                    headers: ['Name', 'Cost', 'Date'],
+                    headers: [AppLocalizations.of(navigatorKey.currentContext!)!.nameLabel, AppLocalizations.of(navigatorKey.currentContext!)!.cost, AppLocalizations.of(navigatorKey.currentContext!)!.date],
                     data: current.ads.map((ad) => [
                       ad.platform?.name ?? '',
-                      '${ad.cost} LE',
+                      '${AppLocalizations.of(navigatorKey.currentContext!)!.priceAmount(ad.cost ?? 0)}',
                       ad.date.toString().split(' ')[0],
                     ]).toList(),
                   ),
@@ -407,13 +413,13 @@ class _ReportsResultState extends State<ReportsResult> {
                 
                 // Expenses Section
                 if (current.extraExpenses.isNotEmpty) ...[
-                  pw.Header(level: 1, child: pw.Text('Expenses')),
+                  pw.Header(level: 1, child: pw.Text(AppLocalizations.of(navigatorKey.currentContext!)!.expensesSummary)),
                   pw.Table.fromTextArray(
                     context: context,
-                    headers: ['Name', 'Cost', 'Date'],
+                    headers: [AppLocalizations.of(navigatorKey.currentContext!)!.nameLabel, AppLocalizations.of(navigatorKey.currentContext!)!.cost, AppLocalizations.of(navigatorKey.currentContext!)!.date],
                     data: current.extraExpenses.map((expense) => [
                       expense.name ?? '',
-                      '${expense.price} LE',
+                      '${AppLocalizations.of(navigatorKey.currentContext!)!.priceAmount(expense.price ?? 0)}',
                       expense.date.toString().split(' ')[0],
                     ]).toList(),
                   ),
@@ -422,7 +428,7 @@ class _ReportsResultState extends State<ReportsResult> {
                 // Footer
                 pw.Footer(
                   trailing: pw.Text(
-                    'Generated by Brandify on ${DateTime.now().toString().split(' ')[0]}',
+                    AppLocalizations.of(navigatorKey.currentContext!)!.generatedByBrandify(DateTime.now().toString().split(' ')[0]),
                     style: pw.TextStyle(fontSize: 10, fontStyle: pw.FontStyle.italic),
                   ),
                 ),
@@ -438,7 +444,7 @@ class _ReportsResultState extends State<ReportsResult> {
           // Share the PDF
           await Share.shareXFiles(
             [XFile(file.path)],
-            text: 'Sales Report',
+            text: AppLocalizations.of(context)!.salesReport,
           );
         }
       }

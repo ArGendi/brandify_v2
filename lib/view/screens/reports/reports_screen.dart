@@ -17,6 +17,7 @@ import 'package:brandify/view/screens/reports/tabs/week_tab.dart';
 import 'package:brandify/view/screens/reports/tabs/year_tab.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/report_wide_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -41,8 +42,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reports",
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(AppLocalizations.of(context)!.reports,
+            style: const TextStyle(fontWeight: FontWeight.w600)),
         backgroundColor: Color(0xFFD5E4DD),
         elevation: 0,
       ),
@@ -92,9 +93,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              const Text(
-                                "Loading Reports...",
-                                style: TextStyle(
+                              Text(
+                                AppLocalizations.of(context)!.loadingReports,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -111,7 +112,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             Expanded(
                               child: _buildReportCard(
                                 context,
-                                "Today",
+                                AppLocalizations.of(context)!.today,
                                 ReportsCubit.get(context).today?.totalProfit ??
                                     0,
                                 Color(0xFF93B0A2), // Darker variant
@@ -123,7 +124,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             Expanded(
                               child: _buildReportCard(
                                 context,
-                                "7 Days",
+                                AppLocalizations.of(context)!.sevenDays,
                                 ReportsCubit.get(context).week?.totalProfit ??
                                     0,
                                 Color(0xFF7D9889), // Even darker
@@ -139,7 +140,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             Expanded(
                               child: _buildReportCard(
                                 context,
-                                "This Month",
+                                AppLocalizations.of(context)!.thisMonth,
                                 ReportsCubit.get(context).month?.totalProfit ??
                                     0,
                                 Color(0xFF678073), // More darker
@@ -151,7 +152,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             Expanded(
                               child: _buildReportCard(
                                 context,
-                                "3 Months",
+                                AppLocalizations.of(context)!.threeMonths,
                                 ReportsCubit.get(context)
                                         .threeMonths
                                         ?.totalProfit ??
@@ -187,10 +188,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     Row(
                       children: [
                         Expanded(child: Divider(color: Colors.grey.shade300)),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text("Custom Range",
-                              style: TextStyle(
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(AppLocalizations.of(context)!.customRange,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               )),
@@ -203,7 +204,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       builder: (context, state) => _buildDateButton(
                         context,
                         ReportsCubit.get(context).fromDate == null
-                            ? "Select Start Date"
+                            ? AppLocalizations.of(context)!.selectStartDate
                             : ReportsCubit.get(context).getFromDate(),
                         Icons.calendar_today,
                         () => _selectFromDate(context),
@@ -214,7 +215,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       builder: (context, state) => _buildDateButton(
                         context,
                         ReportsCubit.get(context).toDate == null
-                            ? "Select End Date"
+                            ? AppLocalizations.of(context)!.selectEndDate
                             : ReportsCubit.get(context).getToDate(),
                         Icons.calendar_today,
                         () => _selectToDate(context),
@@ -222,7 +223,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     ),
                     const SizedBox(height: 15),
                     CustomButton(
-                      text: "Generate Report",
+                      text: AppLocalizations.of(context)!.generateReport,
                       icon: const Icon(Icons.analytics, color: Colors.white),
                       onPressed: () => _generateReport(context),
                     ),

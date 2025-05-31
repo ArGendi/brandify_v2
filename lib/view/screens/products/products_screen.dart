@@ -28,7 +28,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ProductsCubit.get(context).getProducts();
+    //ProductsCubit.get(context).getProducts();
   }
 
   @override

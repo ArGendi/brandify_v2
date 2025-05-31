@@ -47,7 +47,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               color: Colors.white,
             ),
             Text(
-              "Add photo",
+              AppLocalizations.of(context)!.addPhoto,
               style: TextStyle(
                   color: Colors.white),
             )
@@ -204,7 +204,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   .product
                                   .price?.toString(),
                       keyboardType: TextInputType.number,
-                      text:  AppLocalizations.of(context)!.originalPrice,
+                      text: AppLocalizations.of(context)!.originalPrice,
                       onSaved: (value) {
                         if (value!.isNotEmpty) {
                           AddProductCubit.get(context).product.price =
@@ -387,12 +387,34 @@ class _AddProductScreenState extends State<AddProductScreen> {
               textDirection: TextDirection.rtl,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add, color: Colors.white),
-                  Text(
-                    AppLocalizations.of(context)!.addPhoto,
-                    style: TextStyle(color: Colors.white),
-                  )
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CustomButton(
+                    icon: Icon(
+                      Icons.photo,
+                      color: Colors.white,
+                    ),
+                    text: AppLocalizations.of(context)!.photosButton,
+                    onPressed: () {
+                      AddProductCubit.get(context)
+                          .getImage(ImageSource.gallery);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  CustomButton(
+                    icon: Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                    ),
+                    text: AppLocalizations.of(context)!.cameraButton,
+                    onPressed: () {
+                      AddProductCubit.get(context).getImage(ImageSource.camera);
+                      Navigator.pop(context);
+                    },
+                  ),
                 ],
               ),
             ),
@@ -401,4 +423,5 @@ class _AddProductScreenState extends State<AddProductScreen> {
       },
     );
   }
+
 }

@@ -12,6 +12,7 @@ import 'package:brandify/models/firebase/firestore/shopify_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/view/screens/home_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -23,6 +24,7 @@ class LoginCubit extends Cubit<LoginState> {
   static LoginCubit get(BuildContext context) => BlocProvider.of(context);
 
   void onLogin(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       bool valid = formKey.currentState!.validate();
       if (!valid) return;
@@ -34,7 +36,7 @@ class LoginCubit extends Cubit<LoginState> {
       var loginResponse = await AuthServices.login("$phone@brandify.com", password);
       if (loginResponse.status != Status.success) {
         emit(FailState());
-        _showError(context, 'Login failed: ${loginResponse.data}');
+        _showError(context, l10n.loginFailed(loginResponse.data));
         return;
       }
 
@@ -43,7 +45,7 @@ class LoginCubit extends Cubit<LoginState> {
         var userData = await FirestoreServices().getUserData();
         if (userData == null) {
           emit(FailState());
-          _showError(context, 'Failed to load user data');
+          _showError(context, l10n.failedToLoadUserData);
           return;
         }
 
@@ -79,11 +81,11 @@ class LoginCubit extends Cubit<LoginState> {
         );
       } catch (e) {
         emit(FailState());
-        _showError(context, 'Error loading user data: ${e.toString()}');
+        _showError(context, l10n.errorLoadingUserData(e.toString()));
       }
     } catch (e) {
       emit(FailState());
-      _showError(context, 'Unexpected error: ${e.toString()}');
+      _showError(context, l10n.unexpectedError(e.toString()));
     }
   }
 

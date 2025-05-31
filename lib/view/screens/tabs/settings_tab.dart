@@ -169,7 +169,7 @@ class SettingsTab extends StatelessWidget {
                                       ),
                                       SizedBox(height: 15),
                                       Text(
-                                        'Change Package',
+                                        AppLocalizations.of(context)!.changePackage,
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -177,7 +177,7 @@ class SettingsTab extends StatelessWidget {
                                       ),
                                       SizedBox(height: 10),
                                       Text(
-                                        'Are you sure you want to switch to ${Package.type == PackageType.offline ? 'online' : 'offline'} package?',
+                                        AppLocalizations.of(context)!.switchPackageConfirm(Package.type == PackageType.offline ? 'online' : 'offline'),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.grey[600],
@@ -197,7 +197,7 @@ class SettingsTab extends StatelessWidget {
                                                 onPressed:
                                                     () =>
                                                         Navigator.pop(context),
-                                                child: Text('Cancel'),
+                                                child: Text(AppLocalizations.of(context)!.cancel),
                                                 style: TextButton.styleFrom(
                                                   padding: EdgeInsets.symmetric(
                                                     vertical: 15,
@@ -238,7 +238,7 @@ class SettingsTab extends StatelessWidget {
                                                             ),
                                                       ),
                                                     ),
-                                                    child: Text('Convert'),
+                                                    child: Text(AppLocalizations.of(context)!.convert),
                                                   );
                                                   }
                                                 },
@@ -256,7 +256,7 @@ class SettingsTab extends StatelessWidget {
                     else{
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('You are already in online package ✌️'),
+                          content: Text(AppLocalizations.of(context)!.alreadyOnline),
                         ),
                       );
                     }
@@ -335,7 +335,7 @@ class SettingsTab extends StatelessWidget {
                                       ),
                                     ),
                                     title: Text(
-                                      'English',
+                                        AppLocalizations.of(context)!.english,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
@@ -365,7 +365,7 @@ class SettingsTab extends StatelessWidget {
                                       ),
                                     ),
                                     title: Text(
-                                      "عربي",
+                                      AppLocalizations.of(context)!.arabic,
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,

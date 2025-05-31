@@ -20,7 +20,7 @@ import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/models/product.dart';
 import 'package:brandify/models/sell.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 part 'all_sells_state.dart';
 
 class AllSellsCubit extends Cubit<AllSellsState> {
@@ -212,7 +212,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
     if (!context.mounted) return;
     
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Refund Done"), backgroundColor: Colors.green,)
+      SnackBar(content: Text(AppLocalizations.of(context)!.refunded), backgroundColor: Colors.green,)
     );
     navigatorKey.currentState?.pop();
   }
@@ -222,7 +222,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
     if (!context.mounted) return;
     
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Can't make the refund 😥"), backgroundColor: Colors.red,)
+      SnackBar(content: Text(AppLocalizations.of(context)!.refundFailed), backgroundColor: Colors.red,)
     );
   }
 

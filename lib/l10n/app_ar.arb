@@ -79,15 +79,45 @@
     "products": "المنتجات",
     "manageInventory": "إدارة المخزون",
     "orderExpenses": "مصاريف الطلبات",
+    "addOrderExpense": "إضافة مصروف طلب",
+    "emptyOrderExpensesDesc": "أضف كل ما يتعلق بطلبك لاستخدامه في طلباتك مثل البطاقات وعبوة الطلب والنشرات وغيرها",
+    "expenseName": "الاسم",
+    "expenseNameHint": "مثال: تغليف الطلب",
+    "electricityExample": "مثال: فاتورة الكهربا",
+    "enterName": "أدخل الاسم",
+    "pricePerItem": "السعر لكل قطعة",
+    "priceHint": "مثال: 20 (جنيه)",
+    "enterPrice": "أدخل السعر",
+    "quantity": "الكمية",
+    "quantityHint": "مثال: 100 (قطعة)",
+    "enterQuantity": "أدخل الكمية",
+    "add": "إضافة",
+    "currency": "{amount} جنيه",
     "additionalOrderCosts": "تكاليف الطلبات الإضافية",
     "ads": "الإعلانات",
+    "noAdsYet": "لا توجد إعلانات بعد",
+    "noAdsDesc": "أضف الإعلانات التي أنشأتها في منصات التواصل الاجتماعي.",
+    "newAd": "إعلان جديد",
+    "deleteAdvertisement": "حذف الإعلان",
+    "deleteAdConfirm": "هل أنت متأكد من حذف هذا الإعلان؟",
+    "advertisementDetails": "تفاصيل الإعلان",
+    "platform": "المنصة",
+    "notAvailable": "غير متوفر",
     "manageCampaigns": "إدارة الحملات",
     "externalExpenses": "المصاريف الخارجية",
     "otherExpenses": "مصاريف أخرى",
     "home": "الرئيسية",
     "productsTab": "المنتجات",
     "reports": "التقارير",
-    "settings": "الإعدادات",
+    "loadingReports": "جاري تحميل التقارير...",
+    "today": "اليوم",
+    "sevenDays": "7 أيام",
+    "thisMonth": "هذا الشهر",
+    "threeMonths": "3 أشهر",
+    "customRange": "نطاق مخصص",
+    "selectStartDate": "اختر تاريخ البداية",
+    "selectEndDate": "اختر تاريخ النهاية",
+    "generateReport": "إنشاء التقرير",
     "productsInventory": "مخزون المنتجات",
     "noProductsYet": "لا توجد منتجات بعد. أضف أول منتج!",
     "searchProducts": "البحث عن المنتجات...",
@@ -122,7 +152,7 @@
     "selectedDateRange": "{startDate} - {endDate}",
     "clearDateFilter": "مسح تصفية التاريخ",
     "viewHistory": "السجل",
-    "itemsInStockCount": "{count} قطعة في المخزون",
+    "itemsInStockCount": "{count} قطعة",
     "totalAmount": "الإجمالي {amount} جنيه",
     "productDescription": "الوصف",
     "availableSizes": "المقاسات المتوفرة",
@@ -145,5 +175,221 @@
     "priceRequired": "أدخل السعر",
     "nameRequired": "أدخل الاسم",
     "nameLabel": "الاسم*",
-    "size": "المقاس"
+    "size": "المقاس",
+    "sell": "بيع 🤑",
+    "sellPricePerItem": "سعر البيع للقطعة",
+    "whereSell": "أين قمت بالبيع؟",
+    "online": "أونلاين",
+    "store": "متجر",
+    "event": "معرض",
+    "other": "أخرى",
+    "productSells": "مبيعات {productName}",
+    "filterByDate": "تصفية حسب التاريخ",
+    "thisWeek": "هذا الأسبوع",
+    "discountCalculator": "حاسبة الخصم",
+    "priceAfterDiscount": "السعر بعد الخصم",
+    "originalPriceWithThePrice": "السعر الأصلي: {price} جنيه",
+    "calculateDiscount": "حساب الخصم",
+    "enterPriceAndDiscount": "أدخل سعر المنتج ونسبة الخصم",
+    "discountPercent": "نسبة الخصم %",
+    "enterPercent": "أدخل النسبة",
+    "calculateDiscountButton": "حساب الخصم",
+    "chooseSize": "اختر المقاس",
+    "chooseOrderExpenses": "اختر مصاريف الطلب (إذا استخدمتها فقط)",
+    "confirm": "تأكيد",
+    "noExpensesYet": "لا توجد مصاريف حتى الآن",
+    "noExpensesDesc": "أضف أي مصاريف خارجية تكلف عملك مثل الطعام ومصاريف الاجتماعات وما إلى ذلك",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "close": "إغلاق",
+    "from": "من",
+    "to": "إلى",
+    "totalExpenses": "إجمالي المصاريف",
+    "expensesSummary": "ملخص المصاريف",
+    "failedToGeneratePdf": "فشل في إنشاء ملف PDF",
+    "sortExpenses": "ترتيب المصاريف",
+    "highestPrice": "الأعلى سعراً",
+    "lowestPrice": "الأقل سعراً",
+    "adCost": "تكلفة الإعلان",
+    "enterAdCost": "أدخل تكلفة الإعلان",
+    "yourAdPlatform": "ما هي منصة إعلانك؟",
+    "report": "التقرير",
+    "salesDistribution": "توزيع المبيعات",
+    "showHighestProducts": "عرض المنتجات الأعلى مبيعاً",
+    "startSellingToSeeResults": "ابدأ البيع لرؤية النتائج",
+    "recentTransactions": "المعاملات الأخيرة",
+    "expenseDetails": "تفاصيل المصروف",
+    "orderDetails": "تفاصيل الطلب",
+    "salesReport": "تقرير المبيعات",
+    "summary": "الملخص",
+    "metric": "المقياس",
+    "value": "القيمة",
+    "productsSummary": "ملخص المنتجات",
+    "product": "المنتج",
+    "quantitySold": "الكمية المباعة",
+    "totalRevenue": "إجمالي الإيرادات",
+    "generatedByBrandify": "تم إنشاؤه بواسطة برانديفاي في {date}",
+    "@generatedByBrandify": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "choosePackage": "اختر الباقة",
+    "selectYourPackage": "اختر باقاتك",
+    "changePackageLater": "يمكنك تغيير باقاتك في أي وقت",
+    "offlinePackage": "الباقة غير المتصلة",
+    "offlinePackageDesc": "تخزين البيانات محلياً على جهازك",
+    "workWithoutInternet": "العمل بدون إنترنت",
+    "localDataStorage": "تخزين البيانات محلياً",
+    "basicReporting": "تقارير أساسية",
+    "unlimitedProducts": "منتجات غير محدودة",
+    "onlinePackage": "الباقة المتصلة",
+    "onlinePackageDesc": "تخزين سحابي مع ميزات متقدمة",
+    "cloudDataStorage": "تخزين البيانات سحابياً",
+    "multiDeviceSync": "مزامنة متعددة الأجهزة",
+    "advancedReporting": "تقارير متقدمة",
+    "dataBackup": "نسخ احتياطي للبيانات",
+    "shopifyPackage": "باقة شوبيفاي",
+    "shopifyPackageDesc": "تكامل كامل مع شوبيفاي (قريباً)",
+    "shopifyIntegration": "تكامل مع شوبيفاي",
+    "inventorySync": "مزامنة المخزون",
+    "orderManagement": "إدارة الطلبات",
+    "allOnlineFeatures": "جميع ميزات الباقة المتصلة",
+    "confirmPackage": "تأكيد الباقة",
+    "confirmPackageSelection": "هل تريد اختيار {title}؟",
+    "@confirmPackageSelection": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "comingSoon": "ستكون هذه الباقة متاحة قريباً!",
+    "bestSellingProducts": "المنتجات الأكثر مبيعاً",
+    "productsSortedBy": "المنتجات مرتبة حسب {sortBy}",
+    "@productsSortedBy": {
+        "placeholders": {
+            "sortBy": {
+                "type": "String"
+            }
+        }
+    },
+    "quantity": "الكمية",
+    "profit": "الربح",
+    "noProductsAddNow": "لا توجد منتجات، أضف الآن",
+    "sortProductsBy": "ترتيب المنتجات حسب",
+    "sortByQuantity": "الترتيب حسب الكمية",
+    "sortByProfit": "الترتيب حسب الربح",
+    "bestSellingProductsReport": "تقرير المنتجات الأكثر مبيعاً",
+    "period": "الفترة: {startDate} إلى {endDate}",
+    "@period": {
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "quantitySold": "الكمية المباعة",
+    "unnamedProduct": "منتج بدون اسم",
+    "orders": "الطلبات",
+    "selectOrders": "اختر الطلبات",
+    "totalProfit": "إجمالي الربح",
+    "ordersFromTo": "الطلبات من {startDate} إلى {endDate}",
+    "@ordersFromTo": {
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "createReceipt": "إنشاء إيصال",
+    "sortByProfit": "الترتيب حسب الربح",
+    "highestProfit": "أعلى ربح",
+    "lowestProfit": "أقل ربح",
+    "orderDetails": "تفاصيل الطلب",
+    "refund": "استرجاع",
+    "close": "إغلاق",
+    "ordersReceipt": "إيصال الطلبات",
+    "orderDate": "تاريخ الطلب",
+    "product": "المنتج",
+    "size": "المقاس",
+    "quantity": "الكمية",
+    "price": "السعر",
+    "refunded": "تم الاسترجاع",
+    "totalOrders": "إجمالي الطلبات",
+    "fromBrandify": "من {brandName} في {date}",
+    "@fromBrandify": {
+        "placeholders": {
+            "brandName": {
+                "type": "String"
+            },
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "loginFailed": "فشل تسجيل الدخول: {error}",
+    "@loginFailed": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "failedToLoadUserData": "فشل تحميل بيانات المستخدم",
+    "errorLoadingUserData": "خطأ في تحميل بيانات المستخدم: {error}",
+    "@errorLoadingUserData": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "unexpectedError": "خطأ غير متوقع: {error}",
+    "@unexpectedError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "invalidStoreConfig": "تكوين المتجر غير صالح",
+    "couldNotGetUserData": "تعذر الحصول على بيانات المستخدم، يرجى تسجيل الدخول مرة أخرى",
+    "failedToGetUserData": "فشل الحصول على بيانات المستخدم من Firebase",
+    "errorProcessingExpense": "خطأ في معالجة بيانات المصروف: {error}",
+    "@errorProcessingExpense": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "successfullyConvertedToOnline": "تم التحويل إلى الباقة المتصلة بنجاح",
+    "failedToUploadData": "فشل رفع البيانات إلى التخزين السحابي",
+    "successfullyConvertedToOffline": "تم التحويل إلى الباقة غير المتصلة بنجاح",
+    "egp": "جنية",
+    "numberOfSales": "عدد المبيعات",
+    "totalIncome": "إجمالي الدخل",
+    "profit": "الربح",
+    "ads": "الإعلانات",
+    "extraExpenses": "المصاريف الإضافية",
+    "orders": "الطلبات",
+    "viewAll": "عرض الكل",
+    "noDataToShow": "لا توجد بيانات للعرض",
+    "boughtByPlace": "تم الشراء من",
+    "totalCostByPlatform": "أجمالي المدفوع لكل منصة",
+    "name": "الاسم",
+    "place": "المكان",
+    "soldFor": "تم البيع بـ",
+    "sideExpensesCost": "تكلفة المصاريف الجانبية",
+    "sideExpensesAre": "المصاريف الجانبية هي",
+    "refundFailed": "لم استطع استرجاع المنتج 😥"
 }

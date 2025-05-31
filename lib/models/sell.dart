@@ -1,3 +1,4 @@
+import 'package:brandify/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import 'package:brandify/models/product.dart';
 import 'package:brandify/models/sell_side.dart';
 import 'package:brandify/models/side.dart';
 import 'package:brandify/models/size.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Sell{
   int? id;
@@ -117,10 +119,10 @@ class Sell{
 
   String getPlace(){
     switch(place){
-      case SellPlace.online: return "Online";
-      case SellPlace.store: return "Store";
-      case SellPlace.inEvent: return "In event";
-      default: return "Other";
+      case SellPlace.online: return AppLocalizations.of(navigatorKey.currentContext!)!.online;
+      case SellPlace.store: return AppLocalizations.of(navigatorKey.currentContext!)!.store;
+      case SellPlace.inEvent: return AppLocalizations.of(navigatorKey.currentContext!)!.event;
+      default: return AppLocalizations.of(navigatorKey.currentContext!)!.other;
     }
   }
 

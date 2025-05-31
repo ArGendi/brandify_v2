@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brandify/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -18,6 +19,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BestProductsScreen extends StatefulWidget {
   final DateTimeRange? dateRange;
@@ -41,7 +43,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Best Selling Products"),
+        title: Text(AppLocalizations.of(context)!.bestSellingProducts),
         actions: [
           IconButton(
             onPressed: () => _shareBestProducts(context, widget.dateRange!),
@@ -72,7 +74,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
                         width: 300,
                       ),
                       //SizedBox(height: 20,),
-                      Text("No products, Add now")
+                      Text(AppLocalizations.of(context)!.noProductsAddNow)
                     ],
                   ),
               ),
@@ -81,7 +83,11 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: Text(
-                      "Products sorted by ${context.watch<BestProductsCubit>().sortBy == 'quantity' ? 'Quantity' : 'Profit'}",
+                      AppLocalizations.of(context)!.productsSortedBy(
+                        context.watch<BestProductsCubit>().sortBy == 'quantity' 
+                          ? AppLocalizations.of(context)!.quantity 
+                          : AppLocalizations.of(context)!.profit
+                      ),
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 14,
@@ -116,17 +122,17 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
                               // ),
                               title: CustomText(
                                 text: productSales.product.name ??
-                                    "Unnamed Product",
+                                    AppLocalizations.of(context)!.unnamedProduct,
                                 fontWeight: FontWeight.bold,
                               ),
                               subtitle: CustomText(
-                                text: "Quantity Sold: ${productSales.quantity}",
+                                text: "${AppLocalizations.of(context)!.quantitySold}: ${productSales.quantity}",
                               ),
                               trailing: CustomText(
                                 text:
                                     productSales.profit >=0 ? 
-                                      "+${productSales.profit} LE"
-                                      : "${productSales.profit} LE",
+                                      "+${AppLocalizations.of(context)!.priceAmount(productSales.profit)}"
+                                      : "${AppLocalizations.of(context)!.priceAmount(productSales.profit)}",
                                 color:  productSales.profit >=0 ?
                                    Colors.green : Colors.red,
                                 //fontSize: 14,
@@ -158,15 +164,15 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CustomText(
-                text: "Sort Products By",
+              CustomText(
+                text: AppLocalizations.of(context)!.sortProductsBy,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
               const SizedBox(height: 20),
               ListTile(
                 leading: const Icon(Icons.sort),
-                title: const Text("Sort by Quantity"),
+                title: Text(AppLocalizations.of(context)!.sortByQuantity),
                 onTap: () {
                   context.read<BestProductsCubit>().sortByQuantity();
                   Navigator.pop(context);
@@ -174,7 +180,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.attach_money),
-                title: const Text("Sort by Profit"),
+                title: Text(AppLocalizations.of(context)!.sortByProfit),
                 onTap: () {
                   context.read<BestProductsCubit>().sortByProfit();
                   Navigator.pop(context);
@@ -199,18 +205,27 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
         build: (context) => [
           pw.Header(
             level: 0,
-            child: pw.Text('Best Selling Products Report', 
+            child: pw.Text(AppLocalizations.of(navigatorKey.currentContext!)!.bestSellingProductsReport, 
               style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)
             ),
           ),
-          pw.Paragraph(text: 'Period: ${dateRange.start.toString().split(' ')[0]} to ${dateRange.end.toString().split(' ')[0]}'),
+          pw.Paragraph(
+            text: AppLocalizations.of(navigatorKey.currentContext!)!.period(
+              dateRange.start.toString().split(' ')[0],
+              dateRange.end.toString().split(' ')[0]
+            )
+          ),
           pw.SizedBox(height: 20),
           
           pw.Table.fromTextArray(
             context: context,
-            headers: ['Product', 'Quantity Sold', 'Profit'],
+            headers: [
+              AppLocalizations.of(navigatorKey.currentContext!)!.product,
+              AppLocalizations.of(navigatorKey.currentContext!)!.quantitySold,
+              AppLocalizations.of(navigatorKey.currentContext!)!.profit
+            ],
             data: bestProducts.map((product) => [
-              product.product.name ?? 'Unnamed Product',
+              product.product.name ?? AppLocalizations.of(navigatorKey.currentContext!)!.unnamedProduct,
               product.quantity.toString(),
               '${product.profit} LE',
             ]).toList(),
@@ -218,7 +233,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
           
           pw.Footer(
             trailing: pw.Text(
-              'Generated by Brandify on ${DateTime.now().toString().split(' ')[0]}',
+              AppLocalizations.of(navigatorKey.currentContext!)!.generatedByBrandify(DateTime.now().toString().split(' ')[0]),
               style: pw.TextStyle(fontSize: 10, fontStyle: pw.FontStyle.italic),
             ),
           ),
@@ -233,6 +248,6 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
 
     await Share.shareXFiles(
       [XFile(file.path)],
-      text: 'Best Products Report',
+      text: AppLocalizations.of(context)!.bestSellingProductsReport,
     );
   }

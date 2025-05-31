@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class PlatformTotalsCard extends StatelessWidget {
   final Map<String, double> platformTotals;
 
@@ -20,7 +20,7 @@ class PlatformTotalsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Total Costs by Platform',
+            AppLocalizations.of(context)!.totalCostByPlatform,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -34,7 +34,7 @@ class PlatformTotalsCard extends StatelessWidget {
               children: [
                 Text(entry.key),
                 Text(
-                  '${entry.value.toStringAsFixed(2)} LE',
+                  AppLocalizations.of(context)!.priceAmount(entry.value),
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: Colors.red[700],

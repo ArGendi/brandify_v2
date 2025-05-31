@@ -9,6 +9,7 @@ import 'package:brandify/models/ad.dart';
 import 'package:brandify/view/screens/ads/ads_screen.dart';
 import 'package:brandify/view/widgets/ad_item.dart';
 import 'package:brandify/view/widgets/platform_totals_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SpecificAdsScreen extends StatefulWidget {
   final List<Ad> ads;
@@ -41,7 +42,7 @@ class _SpecificAdsScreenState extends State<SpecificAdsScreen> {
                       width: 300,
                     ),
                     //SizedBox(height: 20,),
-                    Text("No Ads yet")
+                    Text(AppLocalizations.of(context)!.noAdsYet,)
                   ],
                 ),
               ),
@@ -81,7 +82,7 @@ class _SpecificAdsScreenState extends State<SpecificAdsScreen> {
     // set up the button
     Widget okButton = TextButton(
       child: Text(
-        "Done",
+        AppLocalizations.of(context)!.confirm,
         style: TextStyle(color: mainColor),
       ),
       onPressed: () {
@@ -91,14 +92,14 @@ class _SpecificAdsScreenState extends State<SpecificAdsScreen> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Ad information"),
+      title: Text(AppLocalizations.of(context)!.advertisementDetails),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Platform: ${ad.platform?.name}"),
-          Text("Cost: ${ad.cost}"),
-          Text("Date: ${ad.date.toString().split(" ").first}"),
+          Text("${AppLocalizations.of(context)!.platform}: ${ad.platform?.name}"),
+          Text("${AppLocalizations.of(context)!.cost}: ${ad.cost}"),
+          Text("${AppLocalizations.of(context)!.date}: ${ad.date.toString().split(" ").first}"),
         ],
       ),
       actions: [

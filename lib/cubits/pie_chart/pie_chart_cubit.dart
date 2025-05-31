@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:brandify/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:brandify/enum.dart';
 import 'package:brandify/models/chart_data.dart';
 import 'package:brandify/models/sell.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'pie_chart_state.dart';
 
@@ -55,5 +57,12 @@ class PieChartCubit extends Cubit<PieChartState> {
 
   void removeSell(Sell sell){
     //if(sell.)
+  }
+
+  String getSellPlace(String name){
+    if(name == 'Online') return AppLocalizations.of(navigatorKey.currentContext!)!.online;
+    if(name == 'Store') return AppLocalizations.of(navigatorKey.currentContext!)!.store;
+    if(name == 'Event') return AppLocalizations.of(navigatorKey.currentContext!)!.event;
+    return AppLocalizations.of(navigatorKey.currentContext!)!.other;
   }
 }

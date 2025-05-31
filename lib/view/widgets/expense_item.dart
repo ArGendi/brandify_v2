@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/models/extra_expense.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ExpenseItem extends StatelessWidget {
   final ExtraExpense expense;
@@ -30,7 +31,7 @@ class ExpenseItem extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: isNoraml? 15 : 10, 
-            horizontal:isNoraml? 20 : 0
+            horizontal:isNoraml? 20 : 5
           ),
           child: Row(
             children: [
@@ -70,7 +71,7 @@ class ExpenseItem extends StatelessWidget {
                 ),
               ),
               Text(
-                "${expense.price} LE",
+                AppLocalizations.of(context)!.priceAmount(expense.price ?? 0),
                 style: TextStyle(
                   fontSize: isNoraml? 16 : 14,
                   fontWeight: FontWeight.bold,
