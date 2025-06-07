@@ -23,6 +23,7 @@ class AdsCubit extends Cubit<AdsState> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
   List<Ad> ads = [];
+  String? description;
 
   AdsCubit() : super(AdsInitial());
   static AdsCubit get(BuildContext context) => BlocProvider.of(context);
@@ -212,7 +213,12 @@ class AdsCubit extends Cubit<AdsState> {
     bool valid = formKey.currentState?.validate() ?? false;
     if (valid && selectedPlatform != null) {
       formKey.currentState?.save();
-      Ad newAd = Ad(cost: cost, platform: selectedPlatform, date: date);
+      Ad newAd = Ad(
+        cost: cost, 
+        platform: selectedPlatform, 
+        date: date,
+        description: description,
+      );
       emit(AdsLoading());
       await Package.checkAccessability(
         online: () async {

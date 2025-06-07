@@ -332,7 +332,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
             ),
             SizedBox(height: 20),
             _buildDetailRow(Icons.campaign, AppLocalizations.of(context)!.platform, ad.platform?.name ?? AppLocalizations.of(context)!.notAvailable),
-            _buildDetailRow(Icons.attach_money, AppLocalizations.of(context)!.cost, "${ad.cost} ${AppLocalizations.of(context)!.currency}"),
+            _buildDetailRow(Icons.attach_money, AppLocalizations.of(context)!.cost, "${AppLocalizations.of(context)!.currency(ad.cost ?? 0)}"),
             _buildDetailRow(Icons.calendar_today, AppLocalizations.of(context)!.date, ad.date.toString().split(" ").first),
             SizedBox(height: 20),
             SizedBox(
@@ -341,6 +341,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: mainColor,
+                  foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),

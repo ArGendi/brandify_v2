@@ -25,20 +25,33 @@ class AdsScreen extends StatelessWidget {
                 children: [
                   Form(
                     key: AdsCubit.get(context).formKey,
-                    child: CustomTextFormField(
-                      keyboardType: TextInputType.number,
-                      text: AppLocalizations.of(context)!.adCost,
-                      onSaved: (value) {
-                        if (value!.isNotEmpty) {
-                          AdsCubit.get(context).cost = int.parse(value);
-                        }
-                      },
-                      onValidate: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.enterAdCost;
-                        } else
-                          return null;
-                      },
+                    child: Column(
+                      children: [
+                        CustomTextFormField(
+                          keyboardType: TextInputType.number,
+                          text: AppLocalizations.of(context)!.adCost,
+                          onSaved: (value) {
+                            if (value!.isNotEmpty) {
+                              AdsCubit.get(context).cost = int.parse(value);
+                            }
+                          },
+                          onValidate: (value) {
+                            if (value!.isEmpty) {
+                              return AppLocalizations.of(context)!.enterAdCost;
+                            } else
+                              return null;
+                          },
+                        ),
+                        SizedBox(height: 15,),
+                        CustomTextFormField(
+                          text: AppLocalizations.of(context)!.descriptionLabel,
+                          onSaved: (value) {
+                            if (value!.isNotEmpty) {
+                              AdsCubit.get(context).description = value;
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),

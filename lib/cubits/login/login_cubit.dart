@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/cubits/app_user/app_user_cubit.dart';
+import 'package:brandify/view/screens/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,7 +73,6 @@ class LoginCubit extends Cubit<LoginState> {
         // Package.getTypeFromString(
         //   userData["package"] ?? PACKAGE_TYPE_ONLINE,
         // );
-        
         emit(SuccessState());
         Navigator.pushAndRemoveUntil(
           context, 

@@ -44,6 +44,7 @@ class AdItem extends StatelessWidget {
                   ad.platform?.name ?? "null",
                   style: TextStyle(
                     color: showBackground? Colors.white : Colors.black,
+                    fontSize: 14,
                     ),
                 ),
               ),
@@ -53,6 +54,7 @@ class AdItem extends StatelessWidget {
                   DateFormat('yyyy-MM-dd').format(ad.date!),
                   style: TextStyle(
                     color: showBackground? Colors.white : Colors.black,
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -61,6 +63,7 @@ class AdItem extends StatelessWidget {
                 AppLocalizations.of(context)!.priceAmount(ad.cost ?? 0),
                 style: TextStyle(
                   color: showBackground? Colors.white : Colors.black,
+                  fontSize: 14,
                 ),
               ),
             ],
