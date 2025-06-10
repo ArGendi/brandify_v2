@@ -102,4 +102,12 @@ class Cache{
   static String? getLanguage(){
     return sharedPreferences.getString('languageCode');
   }
+
+  static Future<void> setBool(String key, bool value) async {
+    await sharedPreferences.setBool(key, value);
+  }
+
+  static bool? getBool(String key) {
+    return sharedPreferences.getBool(key);
+  }
 }

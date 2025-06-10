@@ -3,6 +3,7 @@ import 'package:brandify/view/screens/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 // Local imports
 import 'package:brandify/constants.dart';
@@ -42,6 +43,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  late TutorialCoachMark tutorialCoachMark;
+  List<TargetFocus> targets = [];
+  final GlobalKey productsKey = GlobalKey();
+  final GlobalKey expensesKey = GlobalKey();
+  final GlobalKey adsKey = GlobalKey();
+  final GlobalKey extraExpensesKey = GlobalKey();
 
   void initializeData() async {
     await context.read<AppUserCubit>().refreshUserData();
@@ -85,8 +92,163 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize data from various cubits
     initializeData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initTargets();
+      _initTutorial();
+      showTutorial();
+    });
+  }
+
+  void _initTargets() {
+    targets = [
+      TargetFocus(
+        identify: "products",
+        keyTarget: productsKey,
+        alignSkip: Alignment.topRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.products,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.manageInventory,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: "expenses",
+        keyTarget: expensesKey,
+        alignSkip: Alignment.topRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.orderExpenses,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.additionalOrderCosts,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: "ads",
+        keyTarget: adsKey,
+        alignSkip: Alignment.topRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.ads,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.manageCampaigns,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: "extraExpenses",
+        keyTarget: extraExpensesKey,
+        alignSkip: Alignment.topRight,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.externalExpenses,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.otherExpenses,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  void _initTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: targets,
+      colorShadow: Colors.black,
+      textSkip: AppLocalizations.of(context)!.skip,
+      paddingFocus: 10,
+      opacityShadow: 0.8,
+      onFinish: () {
+        debugPrint("Tutorial finished");
+        Cache.setBool("homeTutorialCoach", true);
+      },
+      onClickTarget: (target) {
+        debugPrint('Clicked on ${target.identify}');
+      },
+      onSkip: () {
+        debugPrint("Tutorial skipped");
+        Cache.setBool("homeTutorialCoach", true);
+        return true;
+      },
+    );
+  }
+
+  void showTutorial() {
+    if (mounted) {
+      if(!(Cache.getBool("homeTutorialCoach") ?? false)){
+        tutorialCoachMark.show(context: context);
+      }
+    }
   }
 
   @override
@@ -193,6 +355,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(width: 20),
+                      // IconButton(
+                      //   onPressed: showTutorial,
+                      //   icon: const Icon(Icons.help_outline_rounded),
+                      // ),
                       AppUserCubit.get(context).brandPhone == "01227701988"
                           ? IconButton(
                             onPressed:
@@ -433,7 +599,26 @@ class _HomeScreenState extends State<HomeScreen> {
     Color color,
     VoidCallback onTap,
   ) {
+    GlobalKey key;
+    switch (title) {
+      case 'Products':
+        key = productsKey;
+        break;
+      case 'Order Expenses':
+        key = expensesKey;
+        break;
+      case 'Ads':
+        key = adsKey;
+        break;
+      case 'External Expenses':
+        key = extraExpensesKey;
+        break;
+      default:
+        key = GlobalKey();
+    }
+
     return InkWell(
+      key: key,
       onTap: onTap,
       borderRadius: BorderRadius.circular(15),
       child: Container(
@@ -472,3 +657,4 @@ class _HomeScreenState extends State<HomeScreen> {
     return const Placeholder(); // Implement settings screen
   }
 }
+

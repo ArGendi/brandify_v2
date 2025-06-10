@@ -120,6 +120,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     Row(
                       children: [
+                        SizedBox(width: 5,),
+                        Text(
+                          AppLocalizations.of(context)!.mandatoryFieldsNote,
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
                         Expanded(
                           child: BlocBuilder<AddProductCubit, AddProductState>(
                             builder: (context, state) {
@@ -198,6 +210,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     SizedBox(
                       height: 15,
                     ),
+                    Row(
+                      children: [
+                        SizedBox(width: 5,),
+                        Expanded(child: Text(
+                          AppLocalizations.of(context)!.originalPriceHint,
+                          style: TextStyle(fontSize: 11),
+                        )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     CustomTextFormField(
                       initial:
                           AddProductCubit.get(context)
@@ -205,6 +229,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   .price?.toString(),
                       keyboardType: TextInputType.number,
                       text: AppLocalizations.of(context)!.originalPrice,
+                      hintText: AppLocalizations.of(context)!.pricePaidHint,
                       onSaved: (value) {
                         if (value!.isNotEmpty) {
                           AddProductCubit.get(context).product.price =
