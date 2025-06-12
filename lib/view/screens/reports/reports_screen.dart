@@ -367,13 +367,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
         allAds,
         allExtraExpenses,
       );
-
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const ReportsResult(),
-      //   ),
-      // );
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.selectDateFromAndToFirst))
+      );
     }
   }
 }
