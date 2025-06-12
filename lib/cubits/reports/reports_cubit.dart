@@ -10,6 +10,7 @@ import 'package:brandify/models/report.dart';
 import 'package:brandify/models/sell.dart';
 import 'package:brandify/view/screens/reports/reports_result.dart';
 import 'package:brandify/utils/date_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'reports_state.dart';
 
@@ -260,7 +261,7 @@ class ReportsCubit extends Cubit<ReportsState> {
     }
     else{
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Select date from and to first"))
+        SnackBar(content: Text(AppLocalizations.of(context)!.selectDateFromAndToFirst))
       );
     }
   }

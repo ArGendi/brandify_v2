@@ -69,7 +69,7 @@
     "products": "Products",
     "manageInventory": "Start add your products & manage your inventory",
     "orderExpenses": "Order Expenses",
-    "addOrderExpense": "Add Order Expense",
+    "addOrderExpense": "Add New Expense",
     "emptyOrderExpensesDesc": "Add everything related to your order to use it in your orders like cards, order package, flyers, etc.",
     "expenseName": "Name",
     "expenseNameHint": "Ex. Order package",
@@ -79,12 +79,12 @@
     "enterPrice": "Enter price",
     "quantity": "Quantity",
     "quantityHint": "Ex. 100 (pieces)",
-    "enterQuantity": "Enter quantity",
+    "enterQuantity": "Quantity sold?",
     "add": "Add",
     "currency": "{amount} LE",
     "additionalOrderCosts": "Additional costs in most of your orders",
-    "ads": "Ads",
-    "manageCampaigns": "Manage all campaigns to track your ads costs",
+    "ads": "Ad Expenses",
+    "manageCampaigns": "Manage all campaigns to track your costs",
     "externalExpenses": "External Expenses",
     "otherExpenses": "All external expenses but related to your business",
     "home": "Home",
@@ -149,11 +149,12 @@
     "shopifyPrice": "Shopify Price*",
     "shopifyPriceRequired": "Enter shopify price",
     "addAnotherSize": "Add another size",
+    "anotherSize": "the other size",
     "addButton": "Add",
     "editButton": "Edit",
     "photosButton": "Photos",
     "cameraButton": "Camera",
-    "originalPrice": "Original Price (required)",
+    "originalPrice": "Cost Price (required)",
     "priceRequired": "Enter price",
     "nameRequired": "Enter name",
     "nameLabel": "Name (required)",
@@ -181,8 +182,8 @@
     "discountPercent": "Discount %",
     "enterPercent": "Enter percent",
     "calculateDiscountButton": "Calculate Discount",
-    "chooseSize": "Choose the size",
-    "chooseOrderExpenses": "Choose order expenses (if you used it only)",
+    "chooseSize": "Which sizes do you sell?",
+    "chooseOrderExpenses": "Did you use any packaging items?",
     "otherExpenses": "All external expenses but related to your business",
     "confirm": "Confirm",
     "noExpensesYet": "No expenses yet.",
@@ -384,7 +385,7 @@
     "numberOfSales": "Number of sales",
     "totalIncome": "Total income",
     "profit": "Profit",
-    "ads": "Ads",
+    "ads": "Ad Expenses",
     "extraExpenses": "Extra expenses",
     "orders": "Orders",
     "viewAll": "View All",
@@ -410,6 +411,63 @@
     "quickActionsTutorialDesc": "Manage your products, expenses, and advertising campaigns with just one tap.",
     "skip": "Skip",
     "mandatoryFieldsNote": "Only name, original price & quantity are mandatory",
-    "originalPriceHint": "Original price is the price you paid to get the product, not selling price",
-    "pricePaidHint": "Price you paid for the product"
+    "originalPriceHint": "Cost price is the price you paid to get the product, not selling price",
+    "pricePaidHint": "Price you paid for the product",
+    "packagingStock": "Packaging Stock",
+    "businessExpenses": "Business Expenses",
+    "enterAdDescription": "Enter the ad you've already posted on social media",
+    "enterAnyAdditionalExpenses": "Enter any additional expenses",
+    "sellPriceQuestion": "What is the price you sell the product for?",
+    "done": "Done",
+    "chooseSizeMessage": "Choose a size",
+    "productOutOfStock": "Product is out of stock",
+    "notEnoughQuantity": "Not enough quantity available (Only {quantity} left)",
+    "@notEnoughQuantity": {
+        "placeholders": {
+            "quantity": {
+                "type": "int"
+            }
+        }
+    },
+    "failedToUpdateInventory": "Failed to update inventory",
+    "chooseSizeFirst": "Choose a size first",
+    "notEnoughQuantityAvailable": "Not enough quantity available",
+    "addedSuccessfully": "Added successfully",
+    "errorOccurred": "Error occurred",
+    "refundError": "{error}",
+    "@refundError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "tryAgainLater": "Try again later",
+    "productDeleted": "Product Deleted",
+    "productUpdated": "Product Updated 🤙",
+    "errorUpdatingProduct": "Error Updating Product 😢",
+    "doesntExist": "Doesn't exist 🤔",
+    "failedToDeleteAccount": "Failed to delete account: {error}",
+    "@failedToDeleteAccount": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "failedToGetUserData": "Failed to get user data from the internet",
+    "failedToFetchProducts": "Failed to fetch products: {error}",
+    "@failedToFetchProducts": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noInternetConnection": "No internet connection",
+    "connectionTimedOut": "Connection timed out",
+    "accessDenied": "Access denied",
+    "selectDateFromAndToFirst": "Select date from and to first",
+    "failedToSaveTransaction": "Failed to save transaction",
+    "unexpectedErrorOccurred": "Unexpected error occurred"
 }

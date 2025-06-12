@@ -26,7 +26,7 @@ class _SidesScreenState extends State<SidesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.orderExpenses),
+        title: Text(AppLocalizations.of(context)!.packagingStock),
         backgroundColor: mainColor, 
       ),
       body: Padding(
@@ -166,7 +166,7 @@ class _SidesScreenState extends State<SidesScreen> {
         onPressed: () {
           _addBottomSheet(context);
         },
-        label: Text(AppLocalizations.of(context)!.addOrderExpense),
+        label: Text(AppLocalizations.of(context)!.add),
         icon: const Icon(Icons.add),
         backgroundColor: mainColor,
       ),

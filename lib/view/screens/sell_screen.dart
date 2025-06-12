@@ -65,6 +65,18 @@ class _SellScreenState extends State<SellScreen> {
           key: SellCubit.get(context).formKey,
           child: ListView(
             children: [
+              Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.sellPriceQuestion,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 5,),
               CustomTextFormField(
                 keyboardType: TextInputType.number,
                 text: AppLocalizations.of(context)!.sellPricePerItem,
@@ -261,7 +273,7 @@ class _SellScreenState extends State<SellScreen> {
                                   color: SellCubit.get(context).selectedSize ==
                                           widget.product.sizes[i]
                                       ? mainColor
-                                      : Colors.grey.shade300,
+                                      : Colors.grey.shade400,
                                 ),
                                 child: Center(
                                   child: Text(
@@ -289,7 +301,7 @@ class _SellScreenState extends State<SellScreen> {
                   ],
                 ),
               SizedBox(
-                height: 20,
+                height: 15,
               ),
               Text(AppLocalizations.of(context)!.enterQuantity),
               SizedBox(
@@ -350,7 +362,7 @@ class _SellScreenState extends State<SellScreen> {
               ),
               CustomTextFormField(
                 keyboardType: TextInputType.number,
-                text: AppLocalizations.of(context)!.otherExpenses,
+                text: AppLocalizations.of(context)!.enterAnyAdditionalExpenses,
                 onSaved: (value) {
                   if (value!.isNotEmpty)
                     SellCubit.get(context).extra = int.parse(value);
@@ -369,7 +381,7 @@ class _SellScreenState extends State<SellScreen> {
                     );
                   } else {
                     return CustomButton(
-                      text: AppLocalizations.of(context)!.confirm,
+                      text: AppLocalizations.of(context)!.sellNowButton,
                       onPressed: () {
                         SellCubit.get(context).onDone(context, widget.product);
                       },

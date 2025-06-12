@@ -302,7 +302,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     controller: AddProductCubit.get(context)
                                         .sizesControllers[i]
                                         .sizeController,
-                                    text: AppLocalizations.of(context)!.size,
+                                    text: AppLocalizations.of(context)!.anotherSize,
                                     onSaved: (value) {},
                                   ),
                                 ),
@@ -352,11 +352,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: CustomButton(
+                        icon: Icon(Icons.add),
                         text: AppLocalizations.of(context)!.addAnotherSize,
                         onPressed: () {
                           AddProductCubit.get(context).addSize();
                         },
-                        bgColor: Colors.grey,
+                        bgColor: Colors.grey.shade600,
                       ),
                     ),
                   ],

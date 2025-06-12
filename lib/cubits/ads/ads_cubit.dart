@@ -14,6 +14,7 @@ import 'package:brandify/models/ad.dart';
 import 'package:brandify/models/firebase/firestore/ads_services.dart';
 import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/package.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'ads_state.dart';
 
@@ -231,7 +232,7 @@ class AdsCubit extends Cubit<AdsState> {
             formKey.currentState?.reset();
             AllSellsCubit.get(context).deductFromProfit(newAd.cost ?? 0);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Added successfuly"), backgroundColor: Colors.green.shade700,)
+              SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
             );
           }
         },
@@ -242,7 +243,7 @@ class AdsCubit extends Cubit<AdsState> {
           formKey.currentState?.reset();
           AllSellsCubit.get(context).deductFromProfit(newAd.cost ?? 0);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Added successfuly"), backgroundColor: Colors.green.shade700,)
+            SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
           );
         },
       );

@@ -416,7 +416,7 @@ class AppUserCubit extends Cubit<AppUserState> {
         emit(AppUserError(e.toString()));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete account: ${e.toString()}'),
+            content: Text('${AppLocalizations.of(navigatorKey.currentContext!)!.failedToDeleteAccount(e.toString())}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -430,7 +430,7 @@ class AppUserCubit extends Cubit<AppUserState> {
         // First get user data and check if successful
         var userData = await FirestoreServices().getUserData();
         if (userData == null) {
-          emit(AppUserError('Failed to get user data from Firebase'));
+          emit(AppUserError(AppLocalizations.of(navigatorKey.currentContext!)!.failedToGetUserData));
           return;
         }
         print("userData package : ${userData['package']}");

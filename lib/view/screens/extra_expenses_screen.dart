@@ -37,7 +37,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.externalExpenses,
+          AppLocalizations.of(context)!.businessExpenses,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,

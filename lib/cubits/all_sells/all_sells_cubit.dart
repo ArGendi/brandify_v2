@@ -231,7 +231,7 @@ class AllSellsCubit extends Cubit<AllSellsState> {
     if (!context.mounted) return;
     
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("$error"), backgroundColor: Colors.red,)
+      SnackBar(content: Text(AppLocalizations.of(context)!.refundError(error.toString())), backgroundColor: Colors.red,)
     );
   }
 

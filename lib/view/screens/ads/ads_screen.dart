@@ -27,6 +27,14 @@ class AdsScreen extends StatelessWidget {
                     key: AdsCubit.get(context).formKey,
                     child: Column(
                       children: [
+                        Text(
+                          AppLocalizations.of(context)!.enterAdDescription,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14
+                          ),
+                        ),
+                        SizedBox(height: 10,),
                         CustomTextFormField(
                           keyboardType: TextInputType.number,
                           text: AppLocalizations.of(context)!.adCost,
@@ -42,7 +50,8 @@ class AdsScreen extends StatelessWidget {
                               return null;
                           },
                         ),
-                        SizedBox(height: 15,),
+                        SizedBox(height: 10,),
+                        
                         CustomTextFormField(
                           text: AppLocalizations.of(context)!.descriptionLabel,
                           onSaved: (value) {

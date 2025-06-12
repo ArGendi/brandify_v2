@@ -496,7 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   _buildActionCard(
-                    AppLocalizations.of(context)!.orderExpenses,
+                    AppLocalizations.of(context)!.packagingStock,
                     AppLocalizations.of(context)!.additionalOrderCosts,
                     Icons.account_balance_wallet_rounded,
                     Colors.orange,
@@ -514,7 +514,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   _buildActionCard(
-                    AppLocalizations.of(context)!.externalExpenses,
+                    AppLocalizations.of(context)!.businessExpenses,
                     AppLocalizations.of(context)!.otherExpenses,
                     Icons.receipt_long_rounded,
                     Colors.teal,

@@ -127,10 +127,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onValidate: (value) {
                               if (value!.isEmpty) {
                                 return AppLocalizations.of(context)!.phoneEmpty;
-                              } else if (value.length != 11) {
-                                return AppLocalizations.of(context)!.phoneInvalid;
                               }
-                              return null;
+                              else return null;
                             },
                           ),
                           const SizedBox(height: 10),

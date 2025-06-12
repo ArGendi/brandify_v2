@@ -41,7 +41,7 @@ class ReportSummarySection extends StatelessWidget {
             ),
             Divider(),
             ReportCard(
-              text: l10n.extraExpenses,
+              text: l10n.businessExpenses,
               quantity: current.totalExtraExpensesCost,
               color: Colors.red.shade600,
             ),
