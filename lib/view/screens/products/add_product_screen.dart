@@ -302,7 +302,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     controller: AddProductCubit.get(context)
                                         .sizesControllers[i]
                                         .sizeController,
-                                    text: AppLocalizations.of(context)!.size,
+                                    text: AppLocalizations.of(context)!.anotherSize,
                                     onSaved: (value) {},
                                   ),
                                 ),

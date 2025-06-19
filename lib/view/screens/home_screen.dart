@@ -1,8 +1,10 @@
 import 'package:brandify/models/local/hive_services.dart';
 import 'package:brandify/view/screens/dashboard_screen.dart';
+import 'package:brandify/view/screens/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 // Local imports
@@ -49,12 +51,19 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey expensesKey = GlobalKey();
   final GlobalKey adsKey = GlobalKey();
   final GlobalKey extraExpensesKey = GlobalKey();
+  late TutorialCoachMark tutorialCoachMark;
+  List<TargetFocus> targets = [];
+  final GlobalKey productsKey = GlobalKey();
+  final GlobalKey expensesKey = GlobalKey();
+  final GlobalKey adsKey = GlobalKey();
+  final GlobalKey extraExpensesKey = GlobalKey();
 
   void initializeData() async {
     await context.read<AppUserCubit>().refreshUserData();
     await context.read<ProductsCubit>().getProducts();
     int cost = await context.read<AdsCubit>().getAllAds();
     await context.read<AllSellsCubit>().getSells(
+      ads: cost,
       ads: cost,
       allProducts: context.read<ProductsCubit>().products,
     );
@@ -80,7 +89,21 @@ class _HomeScreenState extends State<HomeScreen> {
     ReportsCubit.get(
       context,
     ).setTodayReport(allSells, allAds, allExtraExpenses);
+  void initializeReports(
+    List<Sell> allSells,
+    List<Ad> allAds,
+    List<ExtraExpense> allExtraExpenses,
+  ) {
+    ReportsCubit.get(
+      context,
+    ).setTodayReport(allSells, allAds, allExtraExpenses);
     ReportsCubit.get(context).setWeekReport(allSells, allAds, allExtraExpenses);
+    ReportsCubit.get(
+      context,
+    ).setMonthReport(allSells, allAds, allExtraExpenses);
+    ReportsCubit.get(
+      context,
+    ).setThreeMonthsReport(allSells, allAds, allExtraExpenses);
     ReportsCubit.get(
       context,
     ).setMonthReport(allSells, allAds, allExtraExpenses);
@@ -189,9 +212,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
+          onTap: (index) {
             // if(index == 1){
             //   ProductsCubit.get(context).getProducts();
             // }
+            if (index == 2) {
             if (index == 2) {
               initializeReports(
                 context.read<AllSellsCubit>().sells,
@@ -237,6 +262,64 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              BlocBuilder<AppUserCubit, AppUserState>(
+                builder: (context, state) {
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.welcomeBack,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                              ),
+                            ),
+                            BlocBuilder<AppUserCubit, AppUserState>(
+                              builder: (context, state) {
+                                return Text(
+                                  AppUserCubit.get(context).brandName ??
+                                      "Brandify",
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      // IconButton(
+                      //   onPressed: showTutorial,
+                      //   icon: const Icon(Icons.help_outline_rounded),
+                      // ),
+                      AppUserCubit.get(context).brandPhone == "01227701988"
+                          ? IconButton(
+                            onPressed:
+                                () => navigatorKey.currentState?.push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const DashboardScreen(),
+                                  ),
+                                ),
+                            icon: const Icon(Icons.dashboard),
+                          )
+                          : IconButton(
+                            onPressed:
+                                () => navigatorKey.currentState?.push(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) => const CalculatePercentScreen(),
+                                  ),
+                                ),
+                            icon: const Icon(Icons.percent_rounded),
+                          ),
+                    ],
+                  );
+                },
               BlocBuilder<AppUserCubit, AppUserState>(
                 builder: (context, state) {
                   return Row(
@@ -346,10 +429,48 @@ class _HomeScreenState extends State<HomeScreen> {
                             Icons.shopping_bag_rounded,
                             Colors.blue,
                           ),
+                        child: GestureDetector(
+                          onTap: () {
+                            initializeReports(
+                              context.read<AllSellsCubit>().sells,
+                              context.read<AdsCubit>().ads,
+                              context.read<ExtraExpensesCubit>().expenses,
+                            );
+                            setState(() => _currentIndex = 2);
+                          },
+                          child: _buildStatCard(
+                            AppLocalizations.of(context)!.totalSales,
+                            appUserCubit.total.toString(),
+                            Icons.shopping_bag_rounded,
+                            Colors.blue,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 15),
                       Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            initializeReports(
+                              context.read<AllSellsCubit>().sells,
+                              context.read<AdsCubit>().ads,
+                              context.read<ExtraExpensesCubit>().expenses,
+                            );
+                            setState(() => _currentIndex = 2);
+                          },
+                          child: _buildStatCard(
+                            AppLocalizations.of(context)!.profit,
+                            appUserCubit.totalProfit.toString(),
+                            appUserCubit.totalProfit >= 0
+                                ? Icons.trending_up_rounded
+                                : Icons.trending_down_rounded,
+                            appUserCubit.totalProfit >= 0
+                                ? Colors.green
+                                : Colors.red,
+                            subtitle:
+                                appUserCubit.total > 0
+                                    ? '${((appUserCubit.totalProfit / appUserCubit.total) * 100).toStringAsFixed(1)}%'
+                                    : '0%',
+                          ),
                         child: GestureDetector(
                           onTap: () {
                             initializeReports(
@@ -411,10 +532,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   _buildActionCard(
                     AppLocalizations.of(context)!.packagingStock,
+                    AppLocalizations.of(context)!.packagingStock,
                     AppLocalizations.of(context)!.additionalOrderCosts,
                     Icons.account_balance_wallet_rounded,
                     Colors.orange,
                     () => navigatorKey.currentState?.push(
+                      MaterialPageRoute(builder: (_) => const SidesScreen()),
+                    ),
                       MaterialPageRoute(builder: (_) => const SidesScreen()),
                     ),
                   ),
@@ -426,12 +550,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     () => navigatorKey.currentState?.push(
                       MaterialPageRoute(builder: (_) => const AllAdsScreen()),
                     ),
+                    () => navigatorKey.currentState?.push(
+                      MaterialPageRoute(builder: (_) => const AllAdsScreen()),
+                    ),
                   ),
                   _buildActionCard(
+                    AppLocalizations.of(context)!.businessExpenses,
                     AppLocalizations.of(context)!.businessExpenses,
                     AppLocalizations.of(context)!.otherExpenses,
                     Icons.receipt_long_rounded,
                     Colors.teal,
+                    () => navigatorKey.currentState?.push(
+                      MaterialPageRoute(builder: (_) => ExtraExpensesScreen()),
+                    ),
                     () => navigatorKey.currentState?.push(
                       MaterialPageRoute(builder: (_) => ExtraExpensesScreen()),
                     ),
@@ -445,6 +576,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color, {
+    String? subtitle,
+    bool isLoading = false,
+  }) {
   Widget _buildStatCard(
     String title,
     String value,
@@ -469,6 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 title,
                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
               if (subtitle != null) ...[
                 const SizedBox(width: 8),
@@ -486,6 +626,13 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 5),
           isLoading
               ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                ),
+              )
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
@@ -534,6 +681,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return InkWell(
       key: key,
+      key: key,
       onTap: onTap,
       borderRadius: BorderRadius.circular(15),
       child: Container(
@@ -557,9 +705,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               title,
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
             Text(
               subtitle,
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
           ],
@@ -572,4 +722,5 @@ class _HomeScreenState extends State<HomeScreen> {
     return const Placeholder(); // Implement settings screen
   }
 }
+
 

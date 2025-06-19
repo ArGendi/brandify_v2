@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:brandify/models/local/hive_services.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:brandify/cubits/products/products_cubit.dart';
 import 'package:brandify/cubits/sides/sides_cubit.dart';
 import 'package:brandify/enum.dart';
 import 'package:brandify/models/firebase/firestore/firestore_services.dart';
+import 'package:brandify/models/firebase/firestore/sides_%20services.dart';
 import 'package:brandify/models/firebase/firestore/sides_%20services.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/models/product.dart';
@@ -101,9 +104,11 @@ class SellCubit extends Cubit<SellState> {
         // Rollback all changes if saving fails
         await _rollbackChanges(context, product, sellTransaction);
         _showErrorMessage(context, AppLocalizations.of(context)!.failedToSaveTransaction);
+        _showErrorMessage(context, AppLocalizations.of(context)!.failedToSaveTransaction);
         emit(FailSellState());
       }
     } catch (e) {
+      _showErrorMessage(context, AppLocalizations.of(context)!.unexpectedErrorOccurred);
       _showErrorMessage(context, AppLocalizations.of(context)!.unexpectedErrorOccurred);
       emit(FailSellState());
     }
@@ -123,6 +128,8 @@ class SellCubit extends Cubit<SellState> {
       return true;
     }
     ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.chooseSizeMessage),
       SnackBar(
         content: Text(AppLocalizations.of(context)!.chooseSizeMessage),
         backgroundColor: Colors.red,
@@ -157,9 +164,12 @@ class SellCubit extends Cubit<SellState> {
     String errorMessage = "";
     if (selectedSize!.quantity == 0) {
       errorMessage = AppLocalizations.of(context)!.productOutOfStock;
+      errorMessage = AppLocalizations.of(context)!.productOutOfStock;
     } else if (selectedSize!.quantity! < quantity) {
       errorMessage = AppLocalizations.of(context)!.notEnoughQuantity(selectedSize!.quantity!);
+      errorMessage = AppLocalizations.of(context)!.notEnoughQuantity(selectedSize!.quantity!);
     } else {
+      errorMessage = AppLocalizations.of(context)!.failedToUpdateInventory;
       errorMessage = AppLocalizations.of(context)!.failedToUpdateInventory;
     }
     
@@ -208,6 +218,7 @@ class SellCubit extends Cubit<SellState> {
     if(selectedSize == null){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.chooseSizeFirst)),
+        SnackBar(content: Text(AppLocalizations.of(context)!.chooseSizeFirst)),
       );
       return false;
     }
@@ -223,6 +234,7 @@ class SellCubit extends Cubit<SellState> {
     }
     else{
       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.notEnoughQuantityAvailable)),
         SnackBar(content: Text(AppLocalizations.of(context)!.notEnoughQuantityAvailable)),
       );
     }

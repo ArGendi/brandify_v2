@@ -25,6 +25,7 @@ class AdsCubit extends Cubit<AdsState> {
   DateTime date = DateTime.now();
   List<Ad> ads = [];
   String? description;
+  String? description;
 
   AdsCubit() : super(AdsInitial());
   static AdsCubit get(BuildContext context) => BlocProvider.of(context);
@@ -220,6 +221,12 @@ class AdsCubit extends Cubit<AdsState> {
         date: date,
         description: description,
       );
+      Ad newAd = Ad(
+        cost: cost, 
+        platform: selectedPlatform, 
+        date: date,
+        description: description,
+      );
       emit(AdsLoading());
       await Package.checkAccessability(
         online: () async {
@@ -233,6 +240,7 @@ class AdsCubit extends Cubit<AdsState> {
             AllSellsCubit.get(context).deductFromProfit(newAd.cost ?? 0);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
+              SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
             );
           }
         },
@@ -243,6 +251,7 @@ class AdsCubit extends Cubit<AdsState> {
           formKey.currentState?.reset();
           AllSellsCubit.get(context).deductFromProfit(newAd.cost ?? 0);
           ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
             SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
           );
         },

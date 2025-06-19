@@ -139,9 +139,11 @@ class ProductsCubit extends Cubit<ProductsState> {
       
       emit(ProductAddedState());
       _showSuccessSnackBar(context, AppLocalizations.of(context)!.done);
+      _showSuccessSnackBar(context, AppLocalizations.of(context)!.done);
       navigatorKey.currentState?.pop();
     } catch (e) {
       emit(FailOneProductState());
+      _showErrorSnackBar(context, AppLocalizations.of(context)!.tryAgainLater);
       _showErrorSnackBar(context, AppLocalizations.of(context)!.tryAgainLater);
     }
   }
@@ -166,9 +168,11 @@ class ProductsCubit extends Cubit<ProductsState> {
       
       emit(ProductAddedState());
       _showSuccessSnackBar(context, AppLocalizations.of(context)!.productDeleted);
+      _showSuccessSnackBar(context, AppLocalizations.of(context)!.productDeleted);
       navigatorKey.currentState?..pop()..pop();
     } catch (e) {
       emit(FailOneProductState());
+      _showErrorSnackBar(context, AppLocalizations.of(context)!.tryAgainLater);
       _showErrorSnackBar(context, AppLocalizations.of(context)!.tryAgainLater);
     }
   }
@@ -193,12 +197,14 @@ class ProductsCubit extends Cubit<ProductsState> {
             _showSuccessSnackBar(
               context,
               AppLocalizations.of(context)!.productUpdated
+              AppLocalizations.of(context)!.productUpdated
             );
             navigatorKey.currentState?..pop()..pop();
           }
           else{
             _showSuccessSnackBar(
               context,
+              AppLocalizations.of(context)!.errorUpdatingProduct
               AppLocalizations.of(context)!.errorUpdatingProduct
             );
           }
@@ -208,6 +214,7 @@ class ProductsCubit extends Cubit<ProductsState> {
           products[index] = newProduct;
           _showSuccessSnackBar(
             context,
+            AppLocalizations.of(context)!.productUpdated
             AppLocalizations.of(context)!.productUpdated
           );
           navigatorKey.currentState?..pop()..pop();
@@ -222,6 +229,7 @@ class ProductsCubit extends Cubit<ProductsState> {
             print("product updateeeeeeed on firebase");
             _showSuccessSnackBar(
               context, 
+              AppLocalizations.of(context)!.productUpdated
               AppLocalizations.of(context)!.productUpdated
             );
             navigatorKey.currentState?..pop()..pop();
@@ -240,12 +248,14 @@ class ProductsCubit extends Cubit<ProductsState> {
               _showSuccessSnackBar(
                 context, 
                 AppLocalizations.of(context)!.productUpdated
+                AppLocalizations.of(context)!.productUpdated
               );
               navigatorKey.currentState?..pop()..pop();
             }
             else{
               _showSuccessSnackBar(
                 context, 
+                AppLocalizations.of(context)!.errorUpdatingProduct
                 AppLocalizations.of(context)!.errorUpdatingProduct
               );
             }
@@ -329,11 +339,15 @@ class ProductsCubit extends Cubit<ProductsState> {
     }
     catch(e){
       String errorMessage = AppLocalizations.of(navigatorKey.currentContext!)!.failedToFetchProducts("");
+      String errorMessage = AppLocalizations.of(navigatorKey.currentContext!)!.failedToFetchProducts("");
       if (e is SocketException) {
+        errorMessage += AppLocalizations.of(navigatorKey.currentContext!)!.noInternetConnection;
         errorMessage += AppLocalizations.of(navigatorKey.currentContext!)!.noInternetConnection;
       } else if (e is TimeoutException) {
         errorMessage += AppLocalizations.of(navigatorKey.currentContext!)!.connectionTimedOut;
+        errorMessage += AppLocalizations.of(navigatorKey.currentContext!)!.connectionTimedOut;
       } else if (e.toString().contains("permission-denied")) {
+        errorMessage += AppLocalizations.of(navigatorKey.currentContext!)!.accessDenied;
         errorMessage += AppLocalizations.of(navigatorKey.currentContext!)!.accessDenied;
       } else {
         errorMessage += e.toString();
@@ -386,6 +400,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         MaterialPageRoute(builder: (_) => ProductDetails(product: temp.first))
       );
     } else {
+      _showErrorSnackBar(context, AppLocalizations.of(context)!.doesntExist);
       _showErrorSnackBar(context, AppLocalizations.of(context)!.doesntExist);
     }
   }

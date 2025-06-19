@@ -262,6 +262,7 @@ class ReportsCubit extends Cubit<ReportsState> {
     else{
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.selectDateFromAndToFirst))
+        SnackBar(content: Text(AppLocalizations.of(context)!.selectDateFromAndToFirst))
       );
     }
   }
