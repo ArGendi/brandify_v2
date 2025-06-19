@@ -7,7 +7,7 @@ import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/view/screens/home_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class PackageSelectionScreen extends StatelessWidget {
   const PackageSelectionScreen({super.key});

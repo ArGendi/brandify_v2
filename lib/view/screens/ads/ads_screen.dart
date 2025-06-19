@@ -7,7 +7,7 @@ import 'package:brandify/cubits/ads/ads_cubit.dart';
 import 'package:brandify/enum.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class AdsScreen extends StatelessWidget {
   const AdsScreen({super.key});
@@ -25,20 +25,42 @@ class AdsScreen extends StatelessWidget {
                 children: [
                   Form(
                     key: AdsCubit.get(context).formKey,
-                    child: CustomTextFormField(
-                      keyboardType: TextInputType.number,
-                      text: AppLocalizations.of(context)!.adCost,
-                      onSaved: (value) {
-                        if (value!.isNotEmpty) {
-                          AdsCubit.get(context).cost = int.parse(value);
-                        }
-                      },
-                      onValidate: (value) {
-                        if (value!.isEmpty) {
-                          return AppLocalizations.of(context)!.enterAdCost;
-                        } else
-                          return null;
-                      },
+                    child: Column(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.enterAdDescription,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        CustomTextFormField(
+                          keyboardType: TextInputType.number,
+                          text: AppLocalizations.of(context)!.adCost,
+                          onSaved: (value) {
+                            if (value!.isNotEmpty) {
+                              AdsCubit.get(context).cost = int.parse(value);
+                            }
+                          },
+                          onValidate: (value) {
+                            if (value!.isEmpty) {
+                              return AppLocalizations.of(context)!.enterAdCost;
+                            } else
+                              return null;
+                          },
+                        ),
+                        SizedBox(height: 10,),
+                        
+                        CustomTextFormField(
+                          text: AppLocalizations.of(context)!.descriptionLabel,
+                          onSaved: (value) {
+                            if (value!.isNotEmpty) {
+                              AdsCubit.get(context).description = value;
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 20),

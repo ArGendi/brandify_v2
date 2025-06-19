@@ -8,8 +8,9 @@ class Ad{
   SocialMediaPlatform? platform;
   DateTime? date;
   DateTime? createdAt;
+  String? description;
 
-  Ad({this.id, this.backendId, this.cost, this.date, this.platform,}){
+  Ad({this.id, this.backendId, this.cost, this.date, this.platform, this.description}){
     this.createdAt = DateTime.now();
   }
   Ad.fromJson(Map<dynamic, dynamic> json){
@@ -18,6 +19,7 @@ class Ad{
     platform = toPlatform(json["platform"]);
     date = DateTime.parse(json["date"]);
     createdAt = json["createdAt"] != null? DateTime.parse(json["created_at"]) : null;
+    description = json["description"];
   }
 
   Map<String, dynamic> toJson(){
@@ -27,6 +29,7 @@ class Ad{
       "platform": platform?.name ?? "other",
       "date": DateFormat('yyyy-MM-dd HH:mm:ss').format(date!),
       "created_at": createdAt != null ? DateFormat('yyyy-MM-dd HH:mm:ss').format(createdAt!) : null,
+      "description": description,
     };
   }
 

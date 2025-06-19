@@ -14,7 +14,7 @@ import 'package:brandify/main.dart';
 import 'package:brandify/view/screens/products/add_product_screen.dart';
 import 'package:brandify/view/widgets/product_card.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});

@@ -7,7 +7,7 @@ import 'package:brandify/models/product.dart';
 import 'package:brandify/models/sell_side.dart';
 import 'package:brandify/models/side.dart';
 import 'package:brandify/models/size.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class Sell{
   int? id;

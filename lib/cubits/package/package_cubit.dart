@@ -14,7 +14,7 @@ import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 part 'package_state.dart';
 

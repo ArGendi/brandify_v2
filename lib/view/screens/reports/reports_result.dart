@@ -30,7 +30,7 @@ import 'package:brandify/view/widgets/recent_sell_item.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ReportsResult extends StatefulWidget {
   final String title;
@@ -442,9 +442,15 @@ class _ReportsResultState extends State<ReportsResult> {
           await file.writeAsBytes(await pdf.save());
       
           // Share the PDF
-          await Share.shareXFiles(
-            [XFile(file.path)],
-            text: AppLocalizations.of(context)!.salesReport,
+          final box = context.findRenderObject() as RenderBox?;
+          await SharePlus.instance.share(
+            ShareParams(
+              files: [XFile(file.path)],
+              text: AppLocalizations.of(context)!.salesReport,
+              sharePositionOrigin: Platform.isIOS 
+                ? box!.localToGlobal(Offset.zero) & box.size
+                : null,
+            )
           );
         }
       }

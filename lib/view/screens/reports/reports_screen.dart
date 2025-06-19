@@ -17,7 +17,7 @@ import 'package:brandify/view/screens/reports/tabs/week_tab.dart';
 import 'package:brandify/view/screens/reports/tabs/year_tab.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/report_wide_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -117,7 +117,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     0,
                                 Color(0xFF93B0A2), // Darker variant
                                 () => _navigateToReport(
-                                    context, ReportsCubit.get(context).today),
+                                    context, ReportsCubit.get(context).today, 
+                                    AppLocalizations.of(context)!.today,),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -129,7 +130,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     0,
                                 Color(0xFF7D9889), // Even darker
                                 () => _navigateToReport(
-                                    context, ReportsCubit.get(context).week),
+                                    context, ReportsCubit.get(context).week,
+                                    AppLocalizations.of(context)!.thisWeek,),
                               ),
                             ),
                           ],
@@ -145,7 +147,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     0,
                                 Color(0xFF678073), // More darker
                                 () => _navigateToReport(
-                                    context, ReportsCubit.get(context).month),
+                                    context, ReportsCubit.get(context).month,
+                                    AppLocalizations.of(context)!.thisMonth,),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -159,7 +162,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     0,
                                 Color(0xFF51685D), // Darkest variant
                                 () => _navigateToReport(context,
-                                    ReportsCubit.get(context).threeMonths),
+                                    ReportsCubit.get(context).threeMonths,
+                                    AppLocalizations.of(context)!.threeMonths,),
                               ),
                             ),
                           ],
@@ -313,13 +317,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   // Add these functions after the existing widget methods
 
-  void _navigateToReport(BuildContext context, dynamic report) {
+  void _navigateToReport(BuildContext context, dynamic report, String title) {
     if (report != null) {
       ReportsCubit.get(context).currentReport = report;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const ReportsResult(),
+          builder: (context) => ReportsResult(title: title,),
         ),
       );
     }
@@ -363,13 +367,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
         allAds,
         allExtraExpenses,
       );
-
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const ReportsResult(),
-      //   ),
-      // );
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.selectDateFromAndToFirst))
+      );
     }
   }
 }

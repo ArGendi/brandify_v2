@@ -14,7 +14,7 @@ import 'package:brandify/models/extra_expense.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/view/widgets/expense_item.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ExtraExpensesScreen extends StatefulWidget {
   const ExtraExpensesScreen({super.key});
@@ -37,7 +37,7 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.externalExpenses,
+          AppLocalizations.of(context)!.businessExpenses,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -498,9 +498,15 @@ class _ExtraExpensesScreenState extends State<ExtraExpensesScreen> {
                         final file = File('${directory.path}/expenses_summary.pdf');
                         await file.writeAsBytes(await pdf.save());
 
-                        await Share.shareXFiles(
-                          [XFile(file.path)],
-                          text: AppLocalizations.of(context)!.expensesSummary,
+                        final box = context.findRenderObject() as RenderBox?;
+                        await SharePlus.instance.share(
+                          ShareParams(
+                            files: [XFile(file.path)],
+                            text: AppLocalizations.of(context)!.expensesSummary,
+                            sharePositionOrigin: Platform.isIOS 
+                              ? box!.localToGlobal(Offset.zero) & box.size
+                              : null,
+                          )
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(

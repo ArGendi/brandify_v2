@@ -1,4 +1,5 @@
 import 'package:brandify/cubits/language/language_cubit.dart';
+import 'package:brandify/view/screens/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ import 'package:brandify/view/screens/shopify_orders_screen.dart';
 import 'package:brandify/view/screens/welcome_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:brandify/l10n/l10n.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,7 +119,7 @@ class _MyAppState extends State<MyApp> {
                 foregroundColor: Colors.white,
               ),
               fontFamily: locale.languageCode == 'ar' ? 'Jazeera' : 'CreatoDisplay',
-              ),
+            ),
           home: FirebaseAuth.instance.currentUser != null ? HomeScreen() : WelcomeScreen(),
           //home: WelcomeScreen(),
         );

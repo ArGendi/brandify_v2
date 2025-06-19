@@ -6,7 +6,7 @@ import 'package:brandify/cubits/sides/sides_cubit.dart';
 import 'package:brandify/main.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class SidesScreen extends StatefulWidget {
   const SidesScreen({super.key});
@@ -26,7 +26,7 @@ class _SidesScreenState extends State<SidesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.orderExpenses),
+        title: Text(AppLocalizations.of(context)!.packagingStock),
         backgroundColor: mainColor, 
       ),
       body: Padding(
@@ -166,7 +166,7 @@ class _SidesScreenState extends State<SidesScreen> {
         onPressed: () {
           _addBottomSheet(context);
         },
-        label: Text(AppLocalizations.of(context)!.addOrderExpense),
+        label: Text(AppLocalizations.of(context)!.add),
         icon: const Icon(Icons.add),
         backgroundColor: mainColor,
       ),

@@ -9,7 +9,7 @@ import 'package:brandify/models/ad.dart';
 import 'package:brandify/view/screens/ads/ads_screen.dart';
 import 'package:brandify/view/widgets/ad_item.dart';
 import 'package:brandify/view/widgets/platform_totals_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class AllAdsScreen extends StatefulWidget {
   const AllAdsScreen({super.key});
@@ -65,7 +65,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.advertising,
+          AppLocalizations.of(context)!.ads,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -332,8 +332,10 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
             ),
             SizedBox(height: 20),
             _buildDetailRow(Icons.campaign, AppLocalizations.of(context)!.platform, ad.platform?.name ?? AppLocalizations.of(context)!.notAvailable),
-            _buildDetailRow(Icons.attach_money, AppLocalizations.of(context)!.cost, "${ad.cost} ${AppLocalizations.of(context)!.currency}"),
+            _buildDetailRow(Icons.attach_money, AppLocalizations.of(context)!.cost, "${AppLocalizations.of(context)!.currency(ad.cost ?? 0)}"),
             _buildDetailRow(Icons.calendar_today, AppLocalizations.of(context)!.date, ad.date.toString().split(" ").first),
+            if(ad.description != null) 
+              _buildDetailRow(Icons.description, AppLocalizations.of(context)!.descriptionLabel, ad.description ?? ""),
             SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -341,6 +343,7 @@ class _AllAdsScreenState extends State<AllAdsScreen> {
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: mainColor,
+                  foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),

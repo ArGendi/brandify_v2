@@ -20,7 +20,7 @@ import 'package:brandify/models/firebase/firestore/shopify_services.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/view/screens/auth/login_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 part 'app_user_state.dart';
 
@@ -416,7 +416,7 @@ class AppUserCubit extends Cubit<AppUserState> {
         emit(AppUserError(e.toString()));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete account: ${e.toString()}'),
+            content: Text('${AppLocalizations.of(navigatorKey.currentContext!)!.failedToDeleteAccount(e.toString())}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -430,7 +430,7 @@ class AppUserCubit extends Cubit<AppUserState> {
         // First get user data and check if successful
         var userData = await FirestoreServices().getUserData();
         if (userData == null) {
-          emit(AppUserError('Failed to get user data from Firebase'));
+          emit(AppUserError(AppLocalizations.of(navigatorKey.currentContext!)!.failedToGetUserData));
           return;
         }
         print("userData package : ${userData['package']}");

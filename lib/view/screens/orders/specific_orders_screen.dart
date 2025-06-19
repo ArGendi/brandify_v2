@@ -1,3 +1,5 @@
+import 'package:brandify/cubits/app_user/app_user_cubit.dart';
+import 'package:brandify/main.dart';
 import 'package:brandify/models/local/cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +14,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class SpecificOrdersScreen extends StatefulWidget {
@@ -80,11 +82,18 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
           pw.Header(
             level: 0,
             child: pw.Text(
-              l10n.ordersReceipt,
+              AppUserCubit.get(navigatorKey.currentContext!).brandName ?? l10n.ordersReceipt,
               style: pw.TextStyle(
                 fontSize: 24,
                 fontWeight: pw.FontWeight.bold,
               ),
+            ),
+          ),
+          pw.Text(
+            DateTime.now().toString(),
+            style: pw.TextStyle(
+              fontSize: 10,
+              fontStyle: pw.FontStyle.italic,
             ),
           ),
           pw.SizedBox(height: 20),
@@ -94,10 +103,9 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
             return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Divider(),
-                pw.Text(
-                  '${l10n.orderDate}: ${order.date?.toString().split(' ')[0]}',
-                ),
+                // pw.Text(
+                //   '${l10n.orderDate}: ${order.date?.toString().split(' ')[0]}',
+                // ),
                 pw.Text('${l10n.product}: ${order.product?.name}'),
                 pw.Text('${l10n.size}: ${order.size?.name ?? l10n.notAvailable}'),
                 pw.Text('${l10n.quantity}: ${order.quantity}'),
@@ -110,36 +118,37 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ),
-                pw.SizedBox(height: 10),
+                pw.SizedBox(height: 5),
+                pw.Divider(),
               ],
             );
           }).toList(),
 
-          pw.Divider(),
           pw.SizedBox(height: 20),
           pw.Column(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text('${l10n.totalOrders}: $quantity'),
               pw.Text(
-                '${l10n.totalProfit}: ${selectedOrders.fold(0.0, (sum, order) => sum + (order.priceOfSell ?? 0))} LE',
+                '${l10n.totalProfit}: ${l10n.currency(selectedOrders.fold(0.0, (sum, order) => sum + (order.priceOfSell ?? 0)).toInt())}',
                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
               ),
             ],
           ),
 
-          pw.Footer(
-            leading: pw.Text(
-              l10n.fromBrandify(
-                Cache.getName() ?? 'Brandify',
-                DateTime.now().toString().split(' ')[0],
-              ),
-              style: pw.TextStyle(
-                fontSize: 10,
-                fontStyle: pw.FontStyle.italic,
-              ),
-            ),
-          ),
+          // pw.Footer(
+          //   leading: pw.Text(
+          //     l10n.fromBrandify(
+          //       Cache.getName() ?? 'Brandify',
+          //       DateTime.now().toString().split(' ')[0],
+          //     ),
+          //     style: pw.TextStyle(
+          //       fontSize: 10,
+          //       fontStyle: pw.FontStyle.italic,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -148,7 +157,16 @@ class _SpecificOrdersScreenState extends State<SpecificOrdersScreen> {
     final file = File('${directory.path}/orders_receipt.pdf');
     await file.writeAsBytes(await pdf.save());
 
-    await Share.shareXFiles([XFile(file.path)], text: AppLocalizations.of(context)!.ordersReceipt);
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path)],
+        text: AppLocalizations.of(context)!.ordersReceipt,
+        sharePositionOrigin: Platform.isIOS 
+          ? box!.localToGlobal(Offset.zero) & box.size
+          : null,
+      )
+    );
   }
 
   @override

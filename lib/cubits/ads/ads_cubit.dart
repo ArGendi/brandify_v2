@@ -14,6 +14,7 @@ import 'package:brandify/models/ad.dart';
 import 'package:brandify/models/firebase/firestore/ads_services.dart';
 import 'package:brandify/models/firebase/firestore/firestore_services.dart';
 import 'package:brandify/models/package.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 part 'ads_state.dart';
 
@@ -23,6 +24,7 @@ class AdsCubit extends Cubit<AdsState> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
   List<Ad> ads = [];
+  String? description;
 
   AdsCubit() : super(AdsInitial());
   static AdsCubit get(BuildContext context) => BlocProvider.of(context);
@@ -212,7 +214,12 @@ class AdsCubit extends Cubit<AdsState> {
     bool valid = formKey.currentState?.validate() ?? false;
     if (valid && selectedPlatform != null) {
       formKey.currentState?.save();
-      Ad newAd = Ad(cost: cost, platform: selectedPlatform, date: date);
+      Ad newAd = Ad(
+        cost: cost, 
+        platform: selectedPlatform, 
+        date: date,
+        description: description,
+      );
       emit(AdsLoading());
       await Package.checkAccessability(
         online: () async {
@@ -225,7 +232,7 @@ class AdsCubit extends Cubit<AdsState> {
             formKey.currentState?.reset();
             AllSellsCubit.get(context).deductFromProfit(newAd.cost ?? 0);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Added successfuly"), backgroundColor: Colors.green.shade700,)
+              SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
             );
           }
         },
@@ -236,7 +243,7 @@ class AdsCubit extends Cubit<AdsState> {
           formKey.currentState?.reset();
           AllSellsCubit.get(context).deductFromProfit(newAd.cost ?? 0);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Added successfuly"), backgroundColor: Colors.green.shade700,)
+            SnackBar(content: Text(AppLocalizations.of(context)!.addedSuccessfully), backgroundColor: Colors.green.shade700,)
           );
         },
       );

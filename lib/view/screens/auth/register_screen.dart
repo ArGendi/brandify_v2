@@ -12,7 +12,7 @@ import 'package:brandify/view/screens/packages/package_selection_screen.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/view/widgets/loading.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -127,10 +127,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onValidate: (value) {
                               if (value!.isEmpty) {
                                 return AppLocalizations.of(context)!.phoneEmpty;
-                              } else if (value.length != 11) {
-                                return AppLocalizations.of(context)!.phoneInvalid;
                               }
-                              return null;
+                              else return null;
                             },
                           ),
                           const SizedBox(height: 10),

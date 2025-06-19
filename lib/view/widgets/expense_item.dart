@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:brandify/constants.dart';
 import 'package:brandify/models/extra_expense.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ExpenseItem extends StatelessWidget {
   final ExtraExpense expense;

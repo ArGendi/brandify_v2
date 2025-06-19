@@ -17,7 +17,7 @@ import 'package:brandify/view/screens/products/products_screen.dart';
 import 'package:brandify/view/widgets/custom_button.dart';
 import 'package:brandify/view/widgets/custom_texfield.dart';
 import 'package:brandify/view/widgets/loading.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 // import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -120,6 +120,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                     Row(
                       children: [
+                        SizedBox(width: 5,),
+                        Text(
+                          AppLocalizations.of(context)!.mandatoryFieldsNote,
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
                         Expanded(
                           child: BlocBuilder<AddProductCubit, AddProductState>(
                             builder: (context, state) {
@@ -198,6 +210,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     SizedBox(
                       height: 15,
                     ),
+                    Row(
+                      children: [
+                        SizedBox(width: 5,),
+                        Expanded(child: Text(
+                          AppLocalizations.of(context)!.originalPriceHint,
+                          style: TextStyle(fontSize: 11),
+                        )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     CustomTextFormField(
                       initial:
                           AddProductCubit.get(context)
@@ -205,6 +229,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   .price?.toString(),
                       keyboardType: TextInputType.number,
                       text: AppLocalizations.of(context)!.originalPrice,
+                      hintText: AppLocalizations.of(context)!.pricePaidHint,
                       onSaved: (value) {
                         if (value!.isNotEmpty) {
                           AddProductCubit.get(context).product.price =
@@ -327,11 +352,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: CustomButton(
+                        icon: Icon(Icons.add),
                         text: AppLocalizations.of(context)!.addAnotherSize,
                         onPressed: () {
                           AddProductCubit.get(context).addSize();
                         },
-                        bgColor: Colors.grey,
+                        bgColor: Colors.grey.shade600,
                       ),
                     ),
                   ],

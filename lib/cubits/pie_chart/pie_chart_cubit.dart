@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 import 'package:brandify/enum.dart';
 import 'package:brandify/models/chart_data.dart';
 import 'package:brandify/models/sell.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 part 'pie_chart_state.dart';
 

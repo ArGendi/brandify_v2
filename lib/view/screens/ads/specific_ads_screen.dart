@@ -9,7 +9,7 @@ import 'package:brandify/models/ad.dart';
 import 'package:brandify/view/screens/ads/ads_screen.dart';
 import 'package:brandify/view/widgets/ad_item.dart';
 import 'package:brandify/view/widgets/platform_totals_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class SpecificAdsScreen extends StatefulWidget {
   final List<Ad> ads;

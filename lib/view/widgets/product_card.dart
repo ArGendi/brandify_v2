@@ -7,7 +7,7 @@ import 'package:brandify/main.dart';
 import 'package:brandify/models/package.dart';
 import 'package:brandify/models/product.dart';
 import 'package:brandify/view/screens/products/product_details.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;

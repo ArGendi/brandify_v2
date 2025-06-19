@@ -19,7 +19,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class BestProductsScreen extends StatefulWidget {
   final DateTimeRange? dateRange;
@@ -227,7 +227,7 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
             data: bestProducts.map((product) => [
               product.product.name ?? AppLocalizations.of(navigatorKey.currentContext!)!.unnamedProduct,
               product.quantity.toString(),
-              '${product.profit} LE',
+              '${AppLocalizations.of(navigatorKey.currentContext!)!.currency(product.profit)}',
             ]).toList(),
           ),
           
@@ -246,8 +246,14 @@ class _BestProductsScreenState extends State<BestProductsScreen> {
     final file = File('${directory.path}/best_products_report.pdf');
     await file.writeAsBytes(await pdf.save());
 
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      text: AppLocalizations.of(context)!.bestSellingProductsReport,
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path)],
+        text: AppLocalizations.of(context)!.bestSellingProductsReport,
+        sharePositionOrigin: Platform.isIOS 
+          ? box!.localToGlobal(Offset.zero) & box.size
+          : null,
+      )
     );
   }

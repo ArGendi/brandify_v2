@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:brandify/models/sell.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class SellInfo extends StatelessWidget {
   final Sell sell;

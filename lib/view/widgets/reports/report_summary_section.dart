@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:brandify/cubits/reports/reports_cubit.dart';
 import 'package:brandify/view/widgets/report_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ReportSummarySection extends StatelessWidget {
   const ReportSummarySection({super.key});
@@ -41,7 +41,7 @@ class ReportSummarySection extends StatelessWidget {
             ),
             Divider(),
             ReportCard(
-              text: l10n.extraExpenses,
+              text: l10n.businessExpenses,
               quantity: current.totalExtraExpensesCost,
               color: Colors.red.shade600,
             ),

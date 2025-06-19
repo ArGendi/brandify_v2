@@ -6,7 +6,7 @@ import 'package:brandify/cubits/one_product_sells/one_product_sells_cubit.dart';
 import 'package:brandify/cubits/products/products_cubit.dart';
 import 'package:brandify/models/product.dart';
 import 'package:brandify/models/sell.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class ProductSellsHistoryScreen extends StatefulWidget {
   final Product product;

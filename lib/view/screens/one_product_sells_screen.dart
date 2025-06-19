@@ -12,7 +12,7 @@ import 'package:brandify/cubits/sell/sell_cubit.dart';
 import 'package:brandify/models/product.dart';
 import 'package:brandify/models/sell.dart';
 import 'package:brandify/view/widgets/sell_info.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:brandify/l10n/app_localizations.dart';
 
 class OneProductSellsScreen extends StatefulWidget {
   final Product product;
